@@ -93,3 +93,4 @@ this be setting the -cp option on the command line
 note that the bin: ensures that the bin directory is still part of your java 
 classpath.
 
+
