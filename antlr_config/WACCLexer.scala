@@ -28,7 +28,7 @@ private val wacc = LangugeDef.plain.copy(
                     "<=", "==", "!=", "&&", "||", "fst", "snd"),
     
     //not sure if this is correct
-    identLetter = Predicate(c => c.isLetterOrDigit || c == '_')
+    identLetter = Predicate(c => c.isLetter || c == '_')
 
     space = Predicate(c => c == ' ' || c == '\t' || c == '\n')
 )
