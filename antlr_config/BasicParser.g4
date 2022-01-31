@@ -4,7 +4,7 @@ options {
   tokenVocab=BasicLexer;
 }
 
-binaryOper: PLUS | MINUS ;
+binaryOper: PLUS | MINUS | MULT ;
 
 expr: expr binaryOper expr
 | INTEGER
@@ -12,4 +12,4 @@ expr: expr binaryOper expr
 ;
 
 // EOF indicates that the program must consume to the end of the input.
-prog: (expr)*  EOF ;
+prog: (expr EOL)*  EOF ;
