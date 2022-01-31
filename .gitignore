@@ -5,5 +5,14 @@ src/antlr
 #ignore Java class files
 *.class
 
+#ignore Scala junk file 
+*.bloop
+*.metals
+*.vscode
+antlr_config/.antlr
+project
+target
+
 #ignore other junk files
 *~
+.gitignore
