@@ -1,5 +1,8 @@
-class CompilerTest extends org.scalatest.funsuite.AnyFunSuite {
-  test("Compiler.cube") {
-    assert(Compiler.cube(3) === 27)
+import parsley.Parsley, Parsley._
+
+class LexerTest extends org.scalatest.funsuite.AnyFunSuite {
+  test("LexerParsesInteger") {
+    val newParser = lexer.INTEGER;
+    assert(newParser.parse("5").isSuccess)
   }
 }
