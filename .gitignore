@@ -9,6 +9,7 @@ src/antlr
 *.bloop
 *.metals
 *.vscode
+*.bsp
 antlr_config/.antlr
 project
 target

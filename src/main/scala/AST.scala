@@ -18,7 +18,7 @@ object ast{
 
     case class AssignLHS(ident : Ident, arrayElem : ArrayElem, pairElem : PairElem)
 
-    case class AssignRHS(expr : Expr = null, arrayLiter : ArridenayLiter = null, 
+    case class AssignRHS(expr : Expr = null, arrayLiter : ArrayLiter = null, 
                         exprEqualLeft : Expr = null, exprEqualRight : Expr = null,
                         pairElem : PairElem = null, ident : Ident = null, 
                         argList : ArgList = null)
@@ -33,6 +33,14 @@ object ast{
     case class BaseType(bType: String)
 
     case class ArrayType(tpe: Type)
+
+    case class PairType(pType: String, fst: PairElemType, snd: PairElemType)
+
+    case class PairElemType(baseType: BaseType, arrayType: ArrayType, pType: String)
+
+    case class Expr(intLit: IntLiter, boolLit: BoolLiter, charLit: CharLiter, 
+                    strLit: StrLiter, pLit: PairLiter, ident: Ident, 
+                    arrayElem: ArrayElem, unOp: UnaryOp, expr: Expr, binOp: BinaryOp)
 
     case class UnaryOp(op : String)
 
@@ -59,5 +67,6 @@ object ast{
     case class PairLiter(string: String)
 
     case class ArrayLiter(head : Expr, tail : List[Expr])
+
 
 }
