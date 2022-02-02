@@ -10,29 +10,30 @@ object lexer {
     import parsley.implicits.zipped.Zipped3
     import parsley.errors.combinator.ErrorMethods
 
+    val keywords = Set("begin", "end", "is", "skip", "read", "free",
+                    "return", "exit", "print", "println", "if", 
+                    "then", "else", "fi", "while", "do", "done",
+                    "begin", "end", "newpair", "call"
+                    )
+                    
+    val operators = Set("!", "-", "len", "ord", "chr", "*",
+                "/", "%", "+", "-", ">", ">=", "<",
+                "<=", "==", "!=", "&&", "||", "fst", "snd"),
+
     private val wacc = LanguageDef.plain.copy(
         commentLine = "#",
         nestedComments = false,
-        keywords = Set("begin", "end", "is", "skip", "read", "free",
-                        "return", "exit", "print", "println", "if", 
-                        "then", "else", "fi", "while", "do", "done",
-                        "begin", "end", "newpair", "call"
-                        ),
-        operators = Set("!", "-", "len", "ord", "chr", "*",
-                        "/", "%", "+", "-", ">", ">=", "<",
-                        "<=", "==", "!=", "&&", "||", "fst", "snd"),
-        identLetter = Predicate(c => c.isLetter || c == '_'),
-        space = Predicate(c => c == ' ' || c == '\t' || c == '\n')
+        keywords = this.keywords,
+        operators = this.operators,
+        identStart = Predicate((c : Char) => c.isLetter || c.equals('_'))
+        identLetter  = Predicate((c : Char) => _.isAlphaNum || _.equals('_'))
+        space = Predicate(isWhitespace)
     )
 
     private val lexer = new Lexer(wacc)
 
-    private val identifierTail = many(alphaNum <|> '_')
-
-    private def idMaker(leading : Parsley[Char]) =
-        (leading, identifierTail, many('\'')).zipped {
-            (first, middle, primes) => s"$first${middle.mkString}${primes.mkString}"
-        }
+    def fully[A](p : =>Parsley[A]): Parsley[A] = 
+       lexer.whiteSpace *> p <* eof
 
     val CON_ID = idMaker(upper)
     val VAR_ID = idMaker(lower).filterOut {
@@ -42,11 +43,8 @@ object lexer {
     val INTEGER = lexer.natural
     val STRING = lexer.stringLiteral
     val CHAR = lexer.charLiteral
-
+    val IDENTIFIER = lexer.identifier
     val NEWLINE = void(lexer.lexeme(newline))
-
-    def fully[A](p : Parsley[A]): Parsley[A] = 
-        lexer.whiteSpace *> p <* eof
 
     object implicits {
         implicit def implicitToken(s : String): Parsley[Unit] = {
