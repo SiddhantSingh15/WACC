@@ -5,6 +5,7 @@ import scala.language.implicitConversions
 object lexer {
     import parsley.token.{Lexer, Predicate, LanguageDef}
     import parsley.character.{alphaNum, upper, lower, newline}
+    import parsley.character.{char, digit, isWhitespace, letter, upper}
     import parsley.combinator.{many, option, eof}
     import parsley.implicits.character.{stringLift, charLift}
     import parsley.implicits.zipped.Zipped3
@@ -18,15 +19,15 @@ object lexer {
                     
     val operators = Set("!", "-", "len", "ord", "chr", "*",
                 "/", "%", "+", "-", ">", ">=", "<",
-                "<=", "==", "!=", "&&", "||", "fst", "snd"),
+                "<=", "==", "!=", "&&", "||", "fst", "snd")
 
     private val wacc = LanguageDef.plain.copy(
         commentLine = "#",
         nestedComments = false,
         keywords = this.keywords,
         operators = this.operators,
-        identStart = Predicate((c : Char) => c.isLetter || c.equals('_'))
-        identLetter  = Predicate((c : Char) => _.isAlphaNum || _.equals('_'))
+        identStart = parsley.token.Parser(char('_') <|> letter <|> upper),
+        identLetter  = parsley.token.Parser(char('_') <|> letter <|> upper <|> digit),
         space = Predicate(isWhitespace)
     )
 
@@ -34,11 +35,6 @@ object lexer {
 
     def fully[A](p : =>Parsley[A]): Parsley[A] = 
        lexer.whiteSpace *> p <* eof
-
-    val CON_ID = idMaker(upper)
-    val VAR_ID = idMaker(lower).filterOut {
-        case k if wacc.keywords(k) => s"keyword $k cannot be used as an identifier"
-    }
 
     val INTEGER = lexer.natural
     val STRING = lexer.stringLiteral
