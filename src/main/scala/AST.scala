@@ -17,9 +17,9 @@ object ast{
     case class Exit(expr : Expr) extends Stat
     case class Print(expr : Expr) extends Stat
     case class Println(expr : Expr) extends Stat
-    case class Conditional(expr : Expr, statThen : Stat, statElse : Stat)
-    case class While(expr : Expr, stat : Stat)
-    case class SemiColon(statOne : Stat, statTwo : Stat)
+    case class Conditional(expr : Expr, statThen : Stat, statElse : Stat) extends Stat
+    case class While(expr : Expr, stat : Stat) extends Stat
+    case class SemiColon(statOne : Stat, statTwo : Stat) extends Stat
 
     sealed trait AssignLHS
     case class Ident(head : Char, tail : String) extends AssignLHS
