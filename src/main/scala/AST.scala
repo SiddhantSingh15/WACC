@@ -7,48 +7,54 @@ object ast{
     
     case class Param(tpe : Type, ident : Ident)
 
-    case class Stat(tpe : Type = null, ident : Ident = null, 
-                    assignREqual : AssignRHS = null, assignLEqual : AssignLHS = null,
-                    assignLRead : AssignLHS = null, exprFree : Expr = null, 
-                    exprReturn : Expr = null, exprExit : Expr = null, exprPrint : Expr = null,
-                    exprPrintln : Expr = null, exprIf : Expr = null, statIf1 : Stat = null,
-                    statIf2 : Stat = null, exprWhile : Expr = null, statWhile : Stat = null,
-                    statBeginEnd : Stat = null, stat1Semi : Stat = null, stat2Semi : Stat = null)
+    sealed trait Stat
+    case class Skip() extends Stat
+    case class TypeAssign(tpe : Type, ident: Ident, assignRHS : AssignRHS) extends Stat
+    case class AssignLR(assignLHS : AssignLHS, assignRHS : AssignRHS) extends Stat
+    case class Read(assignRHS : AssignRHS) extends Stat
+    case class Free(expr : Expr) extends Stat
+    case class Return(expr : Expr) extends Stat
+    case class Exit(expr : Expr) extends Stat
+    case class Print(expr : Expr) extends Stat
+    case class Println(expr : Expr) extends Stat
+    case class Conditional(expr : Expr, statThen : Stat, statElse : Stat)
+    case class While(expr : Expr, stat : Stat)
+    case class SemiColon(statOne : Stat, statTwo : Stat)
 
+    sealed trait AssignLHS
+    case class Ident(head : Char, tail : String) extends AssignLHS
+    case class ArrayElem(arrayElem : ArrayElem) extends AssignLHS
+    trait PairElem extends AssignLHS
 
-    case class AssignLHS(ident : Ident, arrayElem : ArrayElem, pairElem : PairElem)
+    sealed trait AssignRHS
+    case class Expr(expr : Expr) extends AssignRHS
+    case class ArrayLiter(head : Expr, tail : List[Expr]) extends AssignRHS
+    case class NewPair(exprOne : Expr, exprTwo : Expr) extends AssignRHS
+    case class Call(ident : Ident, argList : ArgList) extends AssignRHS
 
-    case class AssignRHS(expr : Expr = null, arrayLiter : ArrayLiter = null, 
-                        exprEqualLeft : Expr = null, exprEqualRight : Expr = null,
-                        pairElem : PairElem = null, ident : Ident = null, 
-                        argList : ArgList = null)
-
-    
     case class ArgList(exprs : List[Expr])
 
-    case class PairElem(fst : Expr, snd : Expr)
+    case class Fst(fst : Expr) extends PairElem 
+    case class Snd(snd : Expr) extends PairElem
 
-    case class Type(base: BaseType, array: ArrayType, pair: PairType)
+    sealed trait Type 
+    sealed trait BaseType extends Type with PairElemType
+    case class ArrayType(tpe : Type) extends Type with PairElemType
+    case class PairType(fst : PairElemType, snd : PairElemType) extends Type 
 
-    case class BaseType(bType: String)
+    case class Int() extends BaseType
+    case class Bool() extends BaseType
+    case class Char() extends BaseType
+    case class String() extends BaseType
 
-    case class ArrayType(tpe: Type)
-
-    case class PairType(pType: String, fst: PairElemType, snd: PairElemType)
-
-    case class PairElemType(baseType: BaseType, arrayType: ArrayType, pType: String)
-
-    case class Expr(intLit: IntLiter, boolLit: BoolLiter, charLit: CharLiter, 
-                    strLit: StrLiter, pLit: PairLiter, ident: Ident, 
-                    arrayElem: ArrayElem, unOp: UnaryOp, expr: Expr, binOp: BinaryOp)
+    sealed trait PairElemType
+   // sealed trait BaseType extends PairElemType
+  //  case class ArrayType(tpe : Type) extends PairElemType
+    case class Pair() extends PairElemType
 
     case class UnaryOp(op : String)
 
     case class BinaryOp(op : String)
-
-    case class Ident(head : Char, tail : String)
-
-    case class ArrayElem(ident: Ident, expr: Expr)
 
     case class IntLiter(sign: IntSign, digit: Digit)
 
@@ -65,8 +71,6 @@ object ast{
     case class EscapedChar(chr: Char)
 
     case class PairLiter(string: String)
-
-    case class ArrayLiter(head : Expr, tail : List[Expr])
 
 
 }
