@@ -36,7 +36,7 @@ object lexer {
     def fully[A](p : =>Parsley[A]): Parsley[A] = 
        lexer.whiteSpace *> p <* eof
 
-    val INTEGER = lexer.natural
+    val INTEGER = lexer.integer
     val STRING = lexer.stringLiteral
     val CHAR = lexer.charLiteral
     val IDENTIFIER = lexer.identifier
