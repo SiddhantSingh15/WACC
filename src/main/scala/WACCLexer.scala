@@ -1,0 +1,52 @@
+import parsley.Parsley, Parsley._
+import scala.language.implicitConversions
+
+
+object lexer {
+    import parsley.token.{Lexer, Predicate, LanguageDef}
+    import parsley.character.{alphaNum, upper, lower, newline}
+    import parsley.character.{char, digit, isWhitespace, letter, upper}
+    import parsley.combinator.{many, option, eof}
+    import parsley.implicits.character.{stringLift, charLift}
+    import parsley.implicits.zipped.Zipped3
+    import parsley.errors.combinator.ErrorMethods
+
+    val keywords = Set("begin", "end", "is", "skip", "read", "free",
+                    "return", "exit", "print", "println", "if", 
+                    "then", "else", "fi", "while", "do", "done",
+                    "begin", "end", "newpair", "call"
+                    )
+                    
+    val operators = Set("!", "-", "len", "ord", "chr", "*",
+                "/", "%", "+", "-", ">", ">=", "<",
+                "<=", "==", "!=", "&&", "||", "fst", "snd")
+
+    private val wacc = LanguageDef.plain.copy(
+        commentLine = "#",
+        nestedComments = false,
+        keywords = this.keywords,
+        operators = this.operators,
+        identStart = parsley.token.Parser(char('_') <|> letter <|> upper),
+        identLetter  = parsley.token.Parser(char('_') <|> letter <|> upper <|> digit),
+        space = Predicate(isWhitespace)
+    )
+
+    private val lexer = new Lexer(wacc)
+
+    def fully[A](p : =>Parsley[A]): Parsley[A] = 
+       lexer.whiteSpace *> p <* eof
+
+    val INTEGER = lexer.integer
+    val STRING = lexer.stringLiteral
+    val CHAR = lexer.charLiteral
+    val IDENTIFIER = lexer.identifier
+    val NEWLINE = void(lexer.lexeme(newline))
+
+    object implicits {
+        implicit def implicitToken(s : String): Parsley[Unit] = {
+            if (wacc.keywords(s))        lexer.keyword(s)
+            else if(wacc.operators(s))   lexer.maxOp(s)
+            else                         void(lexer.symbol_(s))
+        }
+    }
+}
