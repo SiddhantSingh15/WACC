@@ -1,4 +1,4 @@
-object ast{
+object Ast{
     import parsley.implicits.zipped.{Zipped2, Zipped3, Zipped4}
     
     case class WaccProgram(funcs : List[Func], stat: Stat)
@@ -8,7 +8,7 @@ object ast{
     case class Param(tpe : Type, ident : Ident)
 
     sealed trait Stat
-    case class Skip() extends Stat
+    case object Skip extends Stat
     case class TypeAssign(tpe : Type, ident: Ident, assignRHS : AssignRHS) extends Stat
     case class AssignLR(assignLHS : AssignLHS, assignRHS : AssignRHS) extends Stat
     case class Read(assignRHS : AssignRHS) extends Stat
@@ -42,25 +42,45 @@ object ast{
     case class ArrayType(tpe : Type) extends Type with PairElemType
     case class PairType(fst : PairElemType, snd : PairElemType) extends Type 
 
-    case class Int() extends BaseType
-    case class Bool() extends BaseType
-    case class Char() extends BaseType
-    case class String() extends BaseType
+    case object Int extends BaseType
+    case object Bool extends BaseType
+    case object Char extends BaseType
+    case object String extends BaseType
 
     sealed trait PairElemType
    // sealed trait BaseType extends PairElemType
   //  case class ArrayType(tpe : Type) extends PairElemType
-    case class Pair() extends PairElemType
+    case object Pair extends PairElemType
 
-    case class UnaryOp(op : String)
+    sealed trait UnOp
+    case object Not extends UnOp
+    case object Negation extends UnOp
+    case object Len extends UnOp
+    case object Ord extends UnOp
+    case object Chr extends UnOp
 
-    case class BinaryOp(op : String)
+    sealed trait BinOp
+    case object Mul extends BinOp
+    case object Div extends BinOp
+    case object Mod extends BinOp
+    case object Plus extends BinOp
+    case object Sub extends BinOp
+    case object GT extends BinOp
+    case object GTE extends BinOp
+    case object LT extends BinOp
+    case object LTE extends BinOp
+    case object Equal extends BinOp
+    case object NotEqual extends BinOp
+    case object And extends BinOp
+    case object Or extends BinOp
 
     case class IntLiter(sign: IntSign, digit: Digit)
 
     case class Digit(digit: Char)
     
-    case class IntSign(sign: String)
+    sealed trait IntSign
+    case object Pos extends IntSign
+    case object Neg extends IntSign
 
     case class BoolLiter(bool: String)
 
