@@ -1,22 +1,27 @@
-import parsley.Parsley, Parsley._
-import scala.language.implicitConversions
-import ast._
+import parsley.Parsley._
+import parsley.implicits.character.{charLift, stringLift}
+import parsley.{Parsley, Result}
+import parsley.character.{anyChar, char, digit, letter, noneOf, upper}
+import parsley.combinator.{many, option}
+import parsley.lift.lift2
+import Ast._
+import parsley.expr.{GOps, Levels, Ops, Postfix, Prefix, chain, precedence}
 
 object parser {
-    import parsley.combinator.{between, eof, option, sepBy1, many}
-    import parsley.lift.{lift2, lift4}
+  lazy val baseType: Parsley[BaseType] = 
+    ("int" #> Int) <|> ("bool" #> Bool) <|> ("char" #> Char) <|> ("string" #> String)
 
-    val param: Parsley[Param] = lift2(Param, types, identifier) ? "param"
+  val unaryOp: Parsley[UnOp] =
+    ('!' #> Not) <|> ('-' #> Negation) <|> ("len" #> Len) <|> ("ord" #> Ord) <|> ("chr" #> Chr)
 
-    val paramList: Parsley[ParamList] = ParamList <#> sepBy1(param, ",") ? "param-list"
+  val binaryOp: Parsley[BinOp] =
+    ('*' #> Mul) <|> ('/' #> Div) <|> ('%' #> Mod) <|> ('+' #> Plus) <|>
+      ('-' #> Sub) <|> ('>' #> GT) <|> (">=" #> GTE) <|> ('<' #> LT) <|>
+      ("<=" #> LTE) <|> ("==" #> Equal) <|> ("!=" #> NotEqual) <|> ("&&" #> And) <|> ("||" #> Or)
 
-    private def statTerminates(stat: Stat): Boolean = stat match {
-    case If(_, s1, s2)       => statTerminates(s1) && statTerminates(s2)
-    case While(_, s)         => statTerminates(s)
-    case Begin(s)            => statTerminates(s)
-    case Seq(s)              => statTerminates(s.last)
-    case Exit(_) | Return(_) => true
-    case _                   => false
-  }
+  val natural: Parsley[Int] =
+    digit.foldLeft1[Int](0)((n, d) => n * 10 + d.asDigit)
+
+  val intSign: Parsley[IntSign] = ('+' #> Pos) <|> ('-' #> Neg)
 }
 
