@@ -3,7 +3,7 @@ import org.scalatest.funsuite.AnyFunSuite
 
 class LexerTest extends AnyFunSuite {
   test("LexerParsesInteger") {
-    val newParser = lexer.INTEGER;
+    val newParser = compiler.lexer.INTEGER;
     assert(newParser.parse("5").isSuccess)
   }
 }
