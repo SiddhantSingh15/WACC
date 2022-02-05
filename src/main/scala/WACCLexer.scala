@@ -1,3 +1,5 @@
+package compiler
+
 import parsley.Parsley, Parsley._
 import scala.language.implicitConversions
 
@@ -32,6 +34,10 @@ object lexer {
     )
 
     private val lexer = new Lexer(wacc)
+
+    def parens[A](p: => Parsley[A]): Parsley[A] = lexer.parens(p)
+
+    def brackets[A](p: => Parsley[A]): Parsley[A] = lexer.brackets(p)
 
     def fully[A](p : =>Parsley[A]): Parsley[A] = 
        lexer.whiteSpace *> p <* eof

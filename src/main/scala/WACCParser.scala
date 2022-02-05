@@ -1,26 +1,19 @@
-import parsley.Parsley
-import parsley.Parsley._
-import parsley.character.{char, digit, letter, noneOf, oneOf, upper, whitespace}
-import parsley.combinator.{between, many, manyN, option, sepBy1}
-import parsley.lift.{lift2, lift3, lift4}
-import parsley.expr.{InfixL, Ops, Postfix, Prefix, precedence}
-import parsley.token.{LanguageDef, Lexer}
+package compiler
 
-
-
-import parsley.Parsley._
-import parsley.implicits.character.{charLift, stringLift}
-import parsley.{Parsley, Result}
-import parsley.character.{anyChar, char, digit, letter, noneOf, upper}
-import parsley.combinator.{between, many, option, sepBy1}
-import parsley.lift.{lift2, lift4}
-import Ast._
-import parsley.expr.{GOps, Levels, Ops, Postfix, Prefix, chain, precedence}
-import parsley.expr.{precedence, SOps, InfixL, InfixR, NonAssoc, Prefix, Atoms}
-import parsley.combinator.sepBy1
-import scala.language.postfixOps
+import parsley.Parsley, Parsley._
+import scala.language.implicitConversions
 
 object Parser {
+    import Ast._
+    import lexer._
+    import parsley.character.{anyChar, char, digit, letter, noneOf, oneOf, upper, whitespace}
+    import parsley.combinator.{between, decide, many, manyN, option, sepBy1, sepBy, some, skipMany, skipSome, sepEndBy}
+    import parsley.lift.{lift2, lift3, lift4}
+    import parsley.expr.{Atoms, GOps, Levels, InfixL, InfixR, NonAssoc, Ops, Postfix, Prefix, SOps, chain, precedence}
+    import parsley.implicits.character.{charLift, stringLift}
+    import parsley.lift.{lift2, lift4}
+    import scala.language.postfixOps
+
     private def terminationRules(stat: Stat): Boolean = stat match {
         case Begin(stat)         => terminationRules(stat)
         case While(_, stat)      => terminationRules(stat)
@@ -37,22 +30,20 @@ object Parser {
       ("char" #> Char) <|> 
       ("string" #> String)  
     
-    private val `<type>` : Parsley[Type] = 
-        precedence[Type](
+    private val `<type>` : Parsley[Type] = // Removed precedence for now (not sure if needed)
             `<base-type>` <|> 
-            `<pair-type>`,
-            Ops[Type](Postfix)("[]") #> ArrayType
-        )   
-    
-    private val `<pair-elem-type>`: Parsley[PairElemType] =
-        precedence[PairElemType](
-            `<base-type>`,
+            `<pair-type>`<|>
             `<array-type>`
-        )
+    
+    private val `<array-type>` : Parsley[ArrayType] =
+        ArrayType <#> (`<type>` <* '[' <* ']')
+        
+    private val `<pair-elem-type>`: Parsley[PairElemType] =
+        `<base-type>` <|> `<array-type>` <|> ("pair" #> Pair) // Removed precedence for now (not sure if needed)
 
     private lazy val `<pair-type>` : Parsley[PairType] =
-        ("pair" *> lexer.parens(
-            lift2(Pair, `<pair-elem-type>`, "," *> `<pair-elem-type>`)
+        ("pair" *> parens(
+            lift2(PairType, `<pair-elem-type>`, "," *> `<pair-elem-type>`)
         ))
     
 
@@ -78,17 +69,17 @@ object Parser {
       ("&&" #> And) <|> 
       ("||" #> Or)  
     
-    private val `<digit>`: Parsley[Int] =
-      digit.foldLeft1[Int](0)((n, d) => n * 10 + d.asDigit) 
-    
+    private val `<digit>`: Parsley[Digit] =
+      Digit <#> digit.foldLeft1[Int](0)((n, d) => n * 10 + d.asDigit) 
     private val `<int-sign>`: Parsley[IntSign] = 
       ('+' #> Pos) <|> ('-' #> Neg) 
     
-    private val `<int-liter>` : Parsley[IntLiter] =
-        (option(lookAhead(`<int-sign>`) <~> lexer.integer))
-        .map(
-            (a : (Option[IntSign], Int)) => a._2
-        )
+    private val `<int-liter>` : Parsley[IntLiter] =  // should make it such that even without an IntSign, we give it the positive one as default
+        // (option(lookAhead(`<int-sign>`) <~> INTEGER))
+        // .map(
+        //     (a : (Option[IntSign], Int)) => a._2
+        // )
+        lift2(IntLiter, decide(option(`<int-sign>`), '+' #> Pos), manyN(1, `<digit>`))
     
     private val `<char-liter>` : Parsley[CharLiter] = 
        (CharLiter <#>  "\'" *> `<character>` <* "\'")
@@ -97,14 +88,14 @@ object Parser {
         (StrLiter <#> '\"' *> many(`<character>`) <* '\"') 
         
     
-    private val `<escaped-char>` : Parsley[EscapedChar] = 
+    private val `<escaped-char>` : Parsley[Char] =  // Chose to remove EscapedChar cause I cant figure out a better way
         oneOf(
             Set('0','b','t','n','f','r','"','"','\'')
         )
     
-    private val `<character>` : Parsley[Char] = 
-        (EscapedChar <#> "\\" *> EscapedChar) <|>
-        (Char <#> noneOf('\\', '\'', '"'))
+    private val `<character>` : Parsley[Character] = // There's a difference between char and character and char liter
+        (Character <#> ("\\" *> `<escaped-char>`)) <|>
+        (Character <#> noneOf(Set('\\', '\'', '"')))
     
     
     private val `<bool-liter>`: Parsley[BoolLiter] = 
@@ -114,8 +105,8 @@ object Parser {
         ArgList <#> sepBy1(`<expr>`, ",")
     
     private val `<pair-elem>` : Parsley[PairElem] = 
-        Fst <#> "fst" #> `<expr>` <|>
-        Snd <#> "snd" #> `<expr>`
+        (Fst <#> ("fst" *> `<expr>`)) <|>
+        (Snd <#> ("snd" *> `<expr>`))
     
     private val `<assign-lhs>` : Parsley[AssignLHS] = 
         `<pair-elem>` <|>
@@ -131,7 +122,7 @@ object Parser {
         ("call" *> lift2(
             Call, 
             `<ident>`,
-            lexer.parens(option(`<arg-list>`))
+            decide(parens(option(`<arg-list>`)), empty) // Returns empty if there is no arg list
         ))
     
     private val `<param>` = 
@@ -141,32 +132,26 @@ object Parser {
         ParamList <#> sepBy1(`<param>`, ",")
     
     private val `<array-elem>` : Parsley[ArrayElem] = 
-        lift2(
-            ArrayElem, 
-            `<ident>`,
-            manyN(1, lexer.brackets(`<expr>`))
-        )
+        lift2(ArrayElem, `<ident>`, manyN(1, brackets(`<expr>`)))
 
-    lazy val `<ident>` : Parsley[Ident] = Ident <#> lexer.IDENTIFIER
+    lazy val `<ident>` : Parsley[Ident] = Ident <#> IDENTIFIER
     
-    private val `<array-liter>` : Parsley[ArrayElem] = 
-        ArrayLiter <#> lexer.brackets(
-            option(sepBy1(`<expr>`, ","))
-        )
+    private val `<array-liter>` : Parsley[ArrayLiter] = 
+        ArrayLiter <#> brackets(sepBy1(`<expr>`, ","))
     
     private val `<pair-liter>` : Parsley[PairLiter] = 
         "null" #> PairLiter()
     
     private val `<program>` : Parsley[WaccProgram] = 
-        (WaccProgram <#> "begin" *> lift2(WaccProgram, many(attempt(func)), stat) <* "end") 
+        "begin" *> lift2(WaccProgram, many(attempt(`<func>`)), `<stat>`) <* "end"
 
     private val `<func>` : Parsley[Func] = 
         lift4(
             Func,
             `<type>`,
             `<ident>`,
-            lexer.parens(option(`<param-list>`)),
-            ("is" #> `<stat>` <# "end")
+            decide(parens(option(`<param-list>`)), empty), // Returns empty if nothing in param-list
+            ("is" *> `<stat>` <* "end")
 
         )
     
@@ -178,9 +163,9 @@ object Parser {
         `<pair-liter>` <|>
         `<ident>` <|>
         `<array-elem>` <|>
-        (Parens <#> lexer.parens(`<expr>`)) <|>
-        lift2(Expr, `<unary-oper>`, `<expr>`) <|>
-        lift3(Expr, `<expr>`, `<unary-oper>`, `<expr>`)
+        parens(`<expr>`) <|>
+        lift2(UnOpExpr, `<unary-oper>`, `<expr>`) <|>
+        lift3(BinOpExpr, `<expr>`, `<binary-oper>`, `<expr>`)
         
     private val skipStat : Parsley[Stat] = 
         "skip" #> Skip
@@ -190,14 +175,14 @@ object Parser {
             TypeAssign,
             `<type>`,
             `<ident>`,
-            "=" #> `<assign-rhs>`
+            "=" *> `<assign-rhs>`
         )
     
     private val assignLRStat : Parsley[Stat] = 
         lift2(
             AssignLR, 
             `<assign-lhs>`,
-            "=" #> `<assign-rhs>`
+            "=" *> `<assign-rhs>`
         )
     
     private val readStat : Parsley[Stat] = 
@@ -207,17 +192,17 @@ object Parser {
         Free <#> "free" *> `<expr>`
     
     private val returnStat : Parsley[Stat] = 
-        Return <#> "return" #> `<expr>`
+        Return <#> "return" *> `<expr>`
     
     private val exitStat : Parsley[Stat] = 
-        Exit <#> "exit" #> `<expr>`
+        Exit <#> "exit" *> `<expr>`
     
     
     private val printStat : Parsley[Stat] = 
-        Print <#> "print" #> `<expr>`
+        Print <#> "print" *> `<expr>`
     
     private val printlnStat : Parsley[Stat] = 
-        Println <#> "println" #> `<expr>`
+        Println <#> "println" *> `<expr>`
     
     private val ifStat : Parsley[Stat] = 
         ("if" *> lift3(
@@ -229,16 +214,16 @@ object Parser {
     
     private val whileStat : Parsley[Stat] = 
         ("while" *> lift2(
-            Whiel,
+            While,
             "while" *> `<expr>`,
             "do" *> `<stat>`,
         ) <* "done")
     
     private val beginStat : Parsley[Stat] = 
-        "begin" #> `<stat>` <# "end"
+        Begin <#> ("begin" *> `<stat>` <* "end")
 
     private val colonStat : Parsley[Stat] = 
-        `<stat>`<#> ";" <#> `<stat>`
+        lift2(Colon, `<stat>`, ";" *> `<stat>`)
 
     private lazy val `<stat>` : Parsley[Stat] = 
         skipStat <|> 

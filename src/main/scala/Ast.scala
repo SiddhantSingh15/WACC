@@ -1,4 +1,5 @@
-import parsley.Parsley
+package compiler
+
 object Ast{
     import parsley.implicits.zipped.{Zipped2, Zipped3, Zipped4}
     
@@ -16,33 +17,28 @@ object Ast{
     case class TypeAssign(tpe : Type, ident: Ident, assignRHS : AssignRHS) extends Stat
     case class AssignLR(assignLHS : AssignLHS, assignRHS : AssignRHS) extends Stat
     case class Read(assignRHS : AssignLHS) extends Stat
-    case class Free(expr : Expr) extends Stat {
-        override def map(func: Expr => Expr) = Free(func(expr))
-    }
-    case class Return(expr : Expr) extends Stat {
-        override def map(func: Expr => Expr) = Return(func(expr))
-    }
-    case class Exit(expr : Expr) extends Stat {
-        override def map(func: Expr => Expr) = Exit(func(expr))
-    }
-    case class Print(expr : Expr) extends Stat {
-        override def map(func: Expr => Expr) = Print(func(expr))
-    }
-    case class Println(expr : Expr) extends Stat {
-        override def map(func: Expr => Expr) = Println(func(expr))
-    }
+    case class Free(expr : Expr) extends Stat 
+    // { override def map(func: Expr => Expr) = Free(func(expr)) }
+    case class Return(expr : Expr) extends Stat 
+    // { override def map(func: Expr => Expr) = Return(func(expr)) }
+    case class Exit(expr : Expr) extends Stat 
+    // { override def map(func: Expr => Expr) = Exit(func(expr)) }
+    case class Print(expr : Expr) extends Stat 
+    // { override def map(func: Expr => Expr) = Print(func(expr)) }
+    case class Println(expr : Expr) extends Stat 
+    // { override def map(func: Expr => Expr) = Println(func(expr)) }
     case class If(expr : Expr, statThen : Stat, statElse : Stat) extends Stat
     case class While(expr : Expr, stat : Stat) extends Stat
     case class Begin(stat: Stat) extends Stat
+    case class Colon(firstStat: Stat, secondStat: Stat) extends Stat
 
     sealed trait AssignLHS
-    case class Ident(head : Char, tail : String) extends AssignLHS
-    case class ArrayElem(arrayElem : ArrayElem) extends AssignLHS
+    case class Ident(string: String) extends AssignLHS with Expr
+    case class ArrayElem(ident: Ident, exprList : List[Expr]) extends AssignLHS with Expr
     trait PairElem extends AssignLHS
 
     sealed trait AssignRHS
-    case class Expr(expr : Expr) extends AssignRHS
-    case class ArrayLiter(head : Expr, tail : List[Expr]) extends AssignRHS
+    case class ArrayLiter(list: List[Expr]) extends AssignRHS
     case class NewPair(exprOne : Expr, exprTwo : Expr) extends AssignRHS
     case class Call(ident : Ident, argList : ArgList) extends AssignRHS
 
@@ -87,25 +83,24 @@ object Ast{
     case object And extends BinOp
     case object Or extends BinOp
 
-    case class IntLiter(sign: IntSign, digit: Digit)
+    sealed trait Expr extends AssignRHS
+    case class IntLiter(sign: IntSign, digits: List[Digit]) extends Expr // Should be a list of digits
+    sealed trait BoolLiter extends Expr
+    case object True extends BoolLiter 
+    case object False extends BoolLiter
+    case class CharLiter(character: Character) extends Expr
+    case class StrLiter(character: List[Character]) extends Expr
+    case class PairLiter() extends Expr
+    case class UnOpExpr(op: UnOp, expr: Expr) extends Expr
+    case class BinOpExpr(expr1: Expr, op: BinOp, expr2: Expr) extends Expr
 
-    case class Digit(digit: Char)
+    case class Digit(digit: Int)
     
     sealed trait IntSign
     case object Pos extends IntSign
     case object Neg extends IntSign
 
-    sealed trait BoolLiter
-    case object True extends BoolLiter 
-    case object False extends BoolLiter
-
-    case class CharLiter(character: Char)
-
-    case class StrLiter(character: List[Char])
-
-    case class EscapedChar(chr: Char)
-
-    case class PairLiter()
+    case class Character(character: Char)
 
 }
 
