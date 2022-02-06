@@ -2,17 +2,21 @@ package compiler
 
 import parsley.Parsley, Parsley._
 import scala.language.implicitConversions
+import Ast._
+import lexer._
+import parsley.character.{anyChar, char, digit, letter, noneOf, oneOf, upper, whitespace}
+import parsley.combinator.{between, decide, many, manyN, option, sepBy1, sepBy, some, skipMany, skipSome, sepEndBy}
+import parsley.lift.{lift2, lift3, lift4}
+import parsley.expr.{Atoms, GOps, Levels, InfixL, InfixR, NonAssoc, Ops, Postfix, Prefix, SOps, chain, precedence}
+import parsley.implicits.character.{charLift, stringLift}
+import parsley.lift.{lift2, lift4}
+import scala.language.postfixOps
+import parsley.errors.ErrorBuilder
+import parsley.Result
 
 object Parser {
-    import Ast._
-    import lexer._
-    import parsley.character.{anyChar, char, digit, letter, noneOf, oneOf, upper, whitespace}
-    import parsley.combinator.{between, decide, many, manyN, option, sepBy1, sepBy, some, skipMany, skipSome, sepEndBy}
-    import parsley.lift.{lift2, lift3, lift4}
-    import parsley.expr.{Atoms, GOps, Levels, InfixL, InfixR, NonAssoc, Ops, Postfix, Prefix, SOps, chain, precedence}
-    import parsley.implicits.character.{charLift, stringLift}
-    import parsley.lift.{lift2, lift4}
-    import scala.language.postfixOps
+
+    def parse[Err: ErrorBuilder](input: String): Result[Err, WaccProgram] = `<program>`.parse(input)
 
     private def terminationRules(stat: Stat): Boolean = stat match {
         case Begin(stat)         => terminationRules(stat)
