@@ -62,27 +62,27 @@ object Ast{
   //  case class ArrayType(tpe : Type) extends PairElemType
     case object Pair extends PairElemType
 
-    sealed trait UnOp
-    case object Not extends UnOp
-    case object Negation extends UnOp
-    case object Len extends UnOp
-    case object Ord extends UnOp
-    case object Chr extends UnOp
+    sealed trait UnOp extends Expr
+    case class Not(expr : Expr) extends UnOp
+    case class Negation(expr : Expr) extends UnOp
+    case class Len(expr : Expr) extends UnOp
+    case class Ord(expr : Expr) extends UnOp
+    case class Chr(expr : Expr) extends UnOp
 
-    sealed trait BinOp
-    case object Mul extends BinOp
-    case object Div extends BinOp
-    case object Mod extends BinOp
-    case object Plus extends BinOp
-    case object Sub extends BinOp
-    case object GT extends BinOp
-    case object GTE extends BinOp
-    case object LT extends BinOp
-    case object LTE extends BinOp
-    case object Equal extends BinOp
-    case object NotEqual extends BinOp
-    case object And extends BinOp
-    case object Or extends BinOp
+    sealed trait BinOp extends Expr
+    case class Mul(expr1 : Expr, expr2 : Expr) extends BinOp
+    case class Div(expr1 : Expr, expr2 : Expr) extends BinOp
+    case class Mod(expr1 : Expr, expr2 : Expr) extends BinOp
+    case class Plus(expr1 : Expr, expr2 : Expr) extends BinOp
+    case class Sub(expr1 : Expr, expr2 : Expr) extends BinOp
+    case class GT(expr1 : Expr, expr2 : Expr) extends BinOp
+    case class GTE(expr1 : Expr, expr2 : Expr) extends BinOp
+    case class LT(expr1 : Expr, expr2 : Expr) extends BinOp
+    case class LTE(expr1 : Expr, expr2 : Expr) extends BinOp
+    case class Equal(expr1 : Expr, expr2 : Expr) extends BinOp
+    case class NotEqual(expr1 : Expr, expr2 : Expr) extends BinOp
+    case class And(expr1 : Expr, expr2 : Expr) extends BinOp
+    case class Or(expr1 : Expr, expr2 : Expr) extends BinOp
 
     sealed trait Expr extends AssignRHS
     case class IntLiter(sign: IntSign, digits: List[Digit]) extends Expr // Should be a list of digits
