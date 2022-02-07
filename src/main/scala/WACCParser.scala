@@ -13,10 +13,11 @@ import parsley.lift.{lift2, lift4}
 import scala.language.postfixOps
 import parsley.errors.ErrorBuilder
 import parsley.Result
+import parsley.debug._
 
 object Parser {
 
-    def parse[Err: ErrorBuilder](input: String): Result[Err, WaccProgram] = `<program>`.parse(input)
+    def parse[Err: ErrorBuilder](input: String): Result[Err, WaccProgram] = `<program>`.debug("program").parse(input)
 
     private def terminationRules(stat: Stat): Boolean = stat match {
         case Begin(stat)         => terminationRules(stat)
@@ -34,16 +35,20 @@ object Parser {
       ("char" #> Char) <|> 
       ("string" #> String)  
     
-    private val `<type>` : Parsley[Type] = // Removed precedence for now (not sure if needed)
-            `<base-type>` <|> 
-            `<pair-type>`<|>
-            `<array-type>`
+    private lazy val `<type>` : Parsley[Type] = 
+        precedence[Type](`<base-type>`.debug("basetype"))(
+            Ops[Type](Postfix)(`<pair-type>`),
+            Ops[Type](Postfix)(`<array-type>`)
+        )
     
     private val `<array-type>` : Parsley[ArrayType] =
         ArrayType <#> (`<type>` <* '[' <* ']')
         
-    private val `<pair-elem-type>`: Parsley[PairElemType] =
-        `<base-type>` <|> `<array-type>` <|> ("pair" #> Pair) // Removed precedence for now (not sure if needed)
+    private lazy val `<pair-elem-type>`: Parsley[PairElemType] =
+        precedence[PairElemType](`<base-type>`.debug("basetype"))(
+            `<array-type>`.debug("arraytype"),
+            ("pair" #> Pair).debug("pair")
+            ) 
 
     private lazy val `<pair-type>` : Parsley[PairType] =
         ("pair" *> parens(
@@ -147,15 +152,15 @@ object Parser {
         "null" #> PairLiter()
     
     private val `<program>` : Parsley[WaccProgram] = 
-        "begin" *> lift2(WaccProgram, many(attempt(`<func>`)), `<stat>`) <* "end"
+        "begin" *> lift2(WaccProgram, many(attempt(`<func>`.debug("func"))), `<stat>`.debug("stat")) <* "end"
 
-    private val `<func>` : Parsley[Func] = 
+    private lazy val `<func>` : Parsley[Func] = 
         lift4(
             Func,
-            `<type>`,
-            `<ident>`,
-            decide(parens(option(`<param-list>`)), empty), // Returns empty if nothing in param-list
-            ("is" *> `<stat>` <* "end")
+            `<type>`.debug("type"),
+            `<ident>`.debug("ident"),
+            parens(option(`<param-list>`.debug("param-list"))), // Returns empty if nothing in param-list
+            ("is" *> `<stat>`.debug("stat") <* "end")
 
         )
     
