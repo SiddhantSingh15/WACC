@@ -16,11 +16,15 @@ import parsley.Result
 import parsley.debug._
 import parsley.expr.chain.postfix1
 import parsley.combinator.attemptChoice
+import parsley.io.ParseFromIO
 import javax.lang.model.element.NestingKind
+import java.io.File
+import scala.util.Try
 
 object Parser {
 
     def parse[Err: ErrorBuilder](input: String): Result[Err, WaccProgram] = `<program>`.debug("program").parse(input)
+    def parseFromFile[Err: ErrorBuilder](file: File): Try[Result[Err, WaccProgram]] = `<program>`.debug("program").parseFromFile(file)
 
     private def terminationRules(stat: Stat): Boolean = stat match {
         case Begin(stat)         => terminationRules(stat)
