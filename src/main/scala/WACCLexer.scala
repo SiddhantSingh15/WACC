@@ -30,7 +30,7 @@ object lexer {
         operators = this.operators,
         identStart = parsley.token.Parser(char('_') <|> letter <|> upper),
         identLetter  = parsley.token.Parser(char('_') <|> letter <|> upper <|> digit),
-        space = Predicate(isWhitespace)
+        space = Predicate(c => c == ' ' || c == '\t' || c == '\n')
     )
 
     private val lexer = new Lexer(wacc)
