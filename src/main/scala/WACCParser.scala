@@ -5,7 +5,7 @@ import scala.language.implicitConversions
 import Ast._
 import lexer._
 import parsley.character.{anyChar, char, digit, letter, noneOf, oneOf, upper, whitespace}
-import parsley.combinator.{between, decide, many, manyN, option, sepBy1, sepBy, some, skipMany, skipSome, sepEndBy}
+import parsley.combinator.{between, decide, many, manyN, option, sepBy1, sepBy, some, skipMany, skipSome, sepEndBy, sepEndBy1, endBy}
 import parsley.lift.{lift2, lift3, lift4}
 import parsley.expr.{Atoms, GOps, Levels, InfixL, InfixR, NonAssoc, Ops, Prefix, SOps, Postfix, chain, precedence}
 import parsley.implicits.character.{charLift, stringLift}
@@ -169,7 +169,7 @@ object Parser {
         "null" #> PairLiter()
     
     private val `<program>` : Parsley[WaccProgram] = 
-        "begin" *> lift2(WaccProgram, many(attempt(`<func>`.debug("func"))), `<stat>`.debug("stat")) <* "end"
+        "begin" *> fully(lift2(WaccProgram, many(attempt(`<func>`.debug("func"))), `<stat>`.debug("stat"))) <* "end".debug("end")
 
     private lazy val `<func>` : Parsley[Func] = 
         lift4(
@@ -286,8 +286,8 @@ object Parser {
     private val colonStat : Parsley[Stat] = 
         lift2(Colon, `<stat>`, ";" *> `<stat>`)
 
-    private lazy val `<stat>` : Parsley[Stat] = 
-        skipStat <|> 
+    private val atomStat: Parsley[Stat] =
+        skipStat <|>
         typeAssignStat <|>
         assignLRStat <|>
         readStat <|>
@@ -295,11 +295,15 @@ object Parser {
         returnStat <|>
         exitStat <|>
         printStat <|>
-        printlnStat <|>
-        ifStat <|>
-        whileStat <|>
-        beginStat <|>
-        colonStat
+        printlnStat
+
+    private lazy val `<stat>` : Parsley[Stat] = 
+        precedence(
+            Atoms(atomStat) :+
+            SOps(InfixL)(
+                ";".debug("sth") #> Colon
+            )
+        )
 
 
 }
