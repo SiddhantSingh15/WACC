@@ -69,7 +69,7 @@ object Parser {
 
     private lazy val `<pair-type>` : Parsley[PairType] =
         ("pair" *> parens(
-            lift2(PairType, `<pair-elem-type>`, "," *> `<pair-elem-type>`)
+            lift2(PairType, `<pair-elem-type>`, lexeme(",") *> `<pair-elem-type>`)
         ))
     
 
@@ -96,7 +96,8 @@ object Parser {
     //   ("||" #> Or)  
     
     private val `<digit>`: Parsley[Digit] =
-      Digit <#> digit.foldLeft1[Int](0)((n, d) => n * 10 + d.asDigit) 
+    //   Digit <#> digit.foldLeft1[Int](0)((n, d) => n * 10 + d.asDigit) 
+        Digit <#> INTEGER
     private val `<int-sign>`: Parsley[IntSign] = 
       ('+' #> Pos) <|> ('-' #> Neg) 
     
@@ -105,7 +106,7 @@ object Parser {
         // .map(
         //     (a : (Option[IntSign], Int)) => a._2
         // )
-        lift2(IntLiter, pure(Pos), manyN(1, `<digit>`)) <|> lift2(IntLiter, `<int-sign>`, manyN(1, `<digit>`))
+        lift2(IntLiter, pure(Pos), manyN(1, `<digit>`.debug("digit"))) <|> lift2(IntLiter, `<int-sign>`, manyN(1, `<digit>`))
     
     private val `<char-liter>` : Parsley[CharLiter] = 
        (CharLiter <#>  "\'" *> `<character>` <* "\'")
@@ -140,10 +141,10 @@ object Parser {
         `<array-elem>`)
     
     private val `<assign-rhs>` : Parsley[AssignRHS] = 
-        `<expr>` <|>
-        `<array-liter>` <|>
+        attempt(`<expr>`) <|>
+        attempt(`<array-liter>`) <|>
         ("newpair" *> lexer.parens(
-            lift2(NewPair, `<expr>`, "," *> `<expr>`)
+            lift2(NewPair, `<expr>`, lexeme(",") *> `<expr>`.debug("newpairexpr2"))
         )) <|>
         ("call" *> lift2(
             Call, 
