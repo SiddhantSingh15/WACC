@@ -7,13 +7,16 @@ import lexer._
 import parsley.character.{anyChar, char, digit, letter, noneOf, oneOf, upper, whitespace}
 import parsley.combinator.{between, decide, many, manyN, option, sepBy1, sepBy, some, skipMany, skipSome, sepEndBy}
 import parsley.lift.{lift2, lift3, lift4}
-import parsley.expr.{Atoms, GOps, Levels, InfixL, InfixR, NonAssoc, Ops, Postfix, Prefix, SOps, chain, precedence}
+import parsley.expr.{Atoms, GOps, Levels, InfixL, InfixR, NonAssoc, Ops, Prefix, SOps, Postfix, chain, precedence}
 import parsley.implicits.character.{charLift, stringLift}
 import parsley.lift.{lift2, lift4}
 import scala.language.postfixOps
 import parsley.errors.ErrorBuilder
 import parsley.Result
 import parsley.debug._
+import parsley.expr.chain.postfix1
+import parsley.combinator.attemptChoice
+import javax.lang.model.element.NestingKind
 
 object Parser {
 
@@ -35,20 +38,41 @@ object Parser {
       ("char" #> Char) <|> 
       ("string" #> String)  
     
-    private lazy val `<type>` : Parsley[Type] = 
-        precedence[Type](`<base-type>`.debug("basetype"))(
-            Ops[Type](Postfix)(`<pair-type>`),
-            Ops[Type](Postfix)(`<array-type>`)
-        )
-    
+    // private lazy val `<type>` : Parsley[Type] = 
+        // precedence[Type](`<base-type>`.debug("basetype"))(
+            // Ops[Type](Postfix)(`<pair-type>`),
+            // Ops[Type](Postfix)(`<array-type>`)
+        // )
+
+
+    // private lazy val `<type>` : Parsley[Type] = 
+    //     attempt(chain.postfix1(`<base-type>` <|> `<pair-type>`, ArrayType <#> ( _ <* '[' <* ']'))) <|> `<base-type>` <|> (NestedPairType <# "pair")
+
+    private lazy val `<type>` : Parsley[Type] =
+        `<base-type>` <|> `<pair-type>` <|> `<array-type>`
+
+        // SOps(Prefix)(
+    // "!" #> Not,
+    // notFollowedBy(`<int-liter>`) *> "-" #> Negation,
+    // "len" #> Len,
+    // "ord" #> Ord,
+    // "chr" #> Chr
+
+
+
     private val `<array-type>` : Parsley[ArrayType] =
-        ArrayType <#> (`<type>` <* '[' <* ']')
+        chain.postfix1(`<type>`,"[]" #> ArrayType)
         
     private lazy val `<pair-elem-type>`: Parsley[PairElemType] =
-        precedence[PairElemType](`<base-type>`.debug("basetype"))(
-            `<array-type>`.debug("arraytype"),
-            ("pair" #> Pair).debug("pair")
-            ) 
+        attemptChoice(`<base-type>`, `<array-type>`, "pair" #> PairElemType)
+    
+    // private lazy val `<pair-elem-type>`: Parsley[PairElemType] =
+        // attempt(chain.postfix(`<base-type>` <|> `<pair-type>`,
+                            // ArrayType #> ('[' <* ']'))) <|> `<base-type>` <|> 
+
+    private lazy val `<pair-elem-type>`: Parsley[PairElemType] = 
+        attempt(chain.postfix1(`<base-type>` <|> `<pair-type>`, ArrayType <# ("[" <* "]"))) <|> `<base-type>` <|> (NestedPairType <# "pair")
+
 
     private lazy val `<pair-type>` : Parsley[PairType] =
         ("pair" *> parens(
@@ -56,27 +80,27 @@ object Parser {
         ))
     
 
-    private val `<unary-oper>`: Parsley[UnOp] =
-      ('!' #> Not) <|> 
-      ('-' #> Negation) <|> 
-      ("len" #> Len) <|> 
-      ("ord" #> Ord) <|> 
-      ("chr" #> Chr)    
+    // private val `<unary-oper>`: Parsley[UnOp] =
+    //   ('!' #> Not) <|> 
+    //   ('-' #> Negation) <|> 
+    //   ("len" #> Len) <|> 
+    //   ("ord" #> Ord) <|> 
+    //   ("chr" #> Chr)    
     
-    private val `<binary-oper>`: Parsley[BinOp] =
-      ('*' #> Mul) <|> 
-      ('/' #> Div) <|> 
-      ('%' #> Mod) <|> 
-      ('+' #> Plus) <|>
-      ('-' #> Sub) <|> 
-      ('>' #> GT) <|> 
-      (">=" #> GTE) <|> 
-      ('<' #> LT) <|> 
-      ("<=" #> LTE) <|> 
-      ("==" #> Equal) <|> 
-      ("!=" #> NotEqual) <|> 
-      ("&&" #> And) <|> 
-      ("||" #> Or)  
+    // private val `<binary-oper>`: Parsley[BinOp] =
+    //   ('*' #> Mul) <|> 
+    //   ('/' #> Div) <|> 
+    //   ('%' #> Mod) <|> 
+    //   ('+' #> Plus) <|>
+    //   ('-' #> Sub) <|> 
+    //   ('>' #> GT) <|> 
+    //   (">=" #> GTE) <|> 
+    //   ('<' #> LT) <|> 
+    //   ("<=" #> LTE) <|> 
+    //   ("==" #> Equal) <|> 
+    //   ("!=" #> NotEqual) <|> 
+    //   ("&&" #> And) <|> 
+    //   ("||" #> Or)  
     
     private val `<digit>`: Parsley[Digit] =
       Digit <#> digit.foldLeft1[Int](0)((n, d) => n * 10 + d.asDigit) 
@@ -164,7 +188,7 @@ object Parser {
 
         )
     
-    private lazy val `<expr>` : Parsley[Expr] = 
+    lazy val atom: Parsley[Expr] =
         `<int-liter>` <|>
         `<bool-liter>` <|>
         `<char-liter>` <|>
@@ -172,10 +196,45 @@ object Parser {
         `<pair-liter>` <|>
         `<ident>` <|>
         `<array-elem>` <|>
-        parens(`<expr>`) <|>
-        lift2(UnOpExpr, `<unary-oper>`, `<expr>`) <|>
-        lift3(BinOpExpr, `<expr>`, `<binary-oper>`, `<expr>`)
-        
+        parens(`<expr>`)
+    
+    private lazy val `<expr>` : Parsley[Expr] =
+        precedence(
+            Atoms(atom) :+
+            SOps(Prefix)(
+                "!" #> Not,
+                notFollowedBy(`<int-liter>`) *> "-" #> Negation,
+                "len" #> Len,
+                "ord" #> Ord,
+                "chr" #> Chr
+            ) :+
+
+            SOps(InfixL)(
+                "*" #> Mul,
+                "/" #> Div,
+                "%" #> Mod
+            ) :+
+            SOps(InfixL)(
+                "+" #> Plus,
+                "-" #> Sub
+            ) :+
+
+            SOps(InfixL)(
+                (">=" #> GTE) <|> (">" #> GT),
+                ("<=" #> LTE) <|> ("<" #> LT)
+            ) :+      
+
+            SOps(InfixL)(
+                ("==" #> Equal),
+                ("!=" #> NotEqual)
+            ) :+
+
+            SOps(InfixL)(
+                ("&&" #> And),
+                ("||" #> Or)
+            )
+        ) 
+
     private val skipStat : Parsley[Stat] = 
         "skip" #> Skip
     
