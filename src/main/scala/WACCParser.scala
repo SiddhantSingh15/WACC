@@ -49,30 +49,23 @@ object Parser {
     //     attempt(chain.postfix1(`<base-type>` <|> `<pair-type>`, ArrayType <#> ( _ <* '[' <* ']'))) <|> `<base-type>` <|> (NestedPairType <# "pair")
 
     private lazy val `<type>` : Parsley[Type] =
-        `<base-type>` <|> `<pair-type>` <|> `<array-type>`
+        precedence(`<base-type>`, `<pair-type>`)(Ops(Postfix)("[]" #> ArrayType))
 
-        // SOps(Prefix)(
-    // "!" #> Not,
-    // notFollowedBy(`<int-liter>`) *> "-" #> Negation,
-    // "len" #> Len,
-    // "ord" #> Ord,
-    // "chr" #> Chr
-
-
-
-    private val `<array-type>` : Parsley[ArrayType] =
-        chain.postfix1(`<type>`,"[]" #> ArrayType)
+    // private val `<array-type>` : Parsley[ArrayType] =
+    //     chain.postfix1(`<type>`,"[]" #> ArrayType)
         
-    private lazy val `<pair-elem-type>`: Parsley[PairElemType] =
-        attemptChoice(`<base-type>`, `<array-type>`, "pair" #> PairElemType)
+    // private lazy val `<pair-elem-type>`: Parsley[PairElemType] =
+    //     attemptChoice(`<base-type>`, `<array-type>`, )
     
     // private lazy val `<pair-elem-type>`: Parsley[PairElemType] =
         // attempt(chain.postfix(`<base-type>` <|> `<pair-type>`,
                             // ArrayType #> ('[' <* ']'))) <|> `<base-type>` <|> 
 
-    private lazy val `<pair-elem-type>`: Parsley[PairElemType] = 
-        attempt(chain.postfix1(`<base-type>` <|> `<pair-type>`, ArrayType <# ("[" <* "]"))) <|> `<base-type>` <|> (NestedPairType <# "pair")
+    // private lazy val `<pair-elem-type>`: Parsley[PairElemType] = 
+    //     attempt(chain.postfix1(`<base-type>` <|> `<pair-type>`, ArrayType <# "[]")) <|> `<base-type>` <|> (NestedPairType <# "pair")
 
+    private lazy val `<pair-elem-type>`: Parsley[PairElemType] =
+            `<base-type>` <|> ("pair" #> Pair)
 
     private lazy val `<pair-type>` : Parsley[PairType] =
         ("pair" *> parens(
@@ -236,7 +229,7 @@ object Parser {
         ) 
 
     private val skipStat : Parsley[Stat] = 
-        "skip" #> Skip
+        "skip".debug("skip2") #> Skip
     
     private val typeAssignStat : Parsley[Stat] = 
         lift3(
@@ -299,7 +292,6 @@ object Parser {
         assignLRStat <|>
         readStat <|>
         freeStat <|>
-        readStat <|>
         returnStat <|>
         exitStat <|>
         printStat <|>
