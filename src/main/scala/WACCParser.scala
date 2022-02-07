@@ -49,7 +49,7 @@ object Parser {
     //     attempt(chain.postfix1(`<base-type>` <|> `<pair-type>`, ArrayType <#> ( _ <* '[' <* ']'))) <|> `<base-type>` <|> (NestedPairType <# "pair")
 
     private lazy val `<type>` : Parsley[Type] =
-        precedence(`<base-type>`, `<pair-type>`)(Ops(Postfix)("[]" #> ArrayType))
+        lexeme(precedence(`<base-type>`, `<pair-type>`)(Ops(Postfix)("[]" #> ArrayType)))
 
     // private val `<array-type>` : Parsley[ArrayType] =
     //     chain.postfix1(`<type>`,"[]" #> ArrayType)
@@ -105,7 +105,7 @@ object Parser {
         // .map(
         //     (a : (Option[IntSign], Int)) => a._2
         // )
-        lift2(IntLiter, decide(option(`<int-sign>`), '+' #> Pos), manyN(1, `<digit>`))
+        lift2(IntLiter, pure(Pos), manyN(1, `<digit>`)) <|> lift2(IntLiter, `<int-sign>`, manyN(1, `<digit>`))
     
     private val `<char-liter>` : Parsley[CharLiter] = 
        (CharLiter <#>  "\'" *> `<character>` <* "\'")
@@ -134,10 +134,10 @@ object Parser {
         (Fst <#> ("fst" *> `<expr>`)) <|>
         (Snd <#> ("snd" *> `<expr>`))
     
-    private val `<assign-lhs>` : Parsley[AssignLHS] = 
+    private val `<assign-lhs>` : Parsley[AssignLHS] = // TODO 
+        lexeme(`<ident>` <|>
         `<pair-elem>` <|>
-        `<array-elem>` <|>
-        `<ident>`
+        `<array-elem>`)
     
     private val `<assign-rhs>` : Parsley[AssignRHS] = 
         `<expr>` <|>
@@ -158,9 +158,9 @@ object Parser {
         ParamList <#> sepBy1(`<param>`, ",")
     
     private val `<array-elem>` : Parsley[ArrayElem] = 
-        lift2(ArrayElem, `<ident>`, manyN(1, brackets(`<expr>`)))
+        lexeme(lift2(ArrayElem, `<ident>`, manyN(1, brackets(`<expr>`))))
 
-    lazy val `<ident>` : Parsley[Ident] = Ident <#> IDENTIFIER
+    lazy val `<ident>` : Parsley[Ident] = Ident <#> lexeme(IDENTIFIER)
     
     private val `<array-liter>` : Parsley[ArrayLiter] = 
         ArrayLiter <#> brackets(sepBy1(`<expr>`, ","))
@@ -169,7 +169,7 @@ object Parser {
         "null" #> PairLiter()
     
     private val `<program>` : Parsley[WaccProgram] = 
-        "begin" *> fully(lift2(WaccProgram, many(attempt(`<func>`.debug("func"))), `<stat>`.debug("stat"))) <* "end".debug("end")
+        lexeme("begin") *> lexeme(lift2(WaccProgram, many(attempt(`<func>`.debug("func"))), `<stat>`.debug("stat"))) <* "end".debug("end")
 
     private lazy val `<func>` : Parsley[Func] = 
         lift4(
@@ -182,18 +182,18 @@ object Parser {
         )
     
     lazy val atom: Parsley[Expr] =
-        `<int-liter>` <|>
-        `<bool-liter>` <|>
-        `<char-liter>` <|>
-        `<str-liter>` <|>
+        attempt(`<int-liter>`).debug("int-liter") <|>
+        attempt(`<bool-liter>`) <|>
+        attempt(`<char-liter>`) <|>
+        attempt(`<str-liter>`) <|>
         `<pair-liter>` <|>
         `<ident>` <|>
         `<array-elem>` <|>
         parens(`<expr>`)
     
     private lazy val `<expr>` : Parsley[Expr] =
-        precedence(
-            Atoms(atom) :+
+        lexeme(precedence(
+            Atoms(lexeme(atom.debug("atom"))) :+
             SOps(Prefix)(
                 "!" #> Not,
                 notFollowedBy(`<int-liter>`) *> "-" #> Negation,
@@ -226,7 +226,7 @@ object Parser {
                 ("&&" #> And),
                 ("||" #> Or)
             )
-        ) 
+        ))
 
     private val skipStat : Parsley[Stat] = 
         "skip".debug("skip2") #> Skip
@@ -236,14 +236,14 @@ object Parser {
             TypeAssign,
             `<type>`,
             `<ident>`,
-            "=" *> `<assign-rhs>`
+            lexeme("=") *> `<assign-rhs>`
         )
     
     private val assignLRStat : Parsley[Stat] = 
         lift2(
             AssignLR, 
-            `<assign-lhs>`,
-            "=" *> `<assign-rhs>`
+            `<assign-lhs>`.debug("assignLHS"),
+            lexeme("=") *> `<assign-rhs>`.debug("assignRHS")
         )
     
     private val readStat : Parsley[Stat] = 
@@ -256,14 +256,14 @@ object Parser {
         Return <#> "return" *> `<expr>`
     
     private val exitStat : Parsley[Stat] = 
-        Exit <#> "exit" *> `<expr>`
+        Exit <#> lexeme("exit") *> `<expr>`
     
     
     private val printStat : Parsley[Stat] = 
         Print <#> "print" *> `<expr>`
     
     private val printlnStat : Parsley[Stat] = 
-        Println <#> "println" *> `<expr>`
+        Println <#> lexeme("println") *> `<expr>`
     
     private val ifStat : Parsley[Stat] = 
         ("if" *> lift3(
@@ -287,21 +287,21 @@ object Parser {
         lift2(Colon, `<stat>`, ";" *> `<stat>`)
 
     private val atomStat: Parsley[Stat] =
-        skipStat <|>
-        typeAssignStat <|>
-        assignLRStat <|>
+        attempt(skipStat) <|>
+        attempt(typeAssignStat).debug("typeAssign") <|>
+        assignLRStat.debug("assignLR") <|>
         readStat <|>
         freeStat <|>
         returnStat <|>
-        exitStat <|>
-        printStat <|>
-        printlnStat
+        attempt(exitStat) <|>
+        attempt(printStat) <|>
+        printlnStat.debug("println")
 
     private lazy val `<stat>` : Parsley[Stat] = 
         precedence(
-            Atoms(atomStat) :+
-            SOps(InfixL)(
-                ";".debug("sth") #> Colon
+            Atoms(lexeme(atomStat)) :+
+            SOps(InfixR)(
+                lexeme(";").debug("sth") #> Colon
             )
         )
 

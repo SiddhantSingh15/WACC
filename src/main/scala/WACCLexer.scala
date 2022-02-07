@@ -41,6 +41,10 @@ object lexer {
 
     def fully[A](p : =>Parsley[A]): Parsley[A] = 
        lexer.whiteSpace *> p <* lexer.whiteSpace
+    
+    def lexeme[A](p : =>Parsley[A]): Parsley[A] = lexer.lexeme(p)
+
+    val VAR_ID = lexer.lexeme(IDENTIFIER)
 
     val INTEGER = lexer.integer
     val STRING = lexer.stringLiteral
