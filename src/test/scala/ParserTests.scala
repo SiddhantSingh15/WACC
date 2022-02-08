@@ -38,7 +38,7 @@ class LexerTest extends AnyFunSuite {
 
   test("Valid Expressions Tests") {
     assert(newParser.parseFromFile(new File("wacc_examples/valid/expressions/andExpr.wacc")).isSuccess) 
-    assert(newParser.parseFromFile(new File("wacc_examples/valid/expressions/boolcalc.wacc")).isSuccess) 
+    assert(newParser.parseFromFile(new File("wacc_examples/valid/expressions/boolCalc.wacc")).isSuccess) 
     assert(newParser.parseFromFile(new File("wacc_examples/valid/expressions/boolExpr1.wacc")).isSuccess) 
     assert(newParser.parseFromFile(new File("wacc_examples/valid/expressions/charComparisonExpr.wacc")).isSuccess) 
     assert(newParser.parseFromFile(new File("wacc_examples/valid/expressions/divExpr.wacc")).isSuccess) 
