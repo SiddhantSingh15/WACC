@@ -85,25 +85,15 @@ object Ast{
     case class Or(expr1 : Expr, expr2 : Expr) extends BinOp
 
     sealed trait Expr extends AssignRHS
-    case class IntLiter(sign: IntSign, digits: List[Digit]) extends Expr // Should be a list of digits
+    case class IntLiter(number: Int) extends Expr // Should be a list of digits
     sealed trait BoolLiter extends Expr
     case object True extends BoolLiter 
     case object False extends BoolLiter
-    case class CharLiter(character: Character) extends Expr
-    case class StrLiter(character: List[Character]) extends Expr
+    case class CharLiter(character: Char) extends Expr
+    case class StrLiter(character: String) extends Expr
     case class PairLiter() extends Expr
     case class UnOpExpr(op: UnOp, expr: Expr) extends Expr
     case class BinOpExpr(expr1: Expr, op: BinOp, expr2: Expr) extends Expr
-
-    case class Digit(digit: Int)
-    
-    sealed trait IntSign
-    case object Pos extends IntSign
-    case object Neg extends IntSign
-
-    sealed abstract class Character
-    case class EscapedChar(character: Char) extends Character
-    case class ASCIIChar(character: Char) extends Character
 
 }
 
