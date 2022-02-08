@@ -5,7 +5,7 @@ import scala.language.implicitConversions
 import Ast._
 import lexer._
 import parsley.character.{anyChar, char, digit, letter, noneOf, oneOf, upper, whitespace}
-import parsley.combinator.{between, decide, many, manyN, option, sepBy1, sepBy, some, skipMany, skipSome, sepEndBy, sepEndBy1, endBy}
+import parsley.combinator.{between, decide, many, manyN, option, optional, sepBy1, sepBy, some, skipMany, skipSome, sepEndBy, sepEndBy1, endBy, manyUntil}
 import parsley.lift.{lift2, lift3, lift4}
 import parsley.expr.{Atoms, GOps, Levels, InfixL, InfixR, NonAssoc, Ops, Prefix, SOps, Postfix, chain, precedence}
 import parsley.implicits.character.{charLift, stringLift}
@@ -174,7 +174,7 @@ object Parser {
         "null" #> PairLiter()
     
     private val `<program>` : Parsley[WaccProgram] = 
-        lexeme("begin") *> lexeme(lift2(WaccProgram, many(attempt(`<func>`.debug("func"))), `<stat>`.debug("stat"))) <* "end".debug("end")
+        fully(lexeme("begin") *> lexeme(lift2(WaccProgram, many(attempt(`<func>`.debug("func"))), `<stat>`.debug("stat"))) <* "end".debug("end"))
 
     private lazy val `<func>` : Parsley[Func] = 
         lift4(
@@ -189,11 +189,11 @@ object Parser {
     lazy val atom: Parsley[Expr] =
         attempt(`<int-liter>`).debug("int-liter") <|>
         attempt(`<bool-liter>`) <|>
-        attempt(`<char-liter>`) <|>
         attempt(`<str-liter>`) <|>
-        `<pair-liter>` <|>
-        `<ident>` <|>
-        `<array-elem>` <|>
+        attempt(`<char-liter>`) <|>
+        attempt(`<pair-liter>`) <|>
+        attempt(`<ident>`) <|>
+        attempt(`<array-elem>`) <|>
         parens(`<expr>`)
     
     private lazy val `<expr>` : Parsley[Expr] =
@@ -252,7 +252,7 @@ object Parser {
         )
     
     private val readStat : Parsley[Stat] = 
-        Read <#> "read" *> `<assign-lhs>`
+        Read <#> lexeme("read") *> `<assign-lhs>`
     
     private val freeStat : Parsley[Stat] = 
         Free <#> "free" *> `<expr>`
@@ -265,7 +265,7 @@ object Parser {
     
     
     private val printStat : Parsley[Stat] = 
-        Print <#> "print" *> `<expr>`
+        Print <#> lexeme("print") *> `<expr>`
     
     private val printlnStat : Parsley[Stat] = 
         Println <#> lexeme("println") *> `<expr>`
@@ -302,7 +302,7 @@ object Parser {
         attempt(printStat) <|>
         printlnStat.debug("println")
 
-    private lazy val `<stat>` : Parsley[Stat] = 
+    private lazy val `<stat>` : Parsley[Stat] = // not sure whats the associativity of a while statement
         precedence(
             Atoms(lexeme(atomStat)) :+
             SOps(InfixR)(
