@@ -6,7 +6,7 @@ object Ast{
     
     case class WaccProgram(s : List[Func], stat: Stat)
 
-    case class Func(tpe : Type, ident : Ident, paramList : Option[ParamList], stat : Stat)
+    case class Func(tpe : Type, ident : Ident, paramList : ParamList, stat : Stat)
     
     case class Param(tpe : Type, ident : Ident)
 
