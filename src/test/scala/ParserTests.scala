@@ -54,7 +54,7 @@ class LexerTest extends AnyFunSuite {
     assert(newParser.parseFromFile(new File("wacc_examples/valid/function/nested_functions/fibonacciFullRec.wacc")).isSuccess)     
     assert(newParser.parseFromFile(new File("wacc_examples/valid/function/nested_functions/fibonacciRecursive.wacc")).isSuccess)  
     assert(newParser.parseFromFile(new File("wacc_examples/valid/function/nested_functions/fixedPointRealArithmetic.wacc")).isSuccess)  
-    // assert(newParser.parseFromFile(new File("wacc_examples/valid/function/nested_functions/functionalConditionalReturn.wacc")).isSuccess)  
+    assert(newParser.parseFromFile(new File("wacc_examples/valid/function/nested_functions/functionConditionalReturn.wacc")).isSuccess)  
     assert(newParser.parseFromFile(new File("wacc_examples/valid/function/nested_functions/mutualRecursion.wacc")).isSuccess)  
     assert(newParser.parseFromFile(new File("wacc_examples/valid/function/nested_functions/printInputTriangle.wacc")).isSuccess)  
     assert(newParser.parseFromFile(new File("wacc_examples/valid/function/nested_functions/printTriangle.wacc")).isSuccess)  
@@ -89,7 +89,7 @@ class LexerTest extends AnyFunSuite {
 
   test("Valid IO Tests") {
     assert(newParser.parseFromFile(new File("wacc_examples/valid/IO/print/hashInProgram.wacc")).isSuccess)
-    // assert(newParser.parseFromFile(new File("wacc_examples/valid/IO/print/multipleStringsAssignments.wacc")).isSuccess)
+    assert(newParser.parseFromFile(new File("wacc_examples/valid/IO/print/multipleStringsAssignment.wacc")).isSuccess)
     assert(newParser.parseFromFile(new File("wacc_examples/valid/IO/print/print-backspace.wacc")).isSuccess)
     assert(newParser.parseFromFile(new File("wacc_examples/valid/IO/print/print-carridge-return.wacc")).isSuccess)
     assert(newParser.parseFromFile(new File("wacc_examples/valid/IO/print/print.wacc")).isSuccess)
@@ -124,9 +124,9 @@ class LexerTest extends AnyFunSuite {
     assert(newParser.parseFromFile(new File("wacc_examples/valid/pairs/printNullPair.wacc")).isSuccess)
     assert(newParser.parseFromFile(new File("wacc_examples/valid/pairs/printPair.wacc")).isSuccess)
     assert(newParser.parseFromFile(new File("wacc_examples/valid/pairs/printPairOfNulls.wacc")).isSuccess)
-    // assert(newParser.parseFromFile(new File("wacc_examples/valid/pairs/readPair.wacc")).isSuccess)
-    // assert(newParser.parseFromFile(new File("wacc_examples/valid/pairs/writeFst.wacc")).isSuccess)
-    // assert(newParser.parseFromFile(new File("wacc_examples/valid/pairs/writeSnd.wacc")).isSuccess)
+    assert(newParser.parseFromFile(new File("wacc_examples/valid/pairs/readPair.wacc")).isSuccess)
+    assert(newParser.parseFromFile(new File("wacc_examples/valid/pairs/writeFst.wacc")).isSuccess)
+    assert(newParser.parseFromFile(new File("wacc_examples/valid/pairs/writeSnd.wacc")).isSuccess)
   }
   
 
@@ -151,23 +151,23 @@ class LexerTest extends AnyFunSuite {
     assert(newParser.parseFromFile(new File("wacc_examples/valid/runtimeErr/nullDereference/freeNull.wacc")).isSuccess)
     assert(newParser.parseFromFile(new File("wacc_examples/valid/runtimeErr/nullDereference/readNull1.wacc")).isSuccess)
     assert(newParser.parseFromFile(new File("wacc_examples/valid/runtimeErr/nullDereference/readNull2.wacc")).isSuccess)
-    // assert(newParser.parseFromFile(new File("wacc_examples/valid/runtimeErr/nullDereference/setNull1.wacc")).isSuccess)
-    // assert(newParser.parseFromFile(new File("wacc_examples/valid/runtimeErr/nullDereference/setNull2.wacc")).isSuccess)
+    assert(newParser.parseFromFile(new File("wacc_examples/valid/runtimeErr/nullDereference/setNull1.wacc")).isSuccess)
+    assert(newParser.parseFromFile(new File("wacc_examples/valid/runtimeErr/nullDereference/setNull2.wacc")).isSuccess)
     assert(newParser.parseFromFile(new File("wacc_examples/valid/runtimeErr/nullDereference/useNull1.wacc")).isSuccess)
     assert(newParser.parseFromFile(new File("wacc_examples/valid/runtimeErr/nullDereference/useNull2.wacc")).isSuccess)
   }
 
   test("Valid Scope Tests"){
-    // assert(newParser.parseFromFile(new File("wwacc_examples/valid/scope/ifNested1.wacc")).isSuccess)
-    // assert(newParser.parseFromFile(new File("wwacc_examples/valid/scope/ifNested2.wacc")).isSuccess)
-    // assert(newParser.parseFromFile(new File("wwacc_examples/valid/scope/indentationNotImportant.wacc")).isSuccess)
-    // assert(newParser.parseFromFile(new File("wwacc_examples/valid/scope/intsAndKeywords.wacc")).isSuccess)
-    // assert(newParser.parseFromFile(new File("wwacc_examples/valid/scope/printAllTypes.wacc")).isSuccess)
-    // assert(newParser.parseFromFile(new File("wwacc_examples/valid/scope/scope.wacc")).isSuccess)
-    // assert(newParser.parseFromFile(new File("wwacc_examples/valid/scope/scopeBasic.wacc")).isSuccess)
-    // assert(newParser.parseFromFile(new File("wwacc_examples/valid/scope/scopeRedefine.wacc")).isSuccess)
-    // assert(newParser.parseFromFile(new File("wwacc_examples/valid/scope/scopeSimpleRedefine.wacc")).isSuccess)
-    // assert(newParser.parseFromFile(new File("wwacc_examples/valid/scope/scopeVars.wacc")).isSuccess)
+    assert(newParser.parseFromFile(new File("wacc_examples/valid/scope/ifNested1.wacc")).isSuccess)
+    assert(newParser.parseFromFile(new File("wacc_examples/valid/scope/ifNested2.wacc")).isSuccess)
+    assert(newParser.parseFromFile(new File("wacc_examples/valid/scope/indentationNotImportant.wacc")).isSuccess)
+    assert(newParser.parseFromFile(new File("wacc_examples/valid/scope/intsAndKeywords.wacc")).isSuccess)
+    assert(newParser.parseFromFile(new File("wacc_examples/valid/scope/printAllTypes.wacc")).isSuccess)
+    assert(newParser.parseFromFile(new File("wacc_examples/valid/scope/scope.wacc")).isSuccess)
+    assert(newParser.parseFromFile(new File("wacc_examples/valid/scope/scopeBasic.wacc")).isSuccess)
+    assert(newParser.parseFromFile(new File("wacc_examples/valid/scope/scopeRedefine.wacc")).isSuccess)
+    assert(newParser.parseFromFile(new File("wacc_examples/valid/scope/scopeSimpleRedefine.wacc")).isSuccess)
+    assert(newParser.parseFromFile(new File("wacc_examples/valid/scope/scopeVars.wacc")).isSuccess)
   }
 
   test("Valid Sequence Tests") {
