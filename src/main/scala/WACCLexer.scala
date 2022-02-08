@@ -30,7 +30,7 @@ object lexer {
         operators = this.operators,
         identStart = parsley.token.Parser(char('_') <|> letter <|> upper),
         identLetter  = parsley.token.Parser(char('_') <|> letter <|> upper <|> digit),
-        space = Predicate(c => c == ' ' || c == '\t' || c == '\n')
+        space = Predicate(c => c == ' ' || c == '\t' || c == '\n' || c == '\u000d')
     )
 
     private val lexer = new Lexer(wacc)
@@ -40,7 +40,7 @@ object lexer {
     def brackets[A](p: => Parsley[A]): Parsley[A] = lexer.brackets(p)
 
     def fully[A](p : =>Parsley[A]): Parsley[A] = 
-       lexer.whiteSpace *> p <* lexer.whiteSpace
+       lexer.whiteSpace *> p <* lexer.whiteSpace <* eof
     
     def lexeme[A](p : =>Parsley[A]): Parsley[A] = lexer.lexeme(p)
 
@@ -51,6 +51,7 @@ object lexer {
     val CHAR = lexer.charLiteral
     val IDENTIFIER = lexer.identifier
     val NEWLINE = void(lexer.lexeme(newline))
+    // val WHITESPACE = lexer.whiteSpace
 
     object implicits {
         implicit def implicitToken(s : String): Parsley[Unit] = {
