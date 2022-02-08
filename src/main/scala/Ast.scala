@@ -36,7 +36,7 @@ object Ast{
     sealed trait AssignLHS
     case class Ident(string: String) extends AssignLHS with Expr
     case class ArrayElem(ident: Ident, exprList : List[Expr]) extends AssignLHS with Expr
-    trait PairElem extends AssignLHS
+    trait PairElem extends AssignLHS with AssignRHS
 
     sealed trait AssignRHS
     case class ArrayLiter(list: List[Expr]) extends AssignRHS

@@ -136,25 +136,26 @@ object Parser {
         ArgList <#> sepBy1(`<expr>`, ",")
     
     private val `<pair-elem>` : Parsley[PairElem] = 
-        (Fst <#> ("fst" *> `<expr>`)) <|>
+        (Fst <#> ("fst".debug("first") *> `<expr>`.debug("firstExpr"))) <|>
         (Snd <#> ("snd" *> `<expr>`))
     
     private val `<assign-lhs>` : Parsley[AssignLHS] = // TODO 
-        fully(attempt(`<array-elem>`) <|>
-        attempt(`<ident>`) <|>
-        `<pair-elem>`)
+        fully(attempt(`<pair-elem>`.debug("pairElemAssignLHS")) <|>
+        attempt(`<array-elem>`) <|>
+        attempt(`<ident>`))
     
     private val `<assign-rhs>` : Parsley[AssignRHS] = 
+        fully(attempt(`<pair-elem>`.debug("pairFromRHS")) <|>
         attempt(`<expr>`) <|>
         attempt(`<array-liter>`) <|>
-        ("newpair" *> lexer.parens(
-            lift2(NewPair, `<expr>`, lexeme(",") *> `<expr>`.debug("newpairexpr2"))
+        attempt("newpair".debug("newpairKeyword") *> parens(
+            lift2(NewPair, `<expr>`.debug("newpairexpr1"), lexeme(",") *> `<expr>`.debug("newpairexpr2"))
         )) <|>
         ("call" *> lift2(
             Call, 
             `<ident>`,
             decide(parens(option(`<arg-list>`)), empty) // Returns empty if there is no arg list
-        ))
+        )))
     
     private val `<param>` = 
         lift2(Param, `<type>`, `<ident>`)
@@ -194,7 +195,7 @@ object Parser {
         attempt(`<char-liter>`.debug("char-liter")) <|>
         attempt(`<pair-liter>`) <|>
         attempt(`<ident>`.debug("ident")) <|>
-        parens(`<expr>`))
+        attempt(parens(`<expr>`)))
     
     private lazy val `<expr>` : Parsley[Expr] =
         fully(precedence(
@@ -241,18 +242,18 @@ object Parser {
             TypeAssign,
             `<type>`,
             `<ident>`,
-            lexeme("=") *> `<assign-rhs>`
+            fully("=") *> `<assign-rhs>`
         )
     
     private val assignLRStat : Parsley[Stat] = 
         lift2(
             AssignLR, 
             `<assign-lhs>`.debug("assignLHS"),
-            lexeme("=") *> `<assign-rhs>`.debug("assignRHS")
+            fully("=").debug("equalsSign") *> `<assign-rhs>`.debug("assignRHS")
         )
     
     private val readStat : Parsley[Stat] = 
-        Read <#> lexeme("read") *> `<assign-lhs>`
+        Read <#> "read" *> `<assign-lhs>`
     
     private val freeStat : Parsley[Stat] = 
         Free <#> "free" *> `<expr>`
@@ -297,8 +298,8 @@ object Parser {
         attempt(whileStat.debug("while")) <|>
         attempt(beginStat) <|>
         attempt(ifStat) <|>
+        attempt(assignLRStat.debug("assignLRStatreallylongdebugstatement")) <|>
         attempt(typeAssignStat) <|>
-        attempt(assignLRStat) <|>
         attempt(readStat) <|>
         attempt(freeStat) <|>
         attempt(returnStat) <|>
