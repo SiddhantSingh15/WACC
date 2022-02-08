@@ -140,9 +140,9 @@ object Parser {
         (Snd <#> ("snd" *> `<expr>`))
     
     private val `<assign-lhs>` : Parsley[AssignLHS] = // TODO 
-        lexeme(`<ident>` <|>
-        `<pair-elem>` <|>
-        `<array-elem>`)
+        fully(attempt(`<array-elem>`) <|>
+        attempt(`<ident>`) <|>
+        `<pair-elem>`)
     
     private val `<assign-rhs>` : Parsley[AssignRHS] = 
         attempt(`<expr>`) <|>
@@ -187,24 +187,24 @@ object Parser {
         )
     
     lazy val atom: Parsley[Expr] =
-        attempt(`<array-elem>`.debug("array-elem")) <|>
+        fully(attempt(`<array-elem>`.debug("array-elem")) <|>
         attempt(`<int-liter>`).debug("int-liter") <|>
         attempt(`<bool-liter>`) <|>
         attempt(`<str-liter>`) <|>
         attempt(`<char-liter>`.debug("char-liter")) <|>
         attempt(`<pair-liter>`) <|>
         attempt(`<ident>`.debug("ident")) <|>
-        parens(`<expr>`)
+        parens(`<expr>`))
     
     private lazy val `<expr>` : Parsley[Expr] =
         fully(precedence(
             Atoms(atom.debug("atom")) :+
             SOps(Prefix)(
-                "!".debug("exclamation") #> Not,
-                notFollowedBy(`<int-liter>`) *> "-" #> Negation,
-                "len" #> Len,
-                "ord" #> Ord,
-                "chr" #> Chr
+                attempt("!".debug("exclamation") #> Not),
+                attempt(notFollowedBy(`<int-liter>`) *> "-" #> Negation),
+                attempt("len" #> Len),
+                attempt("ord" #> Ord),
+                attempt("chr" #> Chr)
             ) :+
 
             SOps(InfixL)(
@@ -218,8 +218,8 @@ object Parser {
             ) :+
 
             SOps(InfixL)(
-                (">=" #> GTE) <|> (">" #> GT),
-                ("<=" #> LTE) <|> ("<" #> LT)
+                (">" #> GT) <|> (">=" #> GTE),
+                ("<" #> LT) <|> ("<=" #> LTE)
             ) :+      
 
             SOps(InfixL)(
@@ -281,7 +281,7 @@ object Parser {
     private val whileStat : Parsley[Stat] = 
         ("while" *> lift2(
             While,
-            "while" *> `<expr>`,
+            `<expr>`,
             "do" *> `<stat>`,
         ) <* "done")
     
@@ -294,6 +294,9 @@ object Parser {
     private val atomStat: Parsley[Stat] =
         fully(attempt(printlnStat.debug("println")) <|>
         attempt(skipStat) <|>
+        attempt(whileStat.debug("while")) <|>
+        attempt(beginStat) <|>
+        attempt(ifStat) <|>
         attempt(typeAssignStat) <|>
         attempt(assignLRStat) <|>
         attempt(readStat) <|>
