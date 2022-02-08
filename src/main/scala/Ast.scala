@@ -52,7 +52,7 @@ object Ast{
 
     case object Int extends BaseType
     case object Bool extends BaseType
-    case object Char extends BaseType
+    case object CharType extends BaseType
     case object String extends BaseType
 
     sealed trait PairElemType
@@ -101,7 +101,9 @@ object Ast{
     case object Pos extends IntSign
     case object Neg extends IntSign
 
-    case class Character(character: Char)
+    sealed abstract class Character
+    case class EscapedChar(character: Char) extends Character
+    case class ASCIIChar(character: Char) extends Character
 
 }
 
