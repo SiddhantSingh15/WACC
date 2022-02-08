@@ -40,7 +40,7 @@ object lexer {
     def brackets[A](p: => Parsley[A]): Parsley[A] = lexer.brackets(p)
 
     def fully[A](p : =>Parsley[A]): Parsley[A] = 
-       lexer.whiteSpace *> p <* lexer.whiteSpace <* eof
+       lexer.whiteSpace *> p <* lexer.whiteSpace
     
     def lexeme[A](p : =>Parsley[A]): Parsley[A] = lexer.lexeme(p)
 

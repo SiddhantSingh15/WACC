@@ -53,7 +53,7 @@ object Parser {
     //     attempt(chain.postfix1(`<base-type>` <|> `<pair-type>`, ArrayType <#> ( _ <* '[' <* ']'))) <|> `<base-type>` <|> (NestedPairType <# "pair")
 
     private lazy val `<type>` : Parsley[Type] =
-        lexeme(precedence(`<base-type>`, `<pair-type>`)(Ops(Postfix)("[]" #> ArrayType)))
+        fully(precedence(`<base-type>`, `<pair-type>`)(Ops(Postfix)("[]" #> ArrayType)))
 
     // private val `<array-type>` : Parsley[ArrayType] =
     //     chain.postfix1(`<type>`,"[]" #> ArrayType)
@@ -163,12 +163,12 @@ object Parser {
         ParamList <#> sepBy1(`<param>`, ",")
     
     private val `<array-elem>` : Parsley[ArrayElem] = 
-        lexeme(lift2(ArrayElem, `<ident>`, manyN(1, brackets(`<expr>`))))
+        lift2(ArrayElem, `<ident>`, manyN(1, brackets(`<expr>`.debug("exprInArrayElem"))))
 
-    lazy val `<ident>` : Parsley[Ident] = Ident <#> lexeme(IDENTIFIER)
+    lazy val `<ident>` : Parsley[Ident] = Ident <#> fully(IDENTIFIER)
     
     private val `<array-liter>` : Parsley[ArrayLiter] = 
-        ArrayLiter <#> brackets(sepBy1(`<expr>`, ","))
+        ArrayLiter <#> brackets(attempt(sepBy(`<expr>`, ",").debug("arrayelem")))
     
     private val `<pair-liter>` : Parsley[PairLiter] = 
         "null" #> PairLiter()
@@ -187,20 +187,20 @@ object Parser {
         )
     
     lazy val atom: Parsley[Expr] =
+        attempt(`<array-elem>`.debug("array-elem")) <|>
         attempt(`<int-liter>`).debug("int-liter") <|>
         attempt(`<bool-liter>`) <|>
         attempt(`<str-liter>`) <|>
-        attempt(`<char-liter>`) <|>
+        attempt(`<char-liter>`.debug("char-liter")) <|>
         attempt(`<pair-liter>`) <|>
-        attempt(`<ident>`) <|>
-        attempt(`<array-elem>`) <|>
+        attempt(`<ident>`.debug("ident")) <|>
         parens(`<expr>`)
     
     private lazy val `<expr>` : Parsley[Expr] =
-        lexeme(precedence(
-            Atoms(lexeme(atom.debug("atom"))) :+
+        fully(precedence(
+            Atoms(atom.debug("atom")) :+
             SOps(Prefix)(
-                "!" #> Not,
+                "!".debug("exclamation") #> Not,
                 notFollowedBy(`<int-liter>`) *> "-" #> Negation,
                 "len" #> Len,
                 "ord" #> Ord,
@@ -268,7 +268,7 @@ object Parser {
         Print <#> lexeme("print") *> `<expr>`
     
     private val printlnStat : Parsley[Stat] = 
-        Println <#> lexeme("println") *> `<expr>`
+        Println <#> "println" *> `<expr>`.debug("HELP")
     
     private val ifStat : Parsley[Stat] = 
         ("if" *> lift3(
@@ -292,23 +292,23 @@ object Parser {
         lift2(Colon, `<stat>`, ";" *> `<stat>`)
 
     private val atomStat: Parsley[Stat] =
+        fully(attempt(printlnStat.debug("println")) <|>
         attempt(skipStat) <|>
-        attempt(typeAssignStat).debug("typeAssign") <|>
-        assignLRStat.debug("assignLR") <|>
-        readStat <|>
-        freeStat <|>
-        returnStat <|>
+        attempt(typeAssignStat) <|>
+        attempt(assignLRStat) <|>
+        attempt(readStat) <|>
+        attempt(freeStat) <|>
+        attempt(returnStat) <|>
         attempt(exitStat) <|>
-        attempt(printStat) <|>
-        printlnStat.debug("println")
+        attempt(printStat))
 
     private lazy val `<stat>` : Parsley[Stat] = // not sure whats the associativity of a while statement
-        precedence(
-            Atoms(lexeme(atomStat)) :+
+        fully(precedence(
+            Atoms(atomStat) :+
             SOps(InfixR)(
-                lexeme(";").debug("sth") #> Colon
+                ";".debug("sth") #> Colon
             )
-        )
+        ))
 
 
 }
