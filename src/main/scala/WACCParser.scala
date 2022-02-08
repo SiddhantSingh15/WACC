@@ -39,7 +39,7 @@ object Parser {
     private lazy val `<base-type>`: Parsley[BaseType] = 
       ("int" #> Int) <|> 
       ("bool" #> Bool) <|> 
-      ("char" #> Char) <|> 
+      ("char" #> CharType) <|> 
       ("string" #> String)  
     
     // private lazy val `<type>` : Parsley[Type] = 
@@ -119,14 +119,14 @@ object Parser {
         (StrLiter <#> '\"' *> many(`<character>`) <* '\"') 
         
     
-    private val `<escaped-char>` : Parsley[Char] =  // Chose to remove EscapedChar cause I cant figure out a better way
-        oneOf(
+    private val `<escaped-char>` : Parsley[EscapedChar] =  // Chose to remove EscapedChar cause I cant figure out a better way
+        EscapedChar <#> oneOf(
             Set('0','b','t','n','f','r','"','"','\'')
         )
     
     private val `<character>` : Parsley[Character] = // There's a difference between char and character and char liter
-        (Character <#> ("\\" *> `<escaped-char>`)) <|>
-        (Character <#> noneOf(Set('\\', '\'', '"')))
+        (("\\" *> `<escaped-char>`)) <|>
+        (ASCIIChar <#> noneOf(Set('\\', '\'', '"')))
     
     
     private val `<bool-liter>`: Parsley[BoolLiter] = 
