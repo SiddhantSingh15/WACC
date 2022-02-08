@@ -110,7 +110,7 @@ object Parser {
         // .map(
         //     (a : (Option[IntSign], Int)) => a._2
         // )
-        lift2(IntLiter, pure(Pos), manyN(1, `<digit>`.debug("digit"))) <|> lift2(IntLiter, `<int-sign>`, manyN(1, `<digit>`))
+        lift2(IntLiter, `<int-sign>`, manyN(1, `<digit>`)) <|> lift2(IntLiter, pure(Pos), manyN(1, `<digit>`.debug("digit")))
     
     private val `<char-liter>` : Parsley[CharLiter] = 
        (CharLiter <#>  "\'" *> `<character>` <* "\'")
@@ -182,7 +182,7 @@ object Parser {
             Func,
             `<type>`.debug("type"),
             `<ident>`.debug("ident"),
-            parens(option(`<param-list>`.debug("param-list"))), // Returns empty if nothing in param-list
+            parens(`<param-list>`.debug("param-list") <|> empty), // Returns empty if nothing in param-list
             ("is" *> `<stat>`.debug("stat") <* "end")
 
         )
