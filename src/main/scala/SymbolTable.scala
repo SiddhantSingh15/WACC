@@ -87,7 +87,34 @@ case class SymbolTable(
     val meta = funcMap.get(id)
     meta.isDefined
   }
-  // TODO : implement parameter matching
-  // check if param supplied > arg of function
-  // check param type is the same as arg type
+  
+  def funcParamMatch(id: Ident, args: Option[ArgList]): List[SemanticError] = {
+    val meta = funcMap.get(id)
+    if (meta.isEmpty) {
+      return List[SemanticError](functionNotDeclared(id: Ident))
+    }
+    val Some(Meta(_, value)) = meta
+    if (args.isEmpty) {
+      if (value.exists(_.isEmpty)) {
+        return List[SemanticError]()
+      }
+      return List(invalidParams(id, 0, value.get.length))
+    }
+    val argList = args.get
+    val pList = value.get
+    val paramLen = pList.length
+    val argLen = argList.length
+    if (argLen != paramLen) {
+      return List(invalidParams(id, argLen, paramLen))
+    }
+    var result = List[SemanticError]()
+    for (i <- 0 until argLen) {
+      val argType = argList.lift(i).getType(this)
+      val paramType = pList(i)
+      if (argType != paramType) {
+        result ::= typeMismatch(argList(i), argType, List(paramType))
+      }
+    }
+    result
+  }
 }
