@@ -17,4 +17,9 @@
 1644409935099:git add .
 1644418573304:compile
 1644418581097:test
+<<<<<<< HEAD
 >>>>>>> daa200a... [tg1120] chore: added a param match function to symboltable
+=======
+1644419741320:compile
+1644419746748:test
+>>>>>>> c62e3e6... [tg1120
