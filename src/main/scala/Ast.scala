@@ -2,11 +2,10 @@ package compiler
 
 object Ast{
     import parsley.implicits.zipped.{Zipped2, Zipped3, Zipped4}
-    import parsley.combinator.option
     
     case class WaccProgram(s : List[Func], stat: Stat)
 
-    case class Func(tpe : Type, ident : Ident, paramList : Option[ParamList], stat : Stat)
+    case class Func(tpe : Type, ident : Ident, paramList : ParamList, stat : Stat)
     
     case class Param(tpe : Type, ident : Ident)
 
