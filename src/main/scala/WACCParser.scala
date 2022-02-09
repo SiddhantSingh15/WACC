@@ -46,9 +46,9 @@ object Parser {
             lift2(PairType, `<pair-elem-type>`,"," *> `<pair-elem-type>`)
         ))
 
-    val number = INTEGER
+    private val number = INTEGER
 
-    val intSign = "+" #> identity[Int] _ <|> "-" #> ((x: Int) => -x)
+    private val intSign = "+" #> identity[Int] _ <|> "-" #> ((x: Int) => -x)
     
     private val `<int-liter>` : Parsley[IntLiter] = 
         fully(lift1(IntLiter, intSign <*> number <|> number))
@@ -76,7 +76,7 @@ object Parser {
         (Fst <#> (attempt("fst") *> `<expr>`)) <|>
         (Snd <#> (attempt("snd") *> `<expr>`))
     
-    private val `<assign-lhs>` : Parsley[AssignLHS] = // TODO 
+    private val `<assign-lhs>` : Parsley[AssignLHS] =
         fully(
         attempt(`<pair-elem>` <|>
         attempt(`<array-elem>`) <|>
@@ -92,14 +92,11 @@ object Parser {
         ("call" *> lift2(
             Call, 
             `<ident>`,
-            ArgList <#> parens(sepBy(`<expr>`, ",")) // Returns empty if there is no arg list
+            ArgList <#> parens(sepBy(`<expr>`, ","))
         )))
     
     private val `<param>` = 
         lift2(Param, `<type>`, `<ident>`)
-    
-    // private val `<param-list>` =
-    //     ParamList <#> sepBy1(`<param>`, ",")
     
     private val `<array-elem>` : Parsley[ArrayElem] = 
         lift2(ArrayElem, `<ident>`, some(brackets(`<expr>`)))
@@ -135,7 +132,7 @@ object Parser {
     
     private lazy val `<expr>` : Parsley[Expr] =
         fully(precedence(
-            Atoms(fully(parens(`<expr>`) <|> attempt(`<array-elem>`) <|> atom)) :+ // can consider replacing :+ with ,
+            Atoms(fully(parens(`<expr>`) <|> attempt(`<array-elem>`) <|> atom)) :+
             Ops(Prefix)(
                 attempt("!" #> Not),
                 attempt(notFollowedBy(`<int-liter>`) *> "-" #> Negation),
@@ -199,7 +196,6 @@ object Parser {
     private val exitStat : Parsley[Stat] = 
         Exit <#> lexeme("exit") *> `<expr>`
     
-    
     private val printStat : Parsley[Stat] = 
         Print <#> lexeme("print") *> `<expr>`
     
@@ -241,7 +237,7 @@ object Parser {
         attempt(exitStat) <|>
         attempt(printStat))
 
-    private lazy val `<stat>` : Parsley[Stat] = // not sure whats the associativity of a while statement
+    private lazy val `<stat>` : Parsley[Stat] =
         fully(precedence(
             Atoms(atomStat) :+
             SOps(InfixR)(
