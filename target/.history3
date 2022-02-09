@@ -9,7 +9,10 @@
 1644357913633:compile
 1644365336263:test
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> c62e3e65d635e4ed35193210cfe6e9b87695d617
 1644366755658:compile
 1644367289538:git push
 1644399397580:test
@@ -18,8 +21,13 @@
 1644418573304:compile
 1644418581097:test
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> daa200a... [tg1120] chore: added a param match function to symboltable
 =======
 1644419741320:compile
 1644419746748:test
 >>>>>>> c62e3e6... [tg1120
+=======
+1644419741320:compile
+1644419746748:test
+>>>>>>> c62e3e65d635e4ed35193210cfe6e9b87695d617
