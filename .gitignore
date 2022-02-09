@@ -11,8 +11,11 @@ src/antlr
 *.vscode
 *.bsp
 antlr_config/.antlr
-project
-target
+target/global-logging
+target/streams
+target/task-temp-directory
+target/test-reports
+target/.history3
 
 #ignore other junk files
 *~

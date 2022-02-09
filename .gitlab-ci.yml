@@ -19,8 +19,25 @@ before_script:
   # Log the sbt version
   - sbt sbtVersion
 
+build:
+  script:
+    - sbt compile
+
 test:
   script:
     # Execute your project's tests
     - sbt clean test
+  needs:
+    ["build"]
 
+code-coverage:
+  script:
+    - sbt coverage test coverageReport
+  needs:
+    ["build"]
+  artifacts: 
+    reports:
+      cobertura:
+        - target/scala-2.13/coverage-report/cobertura.xml
+    paths:
+      - target/scala-2.13/scoverage-report

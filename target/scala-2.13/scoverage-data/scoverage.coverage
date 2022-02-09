@@ -1,0 +1,6007 @@
+# Coverage data, format version: 2.0
+# Statement data:
+# - id
+# - source path
+# - package name
+# - class name
+# - class type (Class, Object or Trait)
+# - full class name
+# - method name
+# - start offset
+# - end offset
+# - line number
+# - symbol name
+# - tree name
+# - is branch
+# - invocations count
+# - is ignored
+# - description (can be multi-line)
+# '' sign
+# ------------------------------------------
+1
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/Compiler.scala
+<empty>
+Compiler
+Object
+Compiler
+main
+67
+89
+4
+scala.Predef.println
+Apply
+false
+0
+false
+scala.Predef.println("Hello World")
+
+2
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCLexer.scala
+compiler
+lexer
+Object
+compiler.lexer
+<none>
+529
+784
+16
+scala.collection.IterableFactory.apply
+Apply
+false
+0
+false
+scala.Predef.Set.apply[String]("begin", "end", "is", "skip", "read", "free", "return", "exit", "print", "println", "if", "then", "else", "fi", "while", "do", "done", "begin", "end", "newpair", "call")
+
+3
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCLexer.scala
+compiler
+lexer
+Object
+compiler.lexer
+<none>
+826
+977
+22
+scala.collection.IterableFactory.apply
+Apply
+false
+0
+false
+scala.Predef.Set.apply[String]("!", "-", "len", "ord", "chr", "*", "/", "%", "+", "-", ">", ">=", "<", "<=", "==", "!=", "&&", "||", "fst", "snd")
+
+4
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCLexer.scala
+compiler
+lexer
+Object
+compiler.lexer
+<none>
+1048
+1051
+27
+<nosymbol>
+Literal
+false
+0
+false
+"#"
+
+5
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCLexer.scala
+compiler
+lexer
+Object
+compiler.lexer
+<none>
+1078
+1083
+28
+<nosymbol>
+Literal
+false
+0
+false
+false
+
+6
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCLexer.scala
+compiler
+lexer
+Object
+compiler.lexer
+<none>
+1104
+1117
+29
+compiler.lexer.keywords
+Select
+false
+0
+false
+this.keywords
+
+7
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCLexer.scala
+compiler
+lexer
+Object
+compiler.lexer
+<none>
+1139
+1153
+30
+compiler.lexer.operators
+Select
+false
+0
+false
+this.operators
+
+8
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCLexer.scala
+compiler
+lexer
+Object
+compiler.lexer
+<none>
+1197
+1206
+31
+parsley.character.char
+Apply
+false
+0
+false
+parsley.character.char('_')
+
+9
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCLexer.scala
+compiler
+lexer
+Object
+compiler.lexer
+<none>
+1201
+1201
+31
+scala.Predef.$conforms
+TypeApply
+false
+0
+false
+scala.Predef.$conforms[parsley.Parsley[Char]]
+
+10
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCLexer.scala
+compiler
+lexer
+Object
+compiler.lexer
+<none>
+1211
+1217
+31
+parsley.character.letter
+Select
+false
+0
+false
+parsley.character.letter
+
+11
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCLexer.scala
+compiler
+lexer
+Object
+compiler.lexer
+<none>
+1197
+1217
+31
+parsley.Parsley.LazyParsley.<|>
+Apply
+false
+0
+false
+parsley.Parsley.LazyParsley[parsley.Parsley[Char], Char](parsley.character.char('_'))(scala.Predef.$conforms[parsley.Parsley[Char]]).<|>[Char](parsley.character.letter)
+
+12
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCLexer.scala
+compiler
+lexer
+Object
+compiler.lexer
+<none>
+1207
+1207
+31
+scala.Predef.$conforms
+TypeApply
+false
+0
+false
+scala.Predef.$conforms[parsley.Parsley[Char]]
+
+13
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCLexer.scala
+compiler
+lexer
+Object
+compiler.lexer
+<none>
+1222
+1227
+31
+parsley.character.upper
+Select
+false
+0
+false
+parsley.character.upper
+
+14
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCLexer.scala
+compiler
+lexer
+Object
+compiler.lexer
+<none>
+1197
+1227
+31
+parsley.Parsley.LazyParsley.<|>
+Apply
+false
+0
+false
+parsley.Parsley.LazyParsley[parsley.Parsley[Char], Char](parsley.Parsley.LazyParsley[parsley.Parsley[Char], Char](parsley.character.char('_'))(scala.Predef.$conforms[parsley.Parsley[Char]]).<|>[Char](parsley.character.letter))(scala.Predef.$conforms[parsley.Parsley[Char]]).<|>[Char](parsley.character.upper)
+
+15
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCLexer.scala
+compiler
+lexer
+Object
+compiler.lexer
+<none>
+1176
+1228
+31
+parsley.token.Parser.apply
+Apply
+false
+0
+false
+parsley.token.Parser.apply(parsley.Parsley.LazyParsley[parsley.Parsley[Char], Char](parsley.Parsley.LazyParsley[parsley.Parsley[Char], Char](parsley.character.char('_'))(scala.Predef.$conforms[parsley.Parsley[Char]]).<|>[Char](parsley.character.letter))(scala.Predef.$conforms[parsley.Parsley[Char]]).<|>[Char](parsley.character.upper))
+
+16
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCLexer.scala
+compiler
+lexer
+Object
+compiler.lexer
+<none>
+1274
+1283
+32
+parsley.character.char
+Apply
+false
+0
+false
+parsley.character.char('_')
+
+17
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCLexer.scala
+compiler
+lexer
+Object
+compiler.lexer
+<none>
+1278
+1278
+32
+scala.Predef.$conforms
+TypeApply
+false
+0
+false
+scala.Predef.$conforms[parsley.Parsley[Char]]
+
+18
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCLexer.scala
+compiler
+lexer
+Object
+compiler.lexer
+<none>
+1288
+1294
+32
+parsley.character.letter
+Select
+false
+0
+false
+parsley.character.letter
+
+19
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCLexer.scala
+compiler
+lexer
+Object
+compiler.lexer
+<none>
+1274
+1294
+32
+parsley.Parsley.LazyParsley.<|>
+Apply
+false
+0
+false
+parsley.Parsley.LazyParsley[parsley.Parsley[Char], Char](parsley.character.char('_'))(scala.Predef.$conforms[parsley.Parsley[Char]]).<|>[Char](parsley.character.letter)
+
+20
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCLexer.scala
+compiler
+lexer
+Object
+compiler.lexer
+<none>
+1284
+1284
+32
+scala.Predef.$conforms
+TypeApply
+false
+0
+false
+scala.Predef.$conforms[parsley.Parsley[Char]]
+
+21
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCLexer.scala
+compiler
+lexer
+Object
+compiler.lexer
+<none>
+1299
+1304
+32
+parsley.character.upper
+Select
+false
+0
+false
+parsley.character.upper
+
+22
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCLexer.scala
+compiler
+lexer
+Object
+compiler.lexer
+<none>
+1274
+1304
+32
+parsley.Parsley.LazyParsley.<|>
+Apply
+false
+0
+false
+parsley.Parsley.LazyParsley[parsley.Parsley[Char], Char](parsley.Parsley.LazyParsley[parsley.Parsley[Char], Char](parsley.character.char('_'))(scala.Predef.$conforms[parsley.Parsley[Char]]).<|>[Char](parsley.character.letter))(scala.Predef.$conforms[parsley.Parsley[Char]]).<|>[Char](parsley.character.upper)
+
+23
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCLexer.scala
+compiler
+lexer
+Object
+compiler.lexer
+<none>
+1295
+1295
+32
+scala.Predef.$conforms
+TypeApply
+false
+0
+false
+scala.Predef.$conforms[parsley.Parsley[Char]]
+
+24
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCLexer.scala
+compiler
+lexer
+Object
+compiler.lexer
+<none>
+1309
+1314
+32
+parsley.character.digit
+Select
+false
+0
+false
+parsley.character.digit
+
+25
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCLexer.scala
+compiler
+lexer
+Object
+compiler.lexer
+<none>
+1274
+1314
+32
+parsley.Parsley.LazyParsley.<|>
+Apply
+false
+0
+false
+parsley.Parsley.LazyParsley[parsley.Parsley[Char], Char](parsley.Parsley.LazyParsley[parsley.Parsley[Char], Char](parsley.Parsley.LazyParsley[parsley.Parsley[Char], Char](parsley.character.char('_'))(scala.Predef.$conforms[parsley.Parsley[Char]]).<|>[Char](parsley.character.letter))(scala.Predef.$conforms[parsley.Parsley[Char]]).<|>[Char](parsley.character.upper))(scala.Predef.$conforms[parsley.Parsley[Char]]).<|>[Char](parsley.character.digit)
+
+26
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCLexer.scala
+compiler
+lexer
+Object
+compiler.lexer
+<none>
+1253
+1315
+32
+parsley.token.Parser.apply
+Apply
+false
+0
+false
+parsley.token.Parser.apply(parsley.Parsley.LazyParsley[parsley.Parsley[Char], Char](parsley.Parsley.LazyParsley[parsley.Parsley[Char], Char](parsley.Parsley.LazyParsley[parsley.Parsley[Char], Char](parsley.character.char('_'))(scala.Predef.$conforms[parsley.Parsley[Char]]).<|>[Char](parsley.character.letter))(scala.Predef.$conforms[parsley.Parsley[Char]]).<|>[Char](parsley.character.upper))(scala.Predef.$conforms[parsley.Parsley[Char]]).<|>[Char](parsley.character.digit))
+
+27
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCLexer.scala
+compiler
+lexer
+Object
+compiler.lexer
+<none>
+1353
+1356
+33
+<nosymbol>
+Literal
+false
+0
+false
+' '
+
+28
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCLexer.scala
+compiler
+lexer
+Object
+compiler.lexer
+<none>
+1360
+1369
+33
+scala.Char.==
+Apply
+false
+0
+false
+c.==('\t')
+
+29
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCLexer.scala
+compiler
+lexer
+Object
+compiler.lexer
+<none>
+1373
+1382
+33
+scala.Char.==
+Apply
+false
+0
+false
+c.==('\n')
+
+30
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCLexer.scala
+compiler
+lexer
+Object
+compiler.lexer
+<none>
+1386
+1399
+33
+scala.Char.==
+Apply
+false
+0
+false
+c.==('\r')
+
+31
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCLexer.scala
+compiler
+lexer
+Object
+compiler.lexer
+<none>
+1348
+1399
+33
+scala.Boolean.||
+Apply
+false
+0
+false
+c.==(' ').||(c.==('\t')).||(c.==('\n')).||(c.==('\r'))
+
+32
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCLexer.scala
+compiler
+lexer
+Object
+compiler.lexer
+<none>
+1333
+1400
+33
+parsley.token.Predicate.apply
+Apply
+false
+0
+false
+parsley.token.Predicate.apply(((c: Char) => c.==(' ').||(c.==('\t')).||(c.==('\n')).||(c.==('\r'))))
+
+33
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCLexer.scala
+compiler
+lexer
+Object
+compiler.lexer
+<none>
+1020
+1020
+26
+parsley.token.LanguageDef.copy$default$1
+Select
+false
+0
+false
+parsley.token.LanguageDef.plain.copy$default$1
+
+34
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCLexer.scala
+compiler
+lexer
+Object
+compiler.lexer
+<none>
+1020
+1020
+26
+parsley.token.LanguageDef.copy$default$2
+Select
+false
+0
+false
+parsley.token.LanguageDef.plain.copy$default$2
+
+35
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCLexer.scala
+compiler
+lexer
+Object
+compiler.lexer
+<none>
+1020
+1020
+26
+parsley.token.LanguageDef.copy$default$7
+Select
+false
+0
+false
+parsley.token.LanguageDef.plain.copy$default$7
+
+36
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCLexer.scala
+compiler
+lexer
+Object
+compiler.lexer
+<none>
+1020
+1020
+26
+parsley.token.LanguageDef.copy$default$8
+Select
+false
+0
+false
+parsley.token.LanguageDef.plain.copy$default$8
+
+37
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCLexer.scala
+compiler
+lexer
+Object
+compiler.lexer
+<none>
+1020
+1020
+26
+parsley.token.LanguageDef.copy$default$11
+Select
+false
+0
+false
+parsley.token.LanguageDef.plain.copy$default$11
+
+38
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCLexer.scala
+compiler
+lexer
+Object
+compiler.lexer
+<none>
+1002
+1406
+26
+parsley.token.LanguageDef.copy
+Apply
+false
+0
+false
+parsley.token.LanguageDef.plain.copy(x$8, x$9, "#", false, x$5, x$6, x$10, x$11, x$3, x$4, x$12, x$7)
+
+39
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCLexer.scala
+compiler
+lexer
+Object
+compiler.lexer
+<none>
+1442
+1446
+36
+compiler.lexer.wacc
+Select
+false
+0
+false
+lexer.this.wacc
+
+40
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCLexer.scala
+compiler
+lexer
+Object
+compiler.lexer
+<none>
+1432
+1447
+36
+parsley.token.Lexer.<init>
+Apply
+false
+0
+false
+new parsley.token.Lexer(lexer.this.wacc)
+
+41
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCLexer.scala
+compiler
+lexer
+Object
+compiler.lexer
+parens
+1499
+1514
+38
+parsley.token.Lexer.parens
+Apply
+false
+0
+false
+lexer.this.lexer.parens[A](p)
+
+42
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCLexer.scala
+compiler
+lexer
+Object
+compiler.lexer
+brackets
+1568
+1585
+40
+parsley.token.Lexer.brackets
+Apply
+false
+0
+false
+lexer.this.lexer.brackets[A](p)
+
+43
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCLexer.scala
+compiler
+lexer
+Object
+compiler.lexer
+fully
+1644
+1665
+43
+parsley.Parsley.LazyParsley.*>
+Apply
+false
+0
+false
+parsley.Parsley.LazyParsley[parsley.Parsley[Unit], Unit](lexer.this.lexer.whiteSpace)(scala.Predef.$conforms[parsley.Parsley[Unit]]).*>[Unit, A](p)
+
+44
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCLexer.scala
+compiler
+lexer
+Object
+compiler.lexer
+fully
+1661
+1661
+43
+scala.Predef.$conforms
+TypeApply
+false
+0
+false
+scala.Predef.$conforms[parsley.Parsley[A]]
+
+45
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCLexer.scala
+compiler
+lexer
+Object
+compiler.lexer
+fully
+1644
+1685
+43
+parsley.Parsley.LazyParsley.<*
+Apply
+false
+0
+false
+parsley.Parsley.LazyParsley[parsley.Parsley[A], A](parsley.Parsley.LazyParsley[parsley.Parsley[Unit], Unit](lexer.this.lexer.whiteSpace)(scala.Predef.$conforms[parsley.Parsley[Unit]]).*>[Unit, A](p))(scala.Predef.$conforms[parsley.Parsley[A]]).<*[Unit](lexer.this.lexer.whiteSpace)
+
+46
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCLexer.scala
+compiler
+lexer
+Object
+compiler.lexer
+lexeme
+1741
+1756
+45
+parsley.token.Lexer.lexeme
+Apply
+false
+0
+false
+lexer.this.lexer.lexeme[A](p)
+
+47
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCLexer.scala
+compiler
+lexer
+Object
+compiler.lexer
+<none>
+1788
+1798
+47
+compiler.lexer.IDENTIFIER
+Select
+false
+0
+false
+lexer.this.IDENTIFIER
+
+48
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCLexer.scala
+compiler
+lexer
+Object
+compiler.lexer
+<none>
+1775
+1799
+47
+parsley.token.Lexer.lexeme
+Apply
+false
+0
+false
+lexer.this.lexer.lexeme[String](lexer.this.IDENTIFIER)
+
+49
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCLexer.scala
+compiler
+lexer
+Object
+compiler.lexer
+<none>
+1977
+1984
+53
+parsley.character.newline
+Select
+false
+0
+false
+parsley.character.newline
+
+50
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCLexer.scala
+compiler
+lexer
+Object
+compiler.lexer
+<none>
+1964
+1985
+53
+parsley.token.Lexer.lexeme
+Apply
+false
+0
+false
+lexer.this.lexer.lexeme[Char](parsley.character.newline)
+
+51
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCLexer.scala
+compiler
+lexer
+Object
+compiler.lexer
+<none>
+1959
+1986
+53
+parsley.Parsley.void
+Apply
+false
+0
+false
+parsley.Parsley.void(lexer.this.lexer.lexeme[Char](parsley.character.newline))
+
+52
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCLexer.scala
+compiler
+implicits
+Object
+compiler.lexer.implicits
+implicitToken
+2134
+2150
+58
+scala.collection.SetOps.apply
+Apply
+false
+0
+false
+lexer.this.wacc.keywords.apply(s)
+
+53
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCLexer.scala
+compiler
+implicits
+Object
+compiler.lexer.implicits
+implicitToken
+2159
+2175
+58
+parsley.token.Lexer.keyword
+Apply
+false
+0
+false
+lexer.this.lexer.keyword(s)
+
+54
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCLexer.scala
+compiler
+implicits
+Object
+compiler.lexer.implicits
+implicitToken
+2159
+2175
+58
+parsley.token.Lexer.keyword
+Block
+true
+0
+false
+lexer.this.lexer.keyword(s)
+
+55
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCLexer.scala
+compiler
+implicits
+Object
+compiler.lexer.implicits
+implicitToken
+2196
+2213
+59
+scala.collection.SetOps.apply
+Apply
+false
+0
+false
+lexer.this.wacc.operators.apply(s)
+
+56
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCLexer.scala
+compiler
+implicits
+Object
+compiler.lexer.implicits
+implicitToken
+2217
+2231
+59
+parsley.token.Lexer.maxOp
+Apply
+false
+0
+false
+lexer.this.lexer.maxOp(s)
+
+57
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCLexer.scala
+compiler
+implicits
+Object
+compiler.lexer.implicits
+implicitToken
+2217
+2231
+59
+parsley.token.Lexer.maxOp
+Block
+true
+0
+false
+lexer.this.lexer.maxOp(s)
+
+58
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCLexer.scala
+compiler
+implicits
+Object
+compiler.lexer.implicits
+implicitToken
+2278
+2294
+60
+parsley.token.Lexer.symbol_
+Apply
+false
+0
+false
+lexer.this.lexer.symbol_(s)
+
+59
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCLexer.scala
+compiler
+implicits
+Object
+compiler.lexer.implicits
+implicitToken
+2273
+2295
+60
+parsley.Parsley.void
+Apply
+false
+0
+false
+parsley.Parsley.void(lexer.this.lexer.symbol_(s))
+
+60
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCLexer.scala
+compiler
+implicits
+Object
+compiler.lexer.implicits
+implicitToken
+2273
+2295
+60
+parsley.Parsley.void
+Block
+true
+0
+false
+parsley.Parsley.void(lexer.this.lexer.symbol_(s))
+
+61
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCLexer.scala
+compiler
+implicits
+Object
+compiler.lexer.implicits
+implicitToken
+2193
+2295
+59
+<nosymbol>
+If
+true
+0
+false
+if (lexer.this.wacc.operators.apply(s))
+  lexer.this.lexer.maxOp(s)
+else
+  parsley.Parsley.void(lexer.this.lexer.symbol_(s))
+
+62
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+parse
+1022
+1046
+26
+parsley.Parsley.parse
+ApplyToImplicitArgs
+false
+0
+false
+Parser.this.<program>.parse[Err](input)(evidence$1)
+
+63
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+parseFromFile
+1133
+1144
+27
+compiler.Parser.<program>
+Select
+false
+0
+false
+Parser.this.<program>
+
+64
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+parseFromFile
+1133
+1133
+27
+scala.Predef.$conforms
+TypeApply
+false
+0
+false
+scala.Predef.$conforms[parsley.Parsley[compiler.Ast.WaccProgram]]
+
+65
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+parseFromFile
+1133
+1164
+27
+parsley.io.ParseFromIO.parseFromFile
+ApplyToImplicitArgs
+false
+0
+false
+parsley.io.ParseFromIO[parsley.Parsley[compiler.Ast.WaccProgram], compiler.Ast.WaccProgram](Parser.this.<program>)(scala.Predef.$conforms[parsley.Parsley[compiler.Ast.WaccProgram]]).parseFromFile[Err](file)(evidence$2, io.this.Codec.fallbackSystemCodec)
+
+66
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+1969
+1976
+49
+compiler.lexer.INTEGER
+Select
+false
+0
+false
+lexer.INTEGER
+
+67
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+1996
+1999
+51
+<nosymbol>
+Literal
+false
+0
+false
+"+"
+
+68
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+1996
+1996
+51
+parsley.implicits.character.stringLift
+Apply
+false
+0
+false
+parsley.implicits.character.stringLift(str)
+
+69
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+2003
+2016
+51
+scala.Predef.identity
+Apply
+false
+0
+false
+scala.Predef.identity[Int](x)
+
+70
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+1996
+2018
+51
+parsley.Parsley.LazyParsley.#>
+Apply
+false
+0
+false
+parsley.Parsley.LazyParsley[String, String]("+")(((str: String) => parsley.implicits.character.stringLift(str))).#>[Int => Int](((x: Int) => scala.Predef.identity[Int](x)))
+
+71
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+2000
+2000
+51
+scala.Predef.$conforms
+TypeApply
+false
+0
+false
+scala.Predef.$conforms[parsley.Parsley[Int => Int]]
+
+72
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+2023
+2026
+51
+<nosymbol>
+Literal
+false
+0
+false
+"-"
+
+73
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+2023
+2023
+51
+parsley.implicits.character.stringLift
+Apply
+false
+0
+false
+parsley.implicits.character.stringLift(str)
+
+74
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+2043
+2045
+51
+scala.Int.unary_-
+Select
+false
+0
+false
+x.unary_-
+
+75
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+2023
+2046
+51
+parsley.Parsley.LazyParsley.#>
+Apply
+false
+0
+false
+parsley.Parsley.LazyParsley[String, String]("-")(((str: String) => parsley.implicits.character.stringLift(str))).#>[Int => Int](((x: Int) => x.unary_-))
+
+76
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+1996
+2046
+51
+parsley.Parsley.LazyParsley.<|>
+Apply
+false
+0
+false
+parsley.Parsley.LazyParsley[parsley.Parsley[Int => Int], Int => Int](parsley.Parsley.LazyParsley[String, String]("+")(((str: String) => parsley.implicits.character.stringLift(str))).#>[Int => Int](((x: Int) => scala.Predef.identity[Int](x))))(scala.Predef.$conforms[parsley.Parsley[Int => Int]]).<|>[Int => Int](parsley.Parsley.LazyParsley[String, String]("-")(((str: String) => parsley.implicits.character.stringLift(str))).#>[Int => Int](((x: Int) => x.unary_-)))
+
+77
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+2125
+2133
+54
+compiler.Ast.IntLiter
+Select
+false
+0
+false
+Ast.IntLiter
+
+78
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+2135
+2142
+54
+compiler.Parser.intSign
+Select
+false
+0
+false
+Parser.this.intSign
+
+79
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+2135
+2135
+54
+scala.Predef.$conforms
+TypeApply
+false
+0
+false
+scala.Predef.$conforms[parsley.Parsley[Int => Int]]
+
+80
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+2147
+2153
+54
+compiler.Parser.number
+Select
+false
+0
+false
+Parser.this.number
+
+81
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+2143
+2143
+54
+scala.<:<.refl
+TypeApply
+false
+0
+false
+scala.this.<:<.refl[parsley.Parsley[Int => Int]]
+
+82
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+2135
+2153
+54
+parsley.Parsley.LazyParsley.<*>
+ApplyToImplicitArgs
+false
+0
+false
+parsley.Parsley.LazyParsley[parsley.Parsley[Int => Int], Int => Int](Parser.this.intSign)(scala.Predef.$conforms[parsley.Parsley[Int => Int]]).<*>[Int, Int](Parser.this.number)(scala.this.<:<.refl[parsley.Parsley[Int => Int]])
+
+83
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+2143
+2143
+54
+scala.Predef.$conforms
+TypeApply
+false
+0
+false
+scala.Predef.$conforms[parsley.Parsley[Int]]
+
+84
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+2158
+2164
+54
+compiler.Parser.number
+Select
+false
+0
+false
+Parser.this.number
+
+85
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+2135
+2164
+54
+parsley.Parsley.LazyParsley.<|>
+Apply
+false
+0
+false
+parsley.Parsley.LazyParsley[parsley.Parsley[Int], Int](parsley.Parsley.LazyParsley[parsley.Parsley[Int => Int], Int => Int](Parser.this.intSign)(scala.Predef.$conforms[parsley.Parsley[Int => Int]]).<*>[Int, Int](Parser.this.number)(scala.this.<:<.refl[parsley.Parsley[Int => Int]]))(scala.Predef.$conforms[parsley.Parsley[Int]]).<|>[Int](Parser.this.number)
+
+86
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+2119
+2165
+54
+parsley.lift.lift1
+Apply
+false
+0
+false
+parsley.lift.lift1[Int, compiler.Ast.IntLiter](Ast.IntLiter, parsley.Parsley.LazyParsley[parsley.Parsley[Int], Int](parsley.Parsley.LazyParsley[parsley.Parsley[Int => Int], Int => Int](Parser.this.intSign)(scala.Predef.$conforms[parsley.Parsley[Int => Int]]).<*>[Int, Int](Parser.this.number)(scala.this.<:<.refl[parsley.Parsley[Int => Int]]))(scala.Predef.$conforms[parsley.Parsley[Int]]).<|>[Int](Parser.this.number))
+
+87
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+2113
+2166
+54
+compiler.lexer.fully
+Apply
+false
+0
+false
+lexer.fully[compiler.Ast.IntLiter](parsley.lift.lift1[Int, compiler.Ast.IntLiter](Ast.IntLiter, parsley.Parsley.LazyParsley[parsley.Parsley[Int], Int](parsley.Parsley.LazyParsley[parsley.Parsley[Int => Int], Int => Int](Parser.this.intSign)(scala.Predef.$conforms[parsley.Parsley[Int => Int]]).<*>[Int, Int](Parser.this.number)(scala.this.<:<.refl[parsley.Parsley[Int => Int]]))(scala.Predef.$conforms[parsley.Parsley[Int]]).<|>[Int](Parser.this.number)))
+
+88
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+2235
+2244
+57
+compiler.Ast.CharLiter
+Select
+false
+0
+false
+Ast.CharLiter
+
+89
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+2250
+2254
+57
+<nosymbol>
+Literal
+false
+0
+false
+"\'"
+
+90
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+2250
+2250
+57
+parsley.implicits.character.stringLift
+Apply
+false
+0
+false
+parsley.implicits.character.stringLift(str)
+
+91
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+2258
+2271
+57
+compiler.Parser.<character>
+Select
+false
+0
+false
+Parser.this.<character>
+
+92
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+2250
+2271
+57
+parsley.Parsley.LazyParsley.*>
+Apply
+false
+0
+false
+parsley.Parsley.LazyParsley[String, String]("\'")(((str: String) => parsley.implicits.character.stringLift(str))).*>[String, Char](Parser.this.<character>)
+
+93
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+2235
+2271
+57
+parsley.Parsley.LazyMapParsley.<#>
+Apply
+false
+0
+false
+parsley.Parsley.LazyMapParsley[Char, compiler.Ast.CharLiter](Ast.CharLiter).<#>(parsley.Parsley.LazyParsley[String, String]("\'")(((str: String) => parsley.implicits.character.stringLift(str))).*>[String, Char](Parser.this.<character>))
+
+94
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+2245
+2245
+57
+scala.Predef.$conforms
+TypeApply
+false
+0
+false
+scala.Predef.$conforms[parsley.Parsley[compiler.Ast.CharLiter]]
+
+95
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+2275
+2279
+57
+parsley.implicits.character.stringLift
+ApplyImplicitView
+false
+0
+false
+parsley.implicits.character.stringLift("\'")
+
+96
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+2235
+2279
+57
+parsley.Parsley.LazyParsley.<*
+Apply
+false
+0
+false
+parsley.Parsley.LazyParsley[parsley.Parsley[compiler.Ast.CharLiter], compiler.Ast.CharLiter](parsley.Parsley.LazyMapParsley[Char, compiler.Ast.CharLiter](Ast.CharLiter).<#>(parsley.Parsley.LazyParsley[String, String]("\'")(((str: String) => parsley.implicits.character.stringLift(str))).*>[String, Char](Parser.this.<character>)))(scala.Predef.$conforms[parsley.Parsley[compiler.Ast.CharLiter]]).<*[String](parsley.implicits.character.stringLift("\'"))
+
+97
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+2342
+2350
+60
+compiler.Ast.StrLiter
+Select
+false
+0
+false
+Ast.StrLiter
+
+98
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+2356
+2360
+60
+<nosymbol>
+Literal
+false
+0
+false
+'\"'
+
+99
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+2356
+2356
+60
+parsley.implicits.character.charLift
+Apply
+false
+0
+false
+parsley.implicits.character.charLift(c)
+
+100
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+2370
+2383
+60
+compiler.Parser.<character>
+Select
+false
+0
+false
+Parser.this.<character>
+
+101
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+2365
+2384
+60
+parsley.combinator.many
+Apply
+false
+0
+false
+parsley.combinator.many[Char](Parser.this.<character>)
+
+102
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+2356
+2385
+60
+parsley.Parsley.LazyParsley.*>
+Apply
+false
+0
+false
+parsley.Parsley.LazyParsley[Char, Char]('\"')(((c: Char) => parsley.implicits.character.charLift(c))).*>[Char, List[Char]](parsley.combinator.many[Char](Parser.this.<character>))
+
+103
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+2361
+2361
+60
+scala.Predef.$conforms
+TypeApply
+false
+0
+false
+scala.Predef.$conforms[parsley.Parsley[List[Char]]]
+
+104
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+2389
+2393
+60
+parsley.implicits.character.charLift
+ApplyImplicitView
+false
+0
+false
+parsley.implicits.character.charLift('\"')
+
+105
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+2356
+2393
+60
+parsley.Parsley.LazyParsley.<*
+Apply
+false
+0
+false
+parsley.Parsley.LazyParsley[parsley.Parsley[List[Char]], List[Char]](parsley.Parsley.LazyParsley[Char, Char]('\"')(((c: Char) => parsley.implicits.character.charLift(c))).*>[Char, List[Char]](parsley.combinator.many[Char](Parser.this.<character>)))(scala.Predef.$conforms[parsley.Parsley[List[Char]]]).<*[Char](parsley.implicits.character.charLift('\"'))
+
+106
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+2386
+2386
+60
+scala.Predef.$conforms
+TypeApply
+false
+0
+false
+scala.Predef.$conforms[parsley.Parsley[List[Char]]]
+
+107
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+2404
+2414
+60
+scala.collection.IterableOnceOps.mkString
+Select
+false
+0
+false
+s.mkString
+
+108
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+2356
+2415
+60
+parsley.Parsley.LazyParsley.map
+Apply
+false
+0
+false
+parsley.Parsley.LazyParsley[parsley.Parsley[List[Char]], List[Char]](parsley.Parsley.LazyParsley[parsley.Parsley[List[Char]], List[Char]](parsley.Parsley.LazyParsley[Char, Char]('\"')(((c: Char) => parsley.implicits.character.charLift(c))).*>[Char, List[Char]](parsley.combinator.many[Char](Parser.this.<character>)))(scala.Predef.$conforms[parsley.Parsley[List[Char]]]).<*[Char](parsley.implicits.character.charLift('\"')))(scala.Predef.$conforms[parsley.Parsley[List[Char]]]).map[String](((s: List[Char]) => s.mkString))
+
+109
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+2342
+2415
+60
+parsley.Parsley.LazyMapParsley.<#>
+Apply
+false
+0
+false
+parsley.Parsley.LazyMapParsley[String, compiler.Ast.StrLiter](Ast.StrLiter).<#>(parsley.Parsley.LazyParsley[parsley.Parsley[List[Char]], List[Char]](parsley.Parsley.LazyParsley[parsley.Parsley[List[Char]], List[Char]](parsley.Parsley.LazyParsley[Char, Char]('\"')(((c: Char) => parsley.implicits.character.charLift(c))).*>[Char, List[Char]](parsley.combinator.many[Char](Parser.this.<character>)))(scala.Predef.$conforms[parsley.Parsley[List[Char]]]).<*[Char](parsley.implicits.character.charLift('\"')))(scala.Predef.$conforms[parsley.Parsley[List[Char]]]).map[String](((s: List[Char]) => s.mkString)))
+
+110
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+2508
+2549
+64
+scala.collection.IterableFactory.apply
+Apply
+false
+0
+false
+scala.Predef.Set.apply[Char]('0', 'b', 't', 'n', 'f', 'r', '\"', '\"', '\'')
+
+111
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+2489
+2559
+63
+parsley.character.oneOf
+Apply
+false
+0
+false
+parsley.character.oneOf(scala.Predef.Set.apply[Char]('0', 'b', 't', 'n', 'f', 'r', '\"', '\"', '\''))
+
+112
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+2623
+2627
+68
+<nosymbol>
+Literal
+false
+0
+false
+"\\"
+
+113
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+2623
+2623
+68
+parsley.implicits.character.stringLift
+Apply
+false
+0
+false
+parsley.implicits.character.stringLift(str)
+
+114
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+2631
+2647
+68
+compiler.Parser.<escaped-char>
+Select
+false
+0
+false
+Parser.this.<escaped-char>
+
+115
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+2623
+2647
+68
+parsley.Parsley.LazyParsley.*>
+Apply
+false
+0
+false
+parsley.Parsley.LazyParsley[String, String]("\\")(((str: String) => parsley.implicits.character.stringLift(str))).*>[String, Char](Parser.this.<escaped-char>)
+
+116
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+2628
+2628
+68
+scala.Predef.$conforms
+TypeApply
+false
+0
+false
+scala.Predef.$conforms[parsley.Parsley[Char]]
+
+117
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+2663
+2686
+69
+parsley.character.noneOf
+Apply
+false
+0
+false
+parsley.character.noneOf('\\', '\'', '\"')
+
+118
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+2621
+2687
+68
+parsley.Parsley.LazyParsley.<|>
+Apply
+false
+0
+false
+parsley.Parsley.LazyParsley[parsley.Parsley[Char], Char](parsley.Parsley.LazyParsley[String, String]("\\")(((str: String) => parsley.implicits.character.stringLift(str))).*>[String, Char](Parser.this.<escaped-char>))(scala.Predef.$conforms[parsley.Parsley[Char]]).<|>[Char](parsley.character.noneOf('\\', '\'', '\"'))
+
+119
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+2759
+2765
+73
+<nosymbol>
+Literal
+false
+0
+false
+"true"
+
+120
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+2759
+2759
+73
+parsley.implicits.character.stringLift
+Apply
+false
+0
+false
+parsley.implicits.character.stringLift(str)
+
+121
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+2769
+2773
+73
+compiler.Ast.True
+Select
+false
+0
+false
+Ast.True
+
+122
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+2759
+2773
+73
+parsley.Parsley.LazyParsley.#>
+Apply
+false
+0
+false
+parsley.Parsley.LazyParsley[String, String]("true")(((str: String) => parsley.implicits.character.stringLift(str))).#>[compiler.Ast.True.type](Ast.True)
+
+123
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+2766
+2766
+73
+scala.Predef.$conforms
+TypeApply
+false
+0
+false
+scala.Predef.$conforms[parsley.Parsley[compiler.Ast.True.type]]
+
+124
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+2780
+2787
+73
+<nosymbol>
+Literal
+false
+0
+false
+"false"
+
+125
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+2780
+2780
+73
+parsley.implicits.character.stringLift
+Apply
+false
+0
+false
+parsley.implicits.character.stringLift(str)
+
+126
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+2791
+2796
+73
+compiler.Ast.False
+Select
+false
+0
+false
+Ast.False
+
+127
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+2780
+2796
+73
+parsley.Parsley.LazyParsley.#>
+Apply
+false
+0
+false
+parsley.Parsley.LazyParsley[String, String]("false")(((str: String) => parsley.implicits.character.stringLift(str))).#>[compiler.Ast.False.type](Ast.False)
+
+128
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+2758
+2797
+73
+parsley.Parsley.LazyParsley.<|>
+Apply
+false
+0
+false
+parsley.Parsley.LazyParsley[parsley.Parsley[compiler.Ast.True.type], compiler.Ast.True.type](parsley.Parsley.LazyParsley[String, String]("true")(((str: String) => parsley.implicits.character.stringLift(str))).#>[compiler.Ast.True.type](Ast.True))(scala.Predef.$conforms[parsley.Parsley[compiler.Ast.True.type]]).<|>[compiler.Ast.BoolLiter with Product with java.io.Serializable](parsley.Parsley.LazyParsley[String, String]("false")(((str: String) => parsley.implicits.character.stringLift(str))).#>[compiler.Ast.False.type](Ast.False))
+
+129
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+2867
+2870
+76
+compiler.Ast.Fst
+Select
+false
+0
+false
+Ast.Fst
+
+130
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+2884
+2889
+76
+parsley.implicits.character.stringLift
+ApplyImplicitView
+false
+0
+false
+parsley.implicits.character.stringLift("fst")
+
+131
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+2876
+2890
+76
+parsley.Parsley.attempt
+Apply
+false
+0
+false
+parsley.Parsley.attempt[String](parsley.implicits.character.stringLift("fst"))
+
+132
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+2883
+2883
+76
+scala.Predef.$conforms
+TypeApply
+false
+0
+false
+scala.Predef.$conforms[parsley.Parsley[String]]
+
+133
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+2876
+2902
+76
+parsley.Parsley.LazyParsley.*>
+Apply
+false
+0
+false
+parsley.Parsley.LazyParsley[parsley.Parsley[String], String](parsley.Parsley.attempt[String](parsley.implicits.character.stringLift("fst")))(scala.Predef.$conforms[parsley.Parsley[String]]).*>[String, compiler.Ast.Expr](Parser.this.<expr>)
+
+134
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+2867
+2903
+76
+parsley.Parsley.LazyMapParsley.<#>
+Apply
+false
+0
+false
+parsley.Parsley.LazyMapParsley[compiler.Ast.Expr, compiler.Ast.Fst](Ast.Fst).<#>(parsley.Parsley.LazyParsley[parsley.Parsley[String], String](parsley.Parsley.attempt[String](parsley.implicits.character.stringLift("fst")))(scala.Predef.$conforms[parsley.Parsley[String]]).*>[String, compiler.Ast.Expr](Parser.this.<expr>))
+
+135
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+2871
+2871
+76
+scala.Predef.$conforms
+TypeApply
+false
+0
+false
+scala.Predef.$conforms[parsley.Parsley[compiler.Ast.Fst]]
+
+136
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+2918
+2921
+77
+compiler.Ast.Snd
+Select
+false
+0
+false
+Ast.Snd
+
+137
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+2935
+2940
+77
+parsley.implicits.character.stringLift
+ApplyImplicitView
+false
+0
+false
+parsley.implicits.character.stringLift("snd")
+
+138
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+2927
+2941
+77
+parsley.Parsley.attempt
+Apply
+false
+0
+false
+parsley.Parsley.attempt[String](parsley.implicits.character.stringLift("snd"))
+
+139
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+2934
+2934
+77
+scala.Predef.$conforms
+TypeApply
+false
+0
+false
+scala.Predef.$conforms[parsley.Parsley[String]]
+
+140
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+2927
+2953
+77
+parsley.Parsley.LazyParsley.*>
+Apply
+false
+0
+false
+parsley.Parsley.LazyParsley[parsley.Parsley[String], String](parsley.Parsley.attempt[String](parsley.implicits.character.stringLift("snd")))(scala.Predef.$conforms[parsley.Parsley[String]]).*>[String, compiler.Ast.Expr](Parser.this.<expr>)
+
+141
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+2918
+2954
+77
+parsley.Parsley.LazyMapParsley.<#>
+Apply
+false
+0
+false
+parsley.Parsley.LazyMapParsley[compiler.Ast.Expr, compiler.Ast.Snd](Ast.Snd).<#>(parsley.Parsley.LazyParsley[parsley.Parsley[String], String](parsley.Parsley.attempt[String](parsley.implicits.character.stringLift("snd")))(scala.Predef.$conforms[parsley.Parsley[String]]).*>[String, compiler.Ast.Expr](Parser.this.<expr>))
+
+142
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+2866
+2955
+76
+parsley.Parsley.LazyParsley.<|>
+Apply
+false
+0
+false
+parsley.Parsley.LazyParsley[parsley.Parsley[compiler.Ast.Fst], compiler.Ast.Fst](parsley.Parsley.LazyMapParsley[compiler.Ast.Expr, compiler.Ast.Fst](Ast.Fst).<#>(parsley.Parsley.LazyParsley[parsley.Parsley[String], String](parsley.Parsley.attempt[String](parsley.implicits.character.stringLift("fst")))(scala.Predef.$conforms[parsley.Parsley[String]]).*>[String, compiler.Ast.Expr](Parser.this.<expr>)))(scala.Predef.$conforms[parsley.Parsley[compiler.Ast.Fst]]).<|>[compiler.Ast.PairElem with Product with java.io.Serializable](parsley.Parsley.LazyMapParsley[compiler.Ast.Expr, compiler.Ast.Snd](Ast.Snd).<#>(parsley.Parsley.LazyParsley[parsley.Parsley[String], String](parsley.Parsley.attempt[String](parsley.implicits.character.stringLift("snd")))(scala.Predef.$conforms[parsley.Parsley[String]]).*>[String, compiler.Ast.Expr](Parser.this.<expr>)))
+
+143
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+3055
+3068
+81
+compiler.Parser.<pair-elem>
+Select
+false
+0
+false
+Parser.this.<pair-elem>
+
+144
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+3055
+3055
+81
+scala.Predef.$conforms
+TypeApply
+false
+0
+false
+scala.Predef.$conforms[parsley.Parsley[compiler.Ast.PairElem]]
+
+145
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+3089
+3103
+82
+compiler.Parser.<array-elem>
+Select
+false
+0
+false
+Parser.this.<array-elem>
+
+146
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+3081
+3104
+82
+parsley.Parsley.attempt
+Apply
+false
+0
+false
+parsley.Parsley.attempt[compiler.Ast.ArrayElem](Parser.this.<array-elem>)
+
+147
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+3055
+3104
+81
+parsley.Parsley.LazyParsley.<|>
+Apply
+false
+0
+false
+parsley.Parsley.LazyParsley[parsley.Parsley[compiler.Ast.PairElem], compiler.Ast.PairElem](Parser.this.<pair-elem>)(scala.Predef.$conforms[parsley.Parsley[compiler.Ast.PairElem]]).<|>[compiler.Ast.AssignLHS with compiler.Ast.AssignRHS](parsley.Parsley.attempt[compiler.Ast.ArrayElem](Parser.this.<array-elem>))
+
+148
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+3069
+3069
+81
+scala.Predef.$conforms
+TypeApply
+false
+0
+false
+scala.Predef.$conforms[parsley.Parsley[compiler.Ast.AssignLHS with compiler.Ast.AssignRHS]]
+
+149
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+3117
+3135
+83
+parsley.Parsley.attempt
+Apply
+false
+0
+false
+parsley.Parsley.attempt[compiler.Ast.Ident](Parser.this.<ident>)
+
+150
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+3055
+3135
+82
+parsley.Parsley.LazyParsley.<|>
+Apply
+false
+0
+false
+parsley.Parsley.LazyParsley[parsley.Parsley[compiler.Ast.AssignLHS with compiler.Ast.AssignRHS], compiler.Ast.AssignLHS with compiler.Ast.AssignRHS](parsley.Parsley.LazyParsley[parsley.Parsley[compiler.Ast.PairElem], compiler.Ast.PairElem](Parser.this.<pair-elem>)(scala.Predef.$conforms[parsley.Parsley[compiler.Ast.PairElem]]).<|>[compiler.Ast.AssignLHS with compiler.Ast.AssignRHS](parsley.Parsley.attempt[compiler.Ast.ArrayElem](Parser.this.<array-elem>)))(scala.Predef.$conforms[parsley.Parsley[compiler.Ast.AssignLHS with compiler.Ast.AssignRHS]]).<|>[compiler.Ast.AssignLHS with compiler.Ast.AssignRHS](parsley.Parsley.attempt[compiler.Ast.Ident](Parser.this.<ident>))
+
+151
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+3047
+3136
+81
+parsley.Parsley.attempt
+Apply
+false
+0
+false
+parsley.Parsley.attempt[compiler.Ast.AssignLHS with compiler.Ast.AssignRHS](parsley.Parsley.LazyParsley[parsley.Parsley[compiler.Ast.AssignLHS with compiler.Ast.AssignRHS], compiler.Ast.AssignLHS with compiler.Ast.AssignRHS](parsley.Parsley.LazyParsley[parsley.Parsley[compiler.Ast.PairElem], compiler.Ast.PairElem](Parser.this.<pair-elem>)(scala.Predef.$conforms[parsley.Parsley[compiler.Ast.PairElem]]).<|>[compiler.Ast.AssignLHS with compiler.Ast.AssignRHS](parsley.Parsley.attempt[compiler.Ast.ArrayElem](Parser.this.<array-elem>)))(scala.Predef.$conforms[parsley.Parsley[compiler.Ast.AssignLHS with compiler.Ast.AssignRHS]]).<|>[compiler.Ast.AssignLHS with compiler.Ast.AssignRHS](parsley.Parsley.attempt[compiler.Ast.Ident](Parser.this.<ident>)))
+
+152
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+3032
+3137
+80
+compiler.lexer.fully
+Apply
+false
+0
+false
+lexer.fully[compiler.Ast.AssignLHS with compiler.Ast.AssignRHS](parsley.Parsley.attempt[compiler.Ast.AssignLHS with compiler.Ast.AssignRHS](parsley.Parsley.LazyParsley[parsley.Parsley[compiler.Ast.AssignLHS with compiler.Ast.AssignRHS], compiler.Ast.AssignLHS with compiler.Ast.AssignRHS](parsley.Parsley.LazyParsley[parsley.Parsley[compiler.Ast.PairElem], compiler.Ast.PairElem](Parser.this.<pair-elem>)(scala.Predef.$conforms[parsley.Parsley[compiler.Ast.PairElem]]).<|>[compiler.Ast.AssignLHS with compiler.Ast.AssignRHS](parsley.Parsley.attempt[compiler.Ast.ArrayElem](Parser.this.<array-elem>)))(scala.Predef.$conforms[parsley.Parsley[compiler.Ast.AssignLHS with compiler.Ast.AssignRHS]]).<|>[compiler.Ast.AssignLHS with compiler.Ast.AssignRHS](parsley.Parsley.attempt[compiler.Ast.Ident](Parser.this.<ident>))))
+
+153
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+3220
+3233
+86
+compiler.Parser.<pair-elem>
+Select
+false
+0
+false
+Parser.this.<pair-elem>
+
+154
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+3212
+3234
+86
+parsley.Parsley.attempt
+Apply
+false
+0
+false
+parsley.Parsley.attempt[compiler.Ast.PairElem](Parser.this.<pair-elem>)
+
+155
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+3219
+3219
+86
+scala.Predef.$conforms
+TypeApply
+false
+0
+false
+scala.Predef.$conforms[parsley.Parsley[compiler.Ast.PairElem]]
+
+156
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+3247
+3264
+87
+parsley.Parsley.attempt
+Apply
+false
+0
+false
+parsley.Parsley.attempt[compiler.Ast.Expr](Parser.this.<expr>)
+
+157
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+3212
+3264
+86
+parsley.Parsley.LazyParsley.<|>
+Apply
+false
+0
+false
+parsley.Parsley.LazyParsley[parsley.Parsley[compiler.Ast.PairElem], compiler.Ast.PairElem](parsley.Parsley.attempt[compiler.Ast.PairElem](Parser.this.<pair-elem>))(scala.Predef.$conforms[parsley.Parsley[compiler.Ast.PairElem]]).<|>[compiler.Ast.AssignRHS](parsley.Parsley.attempt[compiler.Ast.Expr](Parser.this.<expr>))
+
+158
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+3235
+3235
+86
+scala.Predef.$conforms
+TypeApply
+false
+0
+false
+scala.Predef.$conforms[parsley.Parsley[compiler.Ast.AssignRHS]]
+
+159
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+3285
+3300
+88
+compiler.Parser.<array-liter>
+Select
+false
+0
+false
+Parser.this.<array-liter>
+
+160
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+3277
+3301
+88
+parsley.Parsley.attempt
+Apply
+false
+0
+false
+parsley.Parsley.attempt[compiler.Ast.ArrayLiter](Parser.this.<array-liter>)
+
+161
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+3212
+3301
+87
+parsley.Parsley.LazyParsley.<|>
+Apply
+false
+0
+false
+parsley.Parsley.LazyParsley[parsley.Parsley[compiler.Ast.AssignRHS], compiler.Ast.AssignRHS](parsley.Parsley.LazyParsley[parsley.Parsley[compiler.Ast.PairElem], compiler.Ast.PairElem](parsley.Parsley.attempt[compiler.Ast.PairElem](Parser.this.<pair-elem>))(scala.Predef.$conforms[parsley.Parsley[compiler.Ast.PairElem]]).<|>[compiler.Ast.AssignRHS](parsley.Parsley.attempt[compiler.Ast.Expr](Parser.this.<expr>)))(scala.Predef.$conforms[parsley.Parsley[compiler.Ast.AssignRHS]]).<|>[compiler.Ast.AssignRHS](parsley.Parsley.attempt[compiler.Ast.ArrayLiter](Parser.this.<array-liter>))
+
+162
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+3265
+3265
+87
+scala.Predef.$conforms
+TypeApply
+false
+0
+false
+scala.Predef.$conforms[parsley.Parsley[compiler.Ast.AssignRHS]]
+
+163
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+3322
+3331
+89
+<nosymbol>
+Literal
+false
+0
+false
+"newpair"
+
+164
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+3322
+3322
+89
+parsley.implicits.character.stringLift
+Apply
+false
+0
+false
+parsley.implicits.character.stringLift(str)
+
+165
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+3361
+3368
+90
+compiler.Ast.NewPair
+Select
+false
+0
+false
+Ast.NewPair
+
+166
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+3387
+3390
+90
+parsley.implicits.character.stringLift
+ApplyImplicitView
+false
+0
+false
+parsley.implicits.character.stringLift(",")
+
+167
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+3380
+3391
+90
+compiler.lexer.lexeme
+Apply
+false
+0
+false
+lexer.lexeme[String](parsley.implicits.character.stringLift(","))
+
+168
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+3386
+3386
+90
+scala.Predef.$conforms
+TypeApply
+false
+0
+false
+scala.Predef.$conforms[parsley.Parsley[String]]
+
+169
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+3380
+3403
+90
+parsley.Parsley.LazyParsley.*>
+Apply
+false
+0
+false
+parsley.Parsley.LazyParsley[parsley.Parsley[String], String](lexer.lexeme[String](parsley.implicits.character.stringLift(",")))(scala.Predef.$conforms[parsley.Parsley[String]]).*>[String, compiler.Ast.Expr](Parser.this.<expr>)
+
+170
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+3355
+3404
+90
+parsley.lift.lift2
+Apply
+false
+0
+false
+parsley.lift.lift2[compiler.Ast.Expr, compiler.Ast.Expr, compiler.Ast.NewPair](Ast.NewPair, Parser.this.<expr>, parsley.Parsley.LazyParsley[parsley.Parsley[String], String](lexer.lexeme[String](parsley.implicits.character.stringLift(",")))(scala.Predef.$conforms[parsley.Parsley[String]]).*>[String, compiler.Ast.Expr](Parser.this.<expr>))
+
+171
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+3335
+3414
+89
+compiler.lexer.parens
+Apply
+false
+0
+false
+lexer.parens[compiler.Ast.NewPair](parsley.lift.lift2[compiler.Ast.Expr, compiler.Ast.Expr, compiler.Ast.NewPair](Ast.NewPair, Parser.this.<expr>, parsley.Parsley.LazyParsley[parsley.Parsley[String], String](lexer.lexeme[String](parsley.implicits.character.stringLift(",")))(scala.Predef.$conforms[parsley.Parsley[String]]).*>[String, compiler.Ast.Expr](Parser.this.<expr>)))
+
+172
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+3322
+3414
+89
+parsley.Parsley.LazyParsley.*>
+Apply
+false
+0
+false
+parsley.Parsley.LazyParsley[String, String]("newpair")(((str: String) => parsley.implicits.character.stringLift(str))).*>[String, compiler.Ast.NewPair](lexer.parens[compiler.Ast.NewPair](parsley.lift.lift2[compiler.Ast.Expr, compiler.Ast.Expr, compiler.Ast.NewPair](Ast.NewPair, Parser.this.<expr>, parsley.Parsley.LazyParsley[parsley.Parsley[String], String](lexer.lexeme[String](parsley.implicits.character.stringLift(",")))(scala.Predef.$conforms[parsley.Parsley[String]]).*>[String, compiler.Ast.Expr](Parser.this.<expr>))))
+
+173
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+3314
+3415
+89
+parsley.Parsley.attempt
+Apply
+false
+0
+false
+parsley.Parsley.attempt[compiler.Ast.NewPair](parsley.Parsley.LazyParsley[String, String]("newpair")(((str: String) => parsley.implicits.character.stringLift(str))).*>[String, compiler.Ast.NewPair](lexer.parens[compiler.Ast.NewPair](parsley.lift.lift2[compiler.Ast.Expr, compiler.Ast.Expr, compiler.Ast.NewPair](Ast.NewPair, Parser.this.<expr>, parsley.Parsley.LazyParsley[parsley.Parsley[String], String](lexer.lexeme[String](parsley.implicits.character.stringLift(",")))(scala.Predef.$conforms[parsley.Parsley[String]]).*>[String, compiler.Ast.Expr](Parser.this.<expr>)))))
+
+174
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+3212
+3415
+88
+parsley.Parsley.LazyParsley.<|>
+Apply
+false
+0
+false
+parsley.Parsley.LazyParsley[parsley.Parsley[compiler.Ast.AssignRHS], compiler.Ast.AssignRHS](parsley.Parsley.LazyParsley[parsley.Parsley[compiler.Ast.AssignRHS], compiler.Ast.AssignRHS](parsley.Parsley.LazyParsley[parsley.Parsley[compiler.Ast.PairElem], compiler.Ast.PairElem](parsley.Parsley.attempt[compiler.Ast.PairElem](Parser.this.<pair-elem>))(scala.Predef.$conforms[parsley.Parsley[compiler.Ast.PairElem]]).<|>[compiler.Ast.AssignRHS](parsley.Parsley.attempt[compiler.Ast.Expr](Parser.this.<expr>)))(scala.Predef.$conforms[parsley.Parsley[compiler.Ast.AssignRHS]]).<|>[compiler.Ast.AssignRHS](parsley.Parsley.attempt[compiler.Ast.ArrayLiter](Parser.this.<array-liter>)))(scala.Predef.$conforms[parsley.Parsley[compiler.Ast.AssignRHS]]).<|>[compiler.Ast.AssignRHS](parsley.Parsley.attempt[compiler.Ast.NewPair](parsley.Parsley.LazyParsley[String, String]("newpair")(((str: String) => parsley.implicits.character.stringLift(str))).*>[String, compiler.Ast.NewPair](lexer.parens[compiler.Ast.NewPair](parsley.lift.lift2[compiler.Ast.Expr, compiler.Ast.Expr, compiler.Ast.NewPair](Ast.NewPair, Parser.this.<expr>, parsley.Parsley.LazyParsley[parsley.Parsley[String], String](lexer.lexeme[String](parsley.implicits.character.stringLift(",")))(scala.Predef.$conforms[parsley.Parsley[String]]).*>[String, compiler.Ast.Expr](Parser.this.<expr>))))))
+
+175
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+3302
+3302
+88
+scala.Predef.$conforms
+TypeApply
+false
+0
+false
+scala.Predef.$conforms[parsley.Parsley[compiler.Ast.AssignRHS]]
+
+176
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+3429
+3435
+92
+<nosymbol>
+Literal
+false
+0
+false
+"call"
+
+177
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+3429
+3429
+92
+parsley.implicits.character.stringLift
+Apply
+false
+0
+false
+parsley.implicits.character.stringLift(str)
+
+178
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+3458
+3462
+93
+compiler.Ast.Call
+Select
+false
+0
+false
+Ast.Call
+
+179
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+3500
+3507
+95
+compiler.Ast.ArgList
+Select
+false
+0
+false
+Ast.ArgList
+
+180
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+3535
+3538
+95
+parsley.implicits.character.stringLift
+ApplyImplicitView
+false
+0
+false
+parsley.implicits.character.stringLift(",")
+
+181
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+3519
+3539
+95
+parsley.combinator.sepBy
+Apply
+false
+0
+false
+parsley.combinator.sepBy[compiler.Ast.Expr, String](Parser.this.<expr>, parsley.implicits.character.stringLift(","))
+
+182
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+3512
+3540
+95
+compiler.lexer.parens
+Apply
+false
+0
+false
+lexer.parens[List[compiler.Ast.Expr]](parsley.combinator.sepBy[compiler.Ast.Expr, String](Parser.this.<expr>, parsley.implicits.character.stringLift(",")))
+
+183
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+3500
+3540
+95
+parsley.Parsley.LazyMapParsley.<#>
+Apply
+false
+0
+false
+parsley.Parsley.LazyMapParsley[List[compiler.Ast.Expr], compiler.Ast.ArgList](Ast.ArgList).<#>(lexer.parens[List[compiler.Ast.Expr]](parsley.combinator.sepBy[compiler.Ast.Expr, String](Parser.this.<expr>, parsley.implicits.character.stringLift(","))))
+
+184
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+3439
+3591
+92
+parsley.lift.lift2
+Apply
+false
+0
+false
+parsley.lift.lift2[compiler.Ast.Ident, compiler.Ast.ArgList, compiler.Ast.Call](Ast.Call, Parser.this.<ident>, parsley.Parsley.LazyMapParsley[List[compiler.Ast.Expr], compiler.Ast.ArgList](Ast.ArgList).<#>(lexer.parens[List[compiler.Ast.Expr]](parsley.combinator.sepBy[compiler.Ast.Expr, String](Parser.this.<expr>, parsley.implicits.character.stringLift(",")))))
+
+185
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+3429
+3591
+92
+parsley.Parsley.LazyParsley.*>
+Apply
+false
+0
+false
+parsley.Parsley.LazyParsley[String, String]("call")(((str: String) => parsley.implicits.character.stringLift(str))).*>[String, compiler.Ast.Call](parsley.lift.lift2[compiler.Ast.Ident, compiler.Ast.ArgList, compiler.Ast.Call](Ast.Call, Parser.this.<ident>, parsley.Parsley.LazyMapParsley[List[compiler.Ast.Expr], compiler.Ast.ArgList](Ast.ArgList).<#>(lexer.parens[List[compiler.Ast.Expr]](parsley.combinator.sepBy[compiler.Ast.Expr, String](Parser.this.<expr>, parsley.implicits.character.stringLift(","))))))
+
+186
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+3212
+3592
+91
+parsley.Parsley.LazyParsley.<|>
+Apply
+false
+0
+false
+parsley.Parsley.LazyParsley[parsley.Parsley[compiler.Ast.AssignRHS], compiler.Ast.AssignRHS](parsley.Parsley.LazyParsley[parsley.Parsley[compiler.Ast.AssignRHS], compiler.Ast.AssignRHS](parsley.Parsley.LazyParsley[parsley.Parsley[compiler.Ast.AssignRHS], compiler.Ast.AssignRHS](parsley.Parsley.LazyParsley[parsley.Parsley[compiler.Ast.PairElem], compiler.Ast.PairElem](parsley.Parsley.attempt[compiler.Ast.PairElem](Parser.this.<pair-elem>))(scala.Predef.$conforms[parsley.Parsley[compiler.Ast.PairElem]]).<|>[compiler.Ast.AssignRHS](parsley.Parsley.attempt[compiler.Ast.Expr](Parser.this.<expr>)))(scala.Predef.$conforms[parsley.Parsley[compiler.Ast.AssignRHS]]).<|>[compiler.Ast.AssignRHS](parsley.Parsley.attempt[compiler.Ast.ArrayLiter](Parser.this.<array-liter>)))(scala.Predef.$conforms[parsley.Parsley[compiler.Ast.AssignRHS]]).<|>[compiler.Ast.AssignRHS](parsley.Parsley.attempt[compiler.Ast.NewPair](parsley.Parsley.LazyParsley[String, String]("newpair")(((str: String) => parsley.implicits.character.stringLift(str))).*>[String, compiler.Ast.NewPair](lexer.parens[compiler.Ast.NewPair](parsley.lift.lift2[compiler.Ast.Expr, compiler.Ast.Expr, compiler.Ast.NewPair](Ast.NewPair, Parser.this.<expr>, parsley.Parsley.LazyParsley[parsley.Parsley[String], String](lexer.lexeme[String](parsley.implicits.character.stringLift(",")))(scala.Predef.$conforms[parsley.Parsley[String]]).*>[String, compiler.Ast.Expr](Parser.this.<expr>)))))))(scala.Predef.$conforms[parsley.Parsley[compiler.Ast.AssignRHS]]).<|>[compiler.Ast.AssignRHS](parsley.Parsley.LazyParsley[String, String]("call")(((str: String) => parsley.implicits.character.stringLift(str))).*>[String, compiler.Ast.Call](parsley.lift.lift2[compiler.Ast.Ident, compiler.Ast.ArgList, compiler.Ast.Call](Ast.Call, Parser.this.<ident>, parsley.Parsley.LazyMapParsley[List[compiler.Ast.Expr], compiler.Ast.ArgList](Ast.ArgList).<#>(lexer.parens[List[compiler.Ast.Expr]](parsley.combinator.sepBy[compiler.Ast.Expr, String](Parser.this.<expr>, parsley.implicits.character.stringLift(",")))))))
+
+187
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+3206
+3593
+86
+compiler.lexer.fully
+Apply
+false
+0
+false
+lexer.fully[compiler.Ast.AssignRHS](parsley.Parsley.LazyParsley[parsley.Parsley[compiler.Ast.AssignRHS], compiler.Ast.AssignRHS](parsley.Parsley.LazyParsley[parsley.Parsley[compiler.Ast.AssignRHS], compiler.Ast.AssignRHS](parsley.Parsley.LazyParsley[parsley.Parsley[compiler.Ast.AssignRHS], compiler.Ast.AssignRHS](parsley.Parsley.LazyParsley[parsley.Parsley[compiler.Ast.PairElem], compiler.Ast.PairElem](parsley.Parsley.attempt[compiler.Ast.PairElem](Parser.this.<pair-elem>))(scala.Predef.$conforms[parsley.Parsley[compiler.Ast.PairElem]]).<|>[compiler.Ast.AssignRHS](parsley.Parsley.attempt[compiler.Ast.Expr](Parser.this.<expr>)))(scala.Predef.$conforms[parsley.Parsley[compiler.Ast.AssignRHS]]).<|>[compiler.Ast.AssignRHS](parsley.Parsley.attempt[compiler.Ast.ArrayLiter](Parser.this.<array-liter>)))(scala.Predef.$conforms[parsley.Parsley[compiler.Ast.AssignRHS]]).<|>[compiler.Ast.AssignRHS](parsley.Parsley.attempt[compiler.Ast.NewPair](parsley.Parsley.LazyParsley[String, String]("newpair")(((str: String) => parsley.implicits.character.stringLift(str))).*>[String, compiler.Ast.NewPair](lexer.parens[compiler.Ast.NewPair](parsley.lift.lift2[compiler.Ast.Expr, compiler.Ast.Expr, compiler.Ast.NewPair](Ast.NewPair, Parser.this.<expr>, parsley.Parsley.LazyParsley[parsley.Parsley[String], String](lexer.lexeme[String](parsley.implicits.character.stringLift(",")))(scala.Predef.$conforms[parsley.Parsley[String]]).*>[String, compiler.Ast.Expr](Parser.this.<expr>)))))))(scala.Predef.$conforms[parsley.Parsley[compiler.Ast.AssignRHS]]).<|>[compiler.Ast.AssignRHS](parsley.Parsley.LazyParsley[String, String]("call")(((str: String) => parsley.implicits.character.stringLift(str))).*>[String, compiler.Ast.Call](parsley.lift.lift2[compiler.Ast.Ident, compiler.Ast.ArgList, compiler.Ast.Call](Ast.Call, Parser.this.<ident>, parsley.Parsley.LazyMapParsley[List[compiler.Ast.Expr], compiler.Ast.ArgList](Ast.ArgList).<#>(lexer.parens[List[compiler.Ast.Expr]](parsley.combinator.sepBy[compiler.Ast.Expr, String](Parser.this.<expr>, parsley.implicits.character.stringLift(","))))))))
+
+188
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+3642
+3647
+99
+compiler.Ast.Param
+Select
+false
+0
+false
+Ast.Param
+
+189
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+3636
+3669
+99
+parsley.lift.lift2
+Apply
+false
+0
+false
+parsley.lift.lift2[compiler.Ast.Type, compiler.Ast.Ident, compiler.Ast.Param](Ast.Param, Parser.this.<type>, Parser.this.<ident>)
+
+190
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+3833
+3842
+105
+compiler.Ast.ArrayElem
+Select
+false
+0
+false
+Ast.ArrayElem
+
+191
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+3860
+3878
+105
+compiler.lexer.brackets
+Apply
+false
+0
+false
+lexer.brackets[compiler.Ast.Expr](Parser.this.<expr>)
+
+192
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+3855
+3879
+105
+parsley.combinator.some
+Apply
+false
+0
+false
+parsley.combinator.some[compiler.Ast.Expr](lexer.brackets[compiler.Ast.Expr](Parser.this.<expr>))
+
+193
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+3827
+3880
+105
+parsley.lift.lift2
+Apply
+false
+0
+false
+parsley.lift.lift2[compiler.Ast.Ident, List[compiler.Ast.Expr], compiler.Ast.ArrayElem](Ast.ArrayElem, Parser.this.<ident>, parsley.combinator.some[compiler.Ast.Expr](lexer.brackets[compiler.Ast.Expr](Parser.this.<expr>)))
+
+194
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+4022
+4032
+110
+compiler.Ast.ArrayLiter
+Select
+false
+0
+false
+Ast.ArrayLiter
+
+195
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+4070
+4073
+110
+parsley.implicits.character.stringLift
+ApplyImplicitView
+false
+0
+false
+parsley.implicits.character.stringLift(",")
+
+196
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+4054
+4074
+110
+parsley.combinator.sepBy
+Apply
+false
+0
+false
+parsley.combinator.sepBy[compiler.Ast.Expr, String](Parser.this.<expr>, parsley.implicits.character.stringLift(","))
+
+197
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+4046
+4075
+110
+parsley.Parsley.attempt
+Apply
+false
+0
+false
+parsley.Parsley.attempt[List[compiler.Ast.Expr]](parsley.combinator.sepBy[compiler.Ast.Expr, String](Parser.this.<expr>, parsley.implicits.character.stringLift(",")))
+
+198
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+4037
+4076
+110
+compiler.lexer.brackets
+Apply
+false
+0
+false
+lexer.brackets[List[compiler.Ast.Expr]](parsley.Parsley.attempt[List[compiler.Ast.Expr]](parsley.combinator.sepBy[compiler.Ast.Expr, String](Parser.this.<expr>, parsley.implicits.character.stringLift(","))))
+
+199
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+4022
+4076
+110
+parsley.Parsley.LazyMapParsley.<#>
+Apply
+false
+0
+false
+parsley.Parsley.LazyMapParsley[List[compiler.Ast.Expr], compiler.Ast.ArrayLiter](Ast.ArrayLiter).<#>(lexer.brackets[List[compiler.Ast.Expr]](parsley.Parsley.attempt[List[compiler.Ast.Expr]](parsley.combinator.sepBy[compiler.Ast.Expr, String](Parser.this.<expr>, parsley.implicits.character.stringLift(",")))))
+
+200
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+4145
+4151
+113
+<nosymbol>
+Literal
+false
+0
+false
+"null"
+
+201
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+4145
+4145
+113
+parsley.implicits.character.stringLift
+Apply
+false
+0
+false
+parsley.implicits.character.stringLift(str)
+
+202
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+4155
+4166
+113
+compiler.Ast.PairLiter.apply
+Apply
+false
+0
+false
+Ast.PairLiter.apply()
+
+203
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+4145
+4166
+113
+parsley.Parsley.LazyParsley.#>
+Apply
+false
+0
+false
+parsley.Parsley.LazyParsley[String, String]("null")(((str: String) => parsley.implicits.character.stringLift(str))).#>[compiler.Ast.PairLiter](Ast.PairLiter.apply())
+
+204
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+4247
+4254
+116
+parsley.implicits.character.stringLift
+ApplyImplicitView
+false
+0
+false
+parsley.implicits.character.stringLift("begin")
+
+205
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+4240
+4255
+116
+compiler.lexer.lexeme
+Apply
+false
+0
+false
+lexer.lexeme[String](parsley.implicits.character.stringLift("begin"))
+
+206
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+4246
+4246
+116
+scala.Predef.$conforms
+TypeApply
+false
+0
+false
+scala.Predef.$conforms[parsley.Parsley[String]]
+
+207
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+4272
+4283
+116
+compiler.Ast.WaccProgram
+Select
+false
+0
+false
+Ast.WaccProgram
+
+208
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+4290
+4307
+116
+parsley.Parsley.attempt
+Apply
+false
+0
+false
+parsley.Parsley.attempt[compiler.Ast.Func](Parser.this.<func>)
+
+209
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+4285
+4308
+116
+parsley.combinator.many
+Apply
+false
+0
+false
+parsley.combinator.many[compiler.Ast.Func](parsley.Parsley.attempt[compiler.Ast.Func](Parser.this.<func>))
+
+210
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+4266
+4319
+116
+parsley.lift.lift2
+Apply
+false
+0
+false
+parsley.lift.lift2[List[compiler.Ast.Func], compiler.Ast.Stat, compiler.Ast.WaccProgram](Ast.WaccProgram, parsley.combinator.many[compiler.Ast.Func](parsley.Parsley.attempt[compiler.Ast.Func](Parser.this.<func>)), Parser.this.<stat>)
+
+211
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+4259
+4320
+116
+compiler.lexer.lexeme
+Apply
+false
+0
+false
+lexer.lexeme[compiler.Ast.WaccProgram](parsley.lift.lift2[List[compiler.Ast.Func], compiler.Ast.Stat, compiler.Ast.WaccProgram](Ast.WaccProgram, parsley.combinator.many[compiler.Ast.Func](parsley.Parsley.attempt[compiler.Ast.Func](Parser.this.<func>)), Parser.this.<stat>))
+
+212
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+4240
+4320
+116
+parsley.Parsley.LazyParsley.*>
+Apply
+false
+0
+false
+parsley.Parsley.LazyParsley[parsley.Parsley[String], String](lexer.lexeme[String](parsley.implicits.character.stringLift("begin")))(scala.Predef.$conforms[parsley.Parsley[String]]).*>[String, compiler.Ast.WaccProgram](lexer.lexeme[compiler.Ast.WaccProgram](parsley.lift.lift2[List[compiler.Ast.Func], compiler.Ast.Stat, compiler.Ast.WaccProgram](Ast.WaccProgram, parsley.combinator.many[compiler.Ast.Func](parsley.Parsley.attempt[compiler.Ast.Func](Parser.this.<func>)), Parser.this.<stat>)))
+
+213
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+4256
+4256
+116
+scala.Predef.$conforms
+TypeApply
+false
+0
+false
+scala.Predef.$conforms[parsley.Parsley[compiler.Ast.WaccProgram]]
+
+214
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+4324
+4329
+116
+parsley.implicits.character.stringLift
+ApplyImplicitView
+false
+0
+false
+parsley.implicits.character.stringLift("end")
+
+215
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+4240
+4329
+116
+parsley.Parsley.LazyParsley.<*
+Apply
+false
+0
+false
+parsley.Parsley.LazyParsley[parsley.Parsley[compiler.Ast.WaccProgram], compiler.Ast.WaccProgram](parsley.Parsley.LazyParsley[parsley.Parsley[String], String](lexer.lexeme[String](parsley.implicits.character.stringLift("begin")))(scala.Predef.$conforms[parsley.Parsley[String]]).*>[String, compiler.Ast.WaccProgram](lexer.lexeme[compiler.Ast.WaccProgram](parsley.lift.lift2[List[compiler.Ast.Func], compiler.Ast.Stat, compiler.Ast.WaccProgram](Ast.WaccProgram, parsley.combinator.many[compiler.Ast.Func](parsley.Parsley.attempt[compiler.Ast.Func](Parser.this.<func>)), Parser.this.<stat>))))(scala.Predef.$conforms[parsley.Parsley[compiler.Ast.WaccProgram]]).<*[String](parsley.implicits.character.stringLift("end"))
+
+216
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+4234
+4330
+116
+compiler.lexer.fully
+Apply
+false
+0
+false
+lexer.fully[compiler.Ast.WaccProgram](parsley.Parsley.LazyParsley[parsley.Parsley[compiler.Ast.WaccProgram], compiler.Ast.WaccProgram](parsley.Parsley.LazyParsley[parsley.Parsley[String], String](lexer.lexeme[String](parsley.implicits.character.stringLift("begin")))(scala.Predef.$conforms[parsley.Parsley[String]]).*>[String, compiler.Ast.WaccProgram](lexer.lexeme[compiler.Ast.WaccProgram](parsley.lift.lift2[List[compiler.Ast.Func], compiler.Ast.Stat, compiler.Ast.WaccProgram](Ast.WaccProgram, parsley.combinator.many[compiler.Ast.Func](parsley.Parsley.attempt[compiler.Ast.Func](Parser.this.<func>)), Parser.this.<stat>))))(scala.Predef.$conforms[parsley.Parsley[compiler.Ast.WaccProgram]]).<*[String](parsley.implicits.character.stringLift("end")))
+
+217
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+5949
+5955
+173
+<nosymbol>
+Literal
+false
+0
+false
+"skip"
+
+218
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+5949
+5949
+173
+parsley.implicits.character.stringLift
+Apply
+false
+0
+false
+parsley.implicits.character.stringLift(str)
+
+219
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+5958
+5962
+173
+compiler.Ast.Skip
+Select
+false
+0
+false
+Ast.Skip
+
+220
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+5949
+5962
+173
+parsley.Parsley.LazyParsley.#>
+Apply
+false
+0
+false
+parsley.Parsley.LazyParsley[String, String]("skip")(((str: String) => parsley.implicits.character.stringLift(str))).#>[compiler.Ast.Skip.type](Ast.Skip)
+
+221
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+6045
+6055
+177
+compiler.Ast.TypeAssign
+Select
+false
+0
+false
+Ast.TypeAssign
+
+222
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+6120
+6123
+180
+parsley.implicits.character.stringLift
+ApplyImplicitView
+false
+0
+false
+parsley.implicits.character.stringLift("=")
+
+223
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+6114
+6124
+180
+compiler.lexer.fully
+Apply
+false
+0
+false
+lexer.fully[String](parsley.implicits.character.stringLift("="))
+
+224
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+6119
+6119
+180
+scala.Predef.$conforms
+TypeApply
+false
+0
+false
+scala.Predef.$conforms[parsley.Parsley[String]]
+
+225
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+6128
+6142
+180
+compiler.Parser.<assign-rhs>
+Select
+false
+0
+false
+Parser.this.<assign-rhs>
+
+226
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+6114
+6142
+180
+parsley.Parsley.LazyParsley.*>
+Apply
+false
+0
+false
+parsley.Parsley.LazyParsley[parsley.Parsley[String], String](lexer.fully[String](parsley.implicits.character.stringLift("=")))(scala.Predef.$conforms[parsley.Parsley[String]]).*>[String, compiler.Ast.AssignRHS](Parser.this.<assign-rhs>)
+
+227
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+6026
+6152
+176
+parsley.lift.lift3
+Apply
+false
+0
+false
+parsley.lift.lift3[compiler.Ast.Type, compiler.Ast.Ident, compiler.Ast.AssignRHS, compiler.Ast.TypeAssign](Ast.TypeAssign, Parser.this.<type>, Parser.this.<ident>, parsley.Parsley.LazyParsley[parsley.Parsley[String], String](lexer.fully[String](parsley.implicits.character.stringLift("=")))(scala.Predef.$conforms[parsley.Parsley[String]]).*>[String, compiler.Ast.AssignRHS](Parser.this.<assign-rhs>))
+
+228
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+6233
+6241
+185
+compiler.Ast.AssignLR
+Select
+false
+0
+false
+Ast.AssignLR
+
+229
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+6256
+6270
+186
+compiler.Parser.<assign-lhs>
+Select
+false
+0
+false
+Parser.this.<assign-lhs>
+
+230
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+6284
+6287
+187
+<nosymbol>
+Literal
+false
+0
+false
+"="
+
+231
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+6284
+6284
+187
+parsley.implicits.character.stringLift
+Apply
+false
+0
+false
+parsley.implicits.character.stringLift(str)
+
+232
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+6291
+6305
+187
+compiler.Parser.<assign-rhs>
+Select
+false
+0
+false
+Parser.this.<assign-rhs>
+
+233
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+6284
+6305
+187
+parsley.Parsley.LazyParsley.*>
+Apply
+false
+0
+false
+parsley.Parsley.LazyParsley[String, String]("=")(((str: String) => parsley.implicits.character.stringLift(str))).*>[String, compiler.Ast.AssignRHS](Parser.this.<assign-rhs>)
+
+234
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+6214
+6315
+184
+parsley.lift.lift2
+Apply
+false
+0
+false
+parsley.lift.lift2[compiler.Ast.AssignLHS, compiler.Ast.AssignRHS, compiler.Ast.AssignLR](Ast.AssignLR, Parser.this.<assign-lhs>, parsley.Parsley.LazyParsley[String, String]("=")(((str: String) => parsley.implicits.character.stringLift(str))).*>[String, compiler.Ast.AssignRHS](Parser.this.<assign-rhs>))
+
+235
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+6373
+6377
+191
+compiler.Ast.Read
+Select
+false
+0
+false
+Ast.Read
+
+236
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+6382
+6388
+191
+<nosymbol>
+Literal
+false
+0
+false
+"read"
+
+237
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+6382
+6382
+191
+parsley.implicits.character.stringLift
+Apply
+false
+0
+false
+parsley.implicits.character.stringLift(str)
+
+238
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+6392
+6406
+191
+compiler.Parser.<assign-lhs>
+Select
+false
+0
+false
+Parser.this.<assign-lhs>
+
+239
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+6382
+6406
+191
+parsley.Parsley.LazyParsley.*>
+Apply
+false
+0
+false
+parsley.Parsley.LazyParsley[String, String]("read")(((str: String) => parsley.implicits.character.stringLift(str))).*>[String, compiler.Ast.AssignLHS](Parser.this.<assign-lhs>)
+
+240
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+6373
+6406
+191
+parsley.Parsley.LazyMapParsley.<#>
+Apply
+false
+0
+false
+parsley.Parsley.LazyMapParsley[compiler.Ast.AssignLHS, compiler.Ast.Read](Ast.Read).<#>(parsley.Parsley.LazyParsley[String, String]("read")(((str: String) => parsley.implicits.character.stringLift(str))).*>[String, compiler.Ast.AssignLHS](Parser.this.<assign-lhs>))
+
+241
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+6464
+6468
+194
+compiler.Ast.Free
+Select
+false
+0
+false
+Ast.Free
+
+242
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+6473
+6479
+194
+<nosymbol>
+Literal
+false
+0
+false
+"free"
+
+243
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+6473
+6473
+194
+parsley.implicits.character.stringLift
+Apply
+false
+0
+false
+parsley.implicits.character.stringLift(str)
+
+244
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+6473
+6491
+194
+parsley.Parsley.LazyParsley.*>
+Apply
+false
+0
+false
+parsley.Parsley.LazyParsley[String, String]("free")(((str: String) => parsley.implicits.character.stringLift(str))).*>[String, compiler.Ast.Expr](Parser.this.<expr>)
+
+245
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+6464
+6491
+194
+parsley.Parsley.LazyMapParsley.<#>
+Apply
+false
+0
+false
+parsley.Parsley.LazyMapParsley[compiler.Ast.Expr, compiler.Ast.Free](Ast.Free).<#>(parsley.Parsley.LazyParsley[String, String]("free")(((str: String) => parsley.implicits.character.stringLift(str))).*>[String, compiler.Ast.Expr](Parser.this.<expr>))
+
+246
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+6551
+6557
+197
+compiler.Ast.Return
+Select
+false
+0
+false
+Ast.Return
+
+247
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+6562
+6570
+197
+<nosymbol>
+Literal
+false
+0
+false
+"return"
+
+248
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+6562
+6562
+197
+parsley.implicits.character.stringLift
+Apply
+false
+0
+false
+parsley.implicits.character.stringLift(str)
+
+249
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+6562
+6582
+197
+parsley.Parsley.LazyParsley.*>
+Apply
+false
+0
+false
+parsley.Parsley.LazyParsley[String, String]("return")(((str: String) => parsley.implicits.character.stringLift(str))).*>[String, compiler.Ast.Expr](Parser.this.<expr>)
+
+250
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+6551
+6582
+197
+parsley.Parsley.LazyMapParsley.<#>
+Apply
+false
+0
+false
+parsley.Parsley.LazyMapParsley[compiler.Ast.Expr, compiler.Ast.Return](Ast.Return).<#>(parsley.Parsley.LazyParsley[String, String]("return")(((str: String) => parsley.implicits.character.stringLift(str))).*>[String, compiler.Ast.Expr](Parser.this.<expr>))
+
+251
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+6640
+6644
+200
+compiler.Ast.Exit
+Select
+false
+0
+false
+Ast.Exit
+
+252
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+6656
+6662
+200
+parsley.implicits.character.stringLift
+ApplyImplicitView
+false
+0
+false
+parsley.implicits.character.stringLift("exit")
+
+253
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+6649
+6663
+200
+compiler.lexer.lexeme
+Apply
+false
+0
+false
+lexer.lexeme[String](parsley.implicits.character.stringLift("exit"))
+
+254
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+6655
+6655
+200
+scala.Predef.$conforms
+TypeApply
+false
+0
+false
+scala.Predef.$conforms[parsley.Parsley[String]]
+
+255
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+6649
+6675
+200
+parsley.Parsley.LazyParsley.*>
+Apply
+false
+0
+false
+parsley.Parsley.LazyParsley[parsley.Parsley[String], String](lexer.lexeme[String](parsley.implicits.character.stringLift("exit")))(scala.Predef.$conforms[parsley.Parsley[String]]).*>[String, compiler.Ast.Expr](Parser.this.<expr>)
+
+256
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+6640
+6675
+200
+parsley.Parsley.LazyMapParsley.<#>
+Apply
+false
+0
+false
+parsley.Parsley.LazyMapParsley[compiler.Ast.Expr, compiler.Ast.Exit](Ast.Exit).<#>(parsley.Parsley.LazyParsley[parsley.Parsley[String], String](lexer.lexeme[String](parsley.implicits.character.stringLift("exit")))(scala.Predef.$conforms[parsley.Parsley[String]]).*>[String, compiler.Ast.Expr](Parser.this.<expr>))
+
+257
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+6739
+6744
+204
+compiler.Ast.Print
+Select
+false
+0
+false
+Ast.Print
+
+258
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+6756
+6763
+204
+parsley.implicits.character.stringLift
+ApplyImplicitView
+false
+0
+false
+parsley.implicits.character.stringLift("print")
+
+259
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+6749
+6764
+204
+compiler.lexer.lexeme
+Apply
+false
+0
+false
+lexer.lexeme[String](parsley.implicits.character.stringLift("print"))
+
+260
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+6755
+6755
+204
+scala.Predef.$conforms
+TypeApply
+false
+0
+false
+scala.Predef.$conforms[parsley.Parsley[String]]
+
+261
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+6749
+6776
+204
+parsley.Parsley.LazyParsley.*>
+Apply
+false
+0
+false
+parsley.Parsley.LazyParsley[parsley.Parsley[String], String](lexer.lexeme[String](parsley.implicits.character.stringLift("print")))(scala.Predef.$conforms[parsley.Parsley[String]]).*>[String, compiler.Ast.Expr](Parser.this.<expr>)
+
+262
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+6739
+6776
+204
+parsley.Parsley.LazyMapParsley.<#>
+Apply
+false
+0
+false
+parsley.Parsley.LazyMapParsley[compiler.Ast.Expr, compiler.Ast.Print](Ast.Print).<#>(parsley.Parsley.LazyParsley[parsley.Parsley[String], String](lexer.lexeme[String](parsley.implicits.character.stringLift("print")))(scala.Predef.$conforms[parsley.Parsley[String]]).*>[String, compiler.Ast.Expr](Parser.this.<expr>))
+
+263
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+6837
+6844
+207
+compiler.Ast.Println
+Select
+false
+0
+false
+Ast.Println
+
+264
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+6849
+6858
+207
+<nosymbol>
+Literal
+false
+0
+false
+"println"
+
+265
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+6849
+6849
+207
+parsley.implicits.character.stringLift
+Apply
+false
+0
+false
+parsley.implicits.character.stringLift(str)
+
+266
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+6849
+6870
+207
+parsley.Parsley.LazyParsley.*>
+Apply
+false
+0
+false
+parsley.Parsley.LazyParsley[String, String]("println")(((str: String) => parsley.implicits.character.stringLift(str))).*>[String, compiler.Ast.Expr](Parser.this.<expr>)
+
+267
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+6837
+6870
+207
+parsley.Parsley.LazyMapParsley.<#>
+Apply
+false
+0
+false
+parsley.Parsley.LazyMapParsley[compiler.Ast.Expr, compiler.Ast.Println](Ast.Println).<#>(parsley.Parsley.LazyParsley[String, String]("println")(((str: String) => parsley.implicits.character.stringLift(str))).*>[String, compiler.Ast.Expr](Parser.this.<expr>))
+
+268
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+6927
+6931
+210
+<nosymbol>
+Literal
+false
+0
+false
+"if"
+
+269
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+6927
+6927
+210
+parsley.implicits.character.stringLift
+Apply
+false
+0
+false
+parsley.implicits.character.stringLift(str)
+
+270
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+6954
+6956
+211
+compiler.Ast.If
+Select
+false
+0
+false
+Ast.If
+
+271
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+6992
+6998
+213
+<nosymbol>
+Literal
+false
+0
+false
+"then"
+
+272
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+6992
+6992
+213
+parsley.implicits.character.stringLift
+Apply
+false
+0
+false
+parsley.implicits.character.stringLift(str)
+
+273
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+6992
+7010
+213
+parsley.Parsley.LazyParsley.*>
+Apply
+false
+0
+false
+parsley.Parsley.LazyParsley[String, String]("then")(((str: String) => parsley.implicits.character.stringLift(str))).*>[String, compiler.Ast.Stat](Parser.this.<stat>)
+
+274
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+7024
+7030
+214
+<nosymbol>
+Literal
+false
+0
+false
+"else"
+
+275
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+7024
+7024
+214
+parsley.implicits.character.stringLift
+Apply
+false
+0
+false
+parsley.implicits.character.stringLift(str)
+
+276
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+7024
+7042
+214
+parsley.Parsley.LazyParsley.*>
+Apply
+false
+0
+false
+parsley.Parsley.LazyParsley[String, String]("else")(((str: String) => parsley.implicits.character.stringLift(str))).*>[String, compiler.Ast.Stat](Parser.this.<stat>)
+
+277
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+6935
+7053
+210
+parsley.lift.lift3
+Apply
+false
+0
+false
+parsley.lift.lift3[compiler.Ast.Expr, compiler.Ast.Stat, compiler.Ast.Stat, compiler.Ast.If](Ast.If, Parser.this.<expr>, parsley.Parsley.LazyParsley[String, String]("then")(((str: String) => parsley.implicits.character.stringLift(str))).*>[String, compiler.Ast.Stat](Parser.this.<stat>), parsley.Parsley.LazyParsley[String, String]("else")(((str: String) => parsley.implicits.character.stringLift(str))).*>[String, compiler.Ast.Stat](Parser.this.<stat>))
+
+278
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+6927
+7053
+210
+parsley.Parsley.LazyParsley.*>
+Apply
+false
+0
+false
+parsley.Parsley.LazyParsley[String, String]("if")(((str: String) => parsley.implicits.character.stringLift(str))).*>[String, compiler.Ast.If](parsley.lift.lift3[compiler.Ast.Expr, compiler.Ast.Stat, compiler.Ast.Stat, compiler.Ast.If](Ast.If, Parser.this.<expr>, parsley.Parsley.LazyParsley[String, String]("then")(((str: String) => parsley.implicits.character.stringLift(str))).*>[String, compiler.Ast.Stat](Parser.this.<stat>), parsley.Parsley.LazyParsley[String, String]("else")(((str: String) => parsley.implicits.character.stringLift(str))).*>[String, compiler.Ast.Stat](Parser.this.<stat>)))
+
+279
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+6932
+6932
+210
+scala.Predef.$conforms
+TypeApply
+false
+0
+false
+scala.Predef.$conforms[parsley.Parsley[compiler.Ast.If]]
+
+280
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+7057
+7061
+215
+parsley.implicits.character.stringLift
+ApplyImplicitView
+false
+0
+false
+parsley.implicits.character.stringLift("fi")
+
+281
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+6927
+7061
+215
+parsley.Parsley.LazyParsley.<*
+Apply
+false
+0
+false
+parsley.Parsley.LazyParsley[parsley.Parsley[compiler.Ast.If], compiler.Ast.If](parsley.Parsley.LazyParsley[String, String]("if")(((str: String) => parsley.implicits.character.stringLift(str))).*>[String, compiler.Ast.If](parsley.lift.lift3[compiler.Ast.Expr, compiler.Ast.Stat, compiler.Ast.Stat, compiler.Ast.If](Ast.If, Parser.this.<expr>, parsley.Parsley.LazyParsley[String, String]("then")(((str: String) => parsley.implicits.character.stringLift(str))).*>[String, compiler.Ast.Stat](Parser.this.<stat>), parsley.Parsley.LazyParsley[String, String]("else")(((str: String) => parsley.implicits.character.stringLift(str))).*>[String, compiler.Ast.Stat](Parser.this.<stat>))))(scala.Predef.$conforms[parsley.Parsley[compiler.Ast.If]]).<*[String](parsley.implicits.character.stringLift("fi"))
+
+282
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+7122
+7129
+218
+<nosymbol>
+Literal
+false
+0
+false
+"while"
+
+283
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+7122
+7122
+218
+parsley.implicits.character.stringLift
+Apply
+false
+0
+false
+parsley.implicits.character.stringLift(str)
+
+284
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+7152
+7157
+219
+compiler.Ast.While
+Select
+false
+0
+false
+Ast.While
+
+285
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+7193
+7197
+221
+<nosymbol>
+Literal
+false
+0
+false
+"do"
+
+286
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+7193
+7193
+221
+parsley.implicits.character.stringLift
+Apply
+false
+0
+false
+parsley.implicits.character.stringLift(str)
+
+287
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+7193
+7209
+221
+parsley.Parsley.LazyParsley.*>
+Apply
+false
+0
+false
+parsley.Parsley.LazyParsley[String, String]("do")(((str: String) => parsley.implicits.character.stringLift(str))).*>[String, compiler.Ast.Stat](Parser.this.<stat>)
+
+288
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+7133
+7220
+218
+parsley.lift.lift2
+Apply
+false
+0
+false
+parsley.lift.lift2[compiler.Ast.Expr, compiler.Ast.Stat, compiler.Ast.While](Ast.While, Parser.this.<expr>, parsley.Parsley.LazyParsley[String, String]("do")(((str: String) => parsley.implicits.character.stringLift(str))).*>[String, compiler.Ast.Stat](Parser.this.<stat>))
+
+289
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+7122
+7220
+218
+parsley.Parsley.LazyParsley.*>
+Apply
+false
+0
+false
+parsley.Parsley.LazyParsley[String, String]("while")(((str: String) => parsley.implicits.character.stringLift(str))).*>[String, compiler.Ast.While](parsley.lift.lift2[compiler.Ast.Expr, compiler.Ast.Stat, compiler.Ast.While](Ast.While, Parser.this.<expr>, parsley.Parsley.LazyParsley[String, String]("do")(((str: String) => parsley.implicits.character.stringLift(str))).*>[String, compiler.Ast.Stat](Parser.this.<stat>)))
+
+290
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+7130
+7130
+218
+scala.Predef.$conforms
+TypeApply
+false
+0
+false
+scala.Predef.$conforms[parsley.Parsley[compiler.Ast.While]]
+
+291
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+7224
+7230
+222
+parsley.implicits.character.stringLift
+ApplyImplicitView
+false
+0
+false
+parsley.implicits.character.stringLift("done")
+
+292
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+7122
+7230
+222
+parsley.Parsley.LazyParsley.<*
+Apply
+false
+0
+false
+parsley.Parsley.LazyParsley[parsley.Parsley[compiler.Ast.While], compiler.Ast.While](parsley.Parsley.LazyParsley[String, String]("while")(((str: String) => parsley.implicits.character.stringLift(str))).*>[String, compiler.Ast.While](parsley.lift.lift2[compiler.Ast.Expr, compiler.Ast.Stat, compiler.Ast.While](Ast.While, Parser.this.<expr>, parsley.Parsley.LazyParsley[String, String]("do")(((str: String) => parsley.implicits.character.stringLift(str))).*>[String, compiler.Ast.Stat](Parser.this.<stat>))))(scala.Predef.$conforms[parsley.Parsley[compiler.Ast.While]]).<*[String](parsley.implicits.character.stringLift("done"))
+
+293
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+7290
+7295
+225
+compiler.Ast.Begin
+Select
+false
+0
+false
+Ast.Begin
+
+294
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+7301
+7308
+225
+<nosymbol>
+Literal
+false
+0
+false
+"begin"
+
+295
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+7301
+7301
+225
+parsley.implicits.character.stringLift
+Apply
+false
+0
+false
+parsley.implicits.character.stringLift(str)
+
+296
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+7301
+7320
+225
+parsley.Parsley.LazyParsley.*>
+Apply
+false
+0
+false
+parsley.Parsley.LazyParsley[String, String]("begin")(((str: String) => parsley.implicits.character.stringLift(str))).*>[String, compiler.Ast.Stat](Parser.this.<stat>)
+
+297
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+7309
+7309
+225
+scala.Predef.$conforms
+TypeApply
+false
+0
+false
+scala.Predef.$conforms[parsley.Parsley[compiler.Ast.Stat]]
+
+298
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+7324
+7329
+225
+parsley.implicits.character.stringLift
+ApplyImplicitView
+false
+0
+false
+parsley.implicits.character.stringLift("end")
+
+299
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+7301
+7329
+225
+parsley.Parsley.LazyParsley.<*
+Apply
+false
+0
+false
+parsley.Parsley.LazyParsley[parsley.Parsley[compiler.Ast.Stat], compiler.Ast.Stat](parsley.Parsley.LazyParsley[String, String]("begin")(((str: String) => parsley.implicits.character.stringLift(str))).*>[String, compiler.Ast.Stat](Parser.this.<stat>))(scala.Predef.$conforms[parsley.Parsley[compiler.Ast.Stat]]).<*[String](parsley.implicits.character.stringLift("end"))
+
+300
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+7290
+7330
+225
+parsley.Parsley.LazyMapParsley.<#>
+Apply
+false
+0
+false
+parsley.Parsley.LazyMapParsley[compiler.Ast.Stat, compiler.Ast.Begin](Ast.Begin).<#>(parsley.Parsley.LazyParsley[parsley.Parsley[compiler.Ast.Stat], compiler.Ast.Stat](parsley.Parsley.LazyParsley[String, String]("begin")(((str: String) => parsley.implicits.character.stringLift(str))).*>[String, compiler.Ast.Stat](Parser.this.<stat>))(scala.Predef.$conforms[parsley.Parsley[compiler.Ast.Stat]]).<*[String](parsley.implicits.character.stringLift("end")))
+
+301
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+7391
+7396
+228
+compiler.Ast.Colon
+Select
+false
+0
+false
+Ast.Colon
+
+302
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+7408
+7411
+228
+<nosymbol>
+Literal
+false
+0
+false
+";"
+
+303
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+7408
+7408
+228
+parsley.implicits.character.stringLift
+Apply
+false
+0
+false
+parsley.implicits.character.stringLift(str)
+
+304
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+7408
+7423
+228
+parsley.Parsley.LazyParsley.*>
+Apply
+false
+0
+false
+parsley.Parsley.LazyParsley[String, String](";")(((str: String) => parsley.implicits.character.stringLift(str))).*>[String, compiler.Ast.Stat](Parser.this.<stat>)
+
+305
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+7385
+7424
+228
+parsley.lift.lift2
+Apply
+false
+0
+false
+parsley.lift.lift2[compiler.Ast.Stat, compiler.Ast.Stat, compiler.Ast.Colon](Ast.Colon, Parser.this.<stat>, parsley.Parsley.LazyParsley[String, String](";")(((str: String) => parsley.implicits.character.stringLift(str))).*>[String, compiler.Ast.Stat](Parser.this.<stat>))
+
+306
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+7490
+7501
+231
+compiler.Parser.printlnStat
+Select
+false
+0
+false
+Parser.this.printlnStat
+
+307
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+7482
+7502
+231
+parsley.Parsley.attempt
+Apply
+false
+0
+false
+parsley.Parsley.attempt[compiler.Ast.Stat](Parser.this.printlnStat)
+
+308
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+7489
+7489
+231
+scala.Predef.$conforms
+TypeApply
+false
+0
+false
+scala.Predef.$conforms[parsley.Parsley[compiler.Ast.Stat]]
+
+309
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+7523
+7535
+232
+compiler.Parser.assignLRStat
+Select
+false
+0
+false
+Parser.this.assignLRStat
+
+310
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+7515
+7536
+232
+parsley.Parsley.attempt
+Apply
+false
+0
+false
+parsley.Parsley.attempt[compiler.Ast.Stat](Parser.this.assignLRStat)
+
+311
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+7482
+7536
+231
+parsley.Parsley.LazyParsley.<|>
+Apply
+false
+0
+false
+parsley.Parsley.LazyParsley[parsley.Parsley[compiler.Ast.Stat], compiler.Ast.Stat](parsley.Parsley.attempt[compiler.Ast.Stat](Parser.this.printlnStat))(scala.Predef.$conforms[parsley.Parsley[compiler.Ast.Stat]]).<|>[compiler.Ast.Stat](parsley.Parsley.attempt[compiler.Ast.Stat](Parser.this.assignLRStat))
+
+312
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+7503
+7503
+231
+scala.Predef.$conforms
+TypeApply
+false
+0
+false
+scala.Predef.$conforms[parsley.Parsley[compiler.Ast.Stat]]
+
+313
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+7557
+7565
+233
+compiler.Parser.skipStat
+Select
+false
+0
+false
+Parser.this.skipStat
+
+314
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+7549
+7566
+233
+parsley.Parsley.attempt
+Apply
+false
+0
+false
+parsley.Parsley.attempt[compiler.Ast.Stat](Parser.this.skipStat)
+
+315
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+7482
+7566
+232
+parsley.Parsley.LazyParsley.<|>
+Apply
+false
+0
+false
+parsley.Parsley.LazyParsley[parsley.Parsley[compiler.Ast.Stat], compiler.Ast.Stat](parsley.Parsley.LazyParsley[parsley.Parsley[compiler.Ast.Stat], compiler.Ast.Stat](parsley.Parsley.attempt[compiler.Ast.Stat](Parser.this.printlnStat))(scala.Predef.$conforms[parsley.Parsley[compiler.Ast.Stat]]).<|>[compiler.Ast.Stat](parsley.Parsley.attempt[compiler.Ast.Stat](Parser.this.assignLRStat)))(scala.Predef.$conforms[parsley.Parsley[compiler.Ast.Stat]]).<|>[compiler.Ast.Stat](parsley.Parsley.attempt[compiler.Ast.Stat](Parser.this.skipStat))
+
+316
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+7537
+7537
+232
+scala.Predef.$conforms
+TypeApply
+false
+0
+false
+scala.Predef.$conforms[parsley.Parsley[compiler.Ast.Stat]]
+
+317
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+7587
+7596
+234
+compiler.Parser.whileStat
+Select
+false
+0
+false
+Parser.this.whileStat
+
+318
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+7579
+7597
+234
+parsley.Parsley.attempt
+Apply
+false
+0
+false
+parsley.Parsley.attempt[compiler.Ast.Stat](Parser.this.whileStat)
+
+319
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+7482
+7597
+233
+parsley.Parsley.LazyParsley.<|>
+Apply
+false
+0
+false
+parsley.Parsley.LazyParsley[parsley.Parsley[compiler.Ast.Stat], compiler.Ast.Stat](parsley.Parsley.LazyParsley[parsley.Parsley[compiler.Ast.Stat], compiler.Ast.Stat](parsley.Parsley.LazyParsley[parsley.Parsley[compiler.Ast.Stat], compiler.Ast.Stat](parsley.Parsley.attempt[compiler.Ast.Stat](Parser.this.printlnStat))(scala.Predef.$conforms[parsley.Parsley[compiler.Ast.Stat]]).<|>[compiler.Ast.Stat](parsley.Parsley.attempt[compiler.Ast.Stat](Parser.this.assignLRStat)))(scala.Predef.$conforms[parsley.Parsley[compiler.Ast.Stat]]).<|>[compiler.Ast.Stat](parsley.Parsley.attempt[compiler.Ast.Stat](Parser.this.skipStat)))(scala.Predef.$conforms[parsley.Parsley[compiler.Ast.Stat]]).<|>[compiler.Ast.Stat](parsley.Parsley.attempt[compiler.Ast.Stat](Parser.this.whileStat))
+
+320
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+7567
+7567
+233
+scala.Predef.$conforms
+TypeApply
+false
+0
+false
+scala.Predef.$conforms[parsley.Parsley[compiler.Ast.Stat]]
+
+321
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+7618
+7627
+235
+compiler.Parser.beginStat
+Select
+false
+0
+false
+Parser.this.beginStat
+
+322
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+7610
+7628
+235
+parsley.Parsley.attempt
+Apply
+false
+0
+false
+parsley.Parsley.attempt[compiler.Ast.Stat](Parser.this.beginStat)
+
+323
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+7482
+7628
+234
+parsley.Parsley.LazyParsley.<|>
+Apply
+false
+0
+false
+parsley.Parsley.LazyParsley[parsley.Parsley[compiler.Ast.Stat], compiler.Ast.Stat](parsley.Parsley.LazyParsley[parsley.Parsley[compiler.Ast.Stat], compiler.Ast.Stat](parsley.Parsley.LazyParsley[parsley.Parsley[compiler.Ast.Stat], compiler.Ast.Stat](parsley.Parsley.LazyParsley[parsley.Parsley[compiler.Ast.Stat], compiler.Ast.Stat](parsley.Parsley.attempt[compiler.Ast.Stat](Parser.this.printlnStat))(scala.Predef.$conforms[parsley.Parsley[compiler.Ast.Stat]]).<|>[compiler.Ast.Stat](parsley.Parsley.attempt[compiler.Ast.Stat](Parser.this.assignLRStat)))(scala.Predef.$conforms[parsley.Parsley[compiler.Ast.Stat]]).<|>[compiler.Ast.Stat](parsley.Parsley.attempt[compiler.Ast.Stat](Parser.this.skipStat)))(scala.Predef.$conforms[parsley.Parsley[compiler.Ast.Stat]]).<|>[compiler.Ast.Stat](parsley.Parsley.attempt[compiler.Ast.Stat](Parser.this.whileStat)))(scala.Predef.$conforms[parsley.Parsley[compiler.Ast.Stat]]).<|>[compiler.Ast.Stat](parsley.Parsley.attempt[compiler.Ast.Stat](Parser.this.beginStat))
+
+324
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+7598
+7598
+234
+scala.Predef.$conforms
+TypeApply
+false
+0
+false
+scala.Predef.$conforms[parsley.Parsley[compiler.Ast.Stat]]
+
+325
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+7649
+7655
+236
+compiler.Parser.ifStat
+Select
+false
+0
+false
+Parser.this.ifStat
+
+326
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+7641
+7656
+236
+parsley.Parsley.attempt
+Apply
+false
+0
+false
+parsley.Parsley.attempt[compiler.Ast.Stat](Parser.this.ifStat)
+
+327
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+7482
+7656
+235
+parsley.Parsley.LazyParsley.<|>
+Apply
+false
+0
+false
+parsley.Parsley.LazyParsley[parsley.Parsley[compiler.Ast.Stat], compiler.Ast.Stat](parsley.Parsley.LazyParsley[parsley.Parsley[compiler.Ast.Stat], compiler.Ast.Stat](parsley.Parsley.LazyParsley[parsley.Parsley[compiler.Ast.Stat], compiler.Ast.Stat](parsley.Parsley.LazyParsley[parsley.Parsley[compiler.Ast.Stat], compiler.Ast.Stat](parsley.Parsley.LazyParsley[parsley.Parsley[compiler.Ast.Stat], compiler.Ast.Stat](parsley.Parsley.attempt[compiler.Ast.Stat](Parser.this.printlnStat))(scala.Predef.$conforms[parsley.Parsley[compiler.Ast.Stat]]).<|>[compiler.Ast.Stat](parsley.Parsley.attempt[compiler.Ast.Stat](Parser.this.assignLRStat)))(scala.Predef.$conforms[parsley.Parsley[compiler.Ast.Stat]]).<|>[compiler.Ast.Stat](parsley.Parsley.attempt[compiler.Ast.Stat](Parser.this.skipStat)))(scala.Predef.$conforms[parsley.Parsley[compiler.Ast.Stat]]).<|>[compiler.Ast.Stat](parsley.Parsley.attempt[compiler.Ast.Stat](Parser.this.whileStat)))(scala.Predef.$conforms[parsley.Parsley[compiler.Ast.Stat]]).<|>[compiler.Ast.Stat](parsley.Parsley.attempt[compiler.Ast.Stat](Parser.this.beginStat)))(scala.Predef.$conforms[parsley.Parsley[compiler.Ast.Stat]]).<|>[compiler.Ast.Stat](parsley.Parsley.attempt[compiler.Ast.Stat](Parser.this.ifStat))
+
+328
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+7629
+7629
+235
+scala.Predef.$conforms
+TypeApply
+false
+0
+false
+scala.Predef.$conforms[parsley.Parsley[compiler.Ast.Stat]]
+
+329
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+7677
+7691
+237
+compiler.Parser.typeAssignStat
+Select
+false
+0
+false
+Parser.this.typeAssignStat
+
+330
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+7669
+7692
+237
+parsley.Parsley.attempt
+Apply
+false
+0
+false
+parsley.Parsley.attempt[compiler.Ast.Stat](Parser.this.typeAssignStat)
+
+331
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+7482
+7692
+236
+parsley.Parsley.LazyParsley.<|>
+Apply
+false
+0
+false
+parsley.Parsley.LazyParsley[parsley.Parsley[compiler.Ast.Stat], compiler.Ast.Stat](parsley.Parsley.LazyParsley[parsley.Parsley[compiler.Ast.Stat], compiler.Ast.Stat](parsley.Parsley.LazyParsley[parsley.Parsley[compiler.Ast.Stat], compiler.Ast.Stat](parsley.Parsley.LazyParsley[parsley.Parsley[compiler.Ast.Stat], compiler.Ast.Stat](parsley.Parsley.LazyParsley[parsley.Parsley[compiler.Ast.Stat], compiler.Ast.Stat](parsley.Parsley.LazyParsley[parsley.Parsley[compiler.Ast.Stat], compiler.Ast.Stat](parsley.Parsley.attempt[compiler.Ast.Stat](Parser.this.printlnStat))(scala.Predef.$conforms[parsley.Parsley[compiler.Ast.Stat]]).<|>[compiler.Ast.Stat](parsley.Parsley.attempt[compiler.Ast.Stat](Parser.this.assignLRStat)))(scala.Predef.$conforms[parsley.Parsley[compiler.Ast.Stat]]).<|>[compiler.Ast.Stat](parsley.Parsley.attempt[compiler.Ast.Stat](Parser.this.skipStat)))(scala.Predef.$conforms[parsley.Parsley[compiler.Ast.Stat]]).<|>[compiler.Ast.Stat](parsley.Parsley.attempt[compiler.Ast.Stat](Parser.this.whileStat)))(scala.Predef.$conforms[parsley.Parsley[compiler.Ast.Stat]]).<|>[compiler.Ast.Stat](parsley.Parsley.attempt[compiler.Ast.Stat](Parser.this.beginStat)))(scala.Predef.$conforms[parsley.Parsley[compiler.Ast.Stat]]).<|>[compiler.Ast.Stat](parsley.Parsley.attempt[compiler.Ast.Stat](Parser.this.ifStat)))(scala.Predef.$conforms[parsley.Parsley[compiler.Ast.Stat]]).<|>[compiler.Ast.Stat](parsley.Parsley.attempt[compiler.Ast.Stat](Parser.this.typeAssignStat))
+
+332
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+7657
+7657
+236
+scala.Predef.$conforms
+TypeApply
+false
+0
+false
+scala.Predef.$conforms[parsley.Parsley[compiler.Ast.Stat]]
+
+333
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+7713
+7721
+238
+compiler.Parser.readStat
+Select
+false
+0
+false
+Parser.this.readStat
+
+334
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+7705
+7722
+238
+parsley.Parsley.attempt
+Apply
+false
+0
+false
+parsley.Parsley.attempt[compiler.Ast.Stat](Parser.this.readStat)
+
+335
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+7482
+7722
+237
+parsley.Parsley.LazyParsley.<|>
+Apply
+false
+0
+false
+parsley.Parsley.LazyParsley[parsley.Parsley[compiler.Ast.Stat], compiler.Ast.Stat](parsley.Parsley.LazyParsley[parsley.Parsley[compiler.Ast.Stat], compiler.Ast.Stat](parsley.Parsley.LazyParsley[parsley.Parsley[compiler.Ast.Stat], compiler.Ast.Stat](parsley.Parsley.LazyParsley[parsley.Parsley[compiler.Ast.Stat], compiler.Ast.Stat](parsley.Parsley.LazyParsley[parsley.Parsley[compiler.Ast.Stat], compiler.Ast.Stat](parsley.Parsley.LazyParsley[parsley.Parsley[compiler.Ast.Stat], compiler.Ast.Stat](parsley.Parsley.LazyParsley[parsley.Parsley[compiler.Ast.Stat], compiler.Ast.Stat](parsley.Parsley.attempt[compiler.Ast.Stat](Parser.this.printlnStat))(scala.Predef.$conforms[parsley.Parsley[compiler.Ast.Stat]]).<|>[compiler.Ast.Stat](parsley.Parsley.attempt[compiler.Ast.Stat](Parser.this.assignLRStat)))(scala.Predef.$conforms[parsley.Parsley[compiler.Ast.Stat]]).<|>[compiler.Ast.Stat](parsley.Parsley.attempt[compiler.Ast.Stat](Parser.this.skipStat)))(scala.Predef.$conforms[parsley.Parsley[compiler.Ast.Stat]]).<|>[compiler.Ast.Stat](parsley.Parsley.attempt[compiler.Ast.Stat](Parser.this.whileStat)))(scala.Predef.$conforms[parsley.Parsley[compiler.Ast.Stat]]).<|>[compiler.Ast.Stat](parsley.Parsley.attempt[compiler.Ast.Stat](Parser.this.beginStat)))(scala.Predef.$conforms[parsley.Parsley[compiler.Ast.Stat]]).<|>[compiler.Ast.Stat](parsley.Parsley.attempt[compiler.Ast.Stat](Parser.this.ifStat)))(scala.Predef.$conforms[parsley.Parsley[compiler.Ast.Stat]]).<|>[compiler.Ast.Stat](parsley.Parsley.attempt[compiler.Ast.Stat](Parser.this.typeAssignStat)))(scala.Predef.$conforms[parsley.Parsley[compiler.Ast.Stat]]).<|>[compiler.Ast.Stat](parsley.Parsley.attempt[compiler.Ast.Stat](Parser.this.readStat))
+
+336
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+7693
+7693
+237
+scala.Predef.$conforms
+TypeApply
+false
+0
+false
+scala.Predef.$conforms[parsley.Parsley[compiler.Ast.Stat]]
+
+337
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+7743
+7751
+239
+compiler.Parser.freeStat
+Select
+false
+0
+false
+Parser.this.freeStat
+
+338
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+7735
+7752
+239
+parsley.Parsley.attempt
+Apply
+false
+0
+false
+parsley.Parsley.attempt[compiler.Ast.Stat](Parser.this.freeStat)
+
+339
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+7482
+7752
+238
+parsley.Parsley.LazyParsley.<|>
+Apply
+false
+0
+false
+parsley.Parsley.LazyParsley[parsley.Parsley[compiler.Ast.Stat], compiler.Ast.Stat](parsley.Parsley.LazyParsley[parsley.Parsley[compiler.Ast.Stat], compiler.Ast.Stat](parsley.Parsley.LazyParsley[parsley.Parsley[compiler.Ast.Stat], compiler.Ast.Stat](parsley.Parsley.LazyParsley[parsley.Parsley[compiler.Ast.Stat], compiler.Ast.Stat](parsley.Parsley.LazyParsley[parsley.Parsley[compiler.Ast.Stat], compiler.Ast.Stat](parsley.Parsley.LazyParsley[parsley.Parsley[compiler.Ast.Stat], compiler.Ast.Stat](parsley.Parsley.LazyParsley[parsley.Parsley[compiler.Ast.Stat], compiler.Ast.Stat](parsley.Parsley.LazyParsley[parsley.Parsley[compiler.Ast.Stat], compiler.Ast.Stat](parsley.Parsley.attempt[compiler.Ast.Stat](Parser.this.printlnStat))(scala.Predef.$conforms[parsley.Parsley[compiler.Ast.Stat]]).<|>[compiler.Ast.Stat](parsley.Parsley.attempt[compiler.Ast.Stat](Parser.this.assignLRStat)))(scala.Predef.$conforms[parsley.Parsley[compiler.Ast.Stat]]).<|>[compiler.Ast.Stat](parsley.Parsley.attempt[compiler.Ast.Stat](Parser.this.skipStat)))(scala.Predef.$conforms[parsley.Parsley[compiler.Ast.Stat]]).<|>[compiler.Ast.Stat](parsley.Parsley.attempt[compiler.Ast.Stat](Parser.this.whileStat)))(scala.Predef.$conforms[parsley.Parsley[compiler.Ast.Stat]]).<|>[compiler.Ast.Stat](parsley.Parsley.attempt[compiler.Ast.Stat](Parser.this.beginStat)))(scala.Predef.$conforms[parsley.Parsley[compiler.Ast.Stat]]).<|>[compiler.Ast.Stat](parsley.Parsley.attempt[compiler.Ast.Stat](Parser.this.ifStat)))(scala.Predef.$conforms[parsley.Parsley[compiler.Ast.Stat]]).<|>[compiler.Ast.Stat](parsley.Parsley.attempt[compiler.Ast.Stat](Parser.this.typeAssignStat)))(scala.Predef.$conforms[parsley.Parsley[compiler.Ast.Stat]]).<|>[compiler.Ast.Stat](parsley.Parsley.attempt[compiler.Ast.Stat](Parser.this.readStat)))(scala.Predef.$conforms[parsley.Parsley[compiler.Ast.Stat]]).<|>[compiler.Ast.Stat](parsley.Parsley.attempt[compiler.Ast.Stat](Parser.this.freeStat))
+
+340
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+7723
+7723
+238
+scala.Predef.$conforms
+TypeApply
+false
+0
+false
+scala.Predef.$conforms[parsley.Parsley[compiler.Ast.Stat]]
+
+341
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+7773
+7783
+240
+compiler.Parser.returnStat
+Select
+false
+0
+false
+Parser.this.returnStat
+
+342
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+7765
+7784
+240
+parsley.Parsley.attempt
+Apply
+false
+0
+false
+parsley.Parsley.attempt[compiler.Ast.Stat](Parser.this.returnStat)
+
+343
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+7482
+7784
+239
+parsley.Parsley.LazyParsley.<|>
+Apply
+false
+0
+false
+parsley.Parsley.LazyParsley[parsley.Parsley[compiler.Ast.Stat], compiler.Ast.Stat](parsley.Parsley.LazyParsley[parsley.Parsley[compiler.Ast.Stat], compiler.Ast.Stat](parsley.Parsley.LazyParsley[parsley.Parsley[compiler.Ast.Stat], compiler.Ast.Stat](parsley.Parsley.LazyParsley[parsley.Parsley[compiler.Ast.Stat], compiler.Ast.Stat](parsley.Parsley.LazyParsley[parsley.Parsley[compiler.Ast.Stat], compiler.Ast.Stat](parsley.Parsley.LazyParsley[parsley.Parsley[compiler.Ast.Stat], compiler.Ast.Stat](parsley.Parsley.LazyParsley[parsley.Parsley[compiler.Ast.Stat], compiler.Ast.Stat](parsley.Parsley.LazyParsley[parsley.Parsley[compiler.Ast.Stat], compiler.Ast.Stat](parsley.Parsley.LazyParsley[parsley.Parsley[compiler.Ast.Stat], compiler.Ast.Stat](parsley.Parsley.attempt[compiler.Ast.Stat](Parser.this.printlnStat))(scala.Predef.$conforms[parsley.Parsley[compiler.Ast.Stat]]).<|>[compiler.Ast.Stat](parsley.Parsley.attempt[compiler.Ast.Stat](Parser.this.assignLRStat)))(scala.Predef.$conforms[parsley.Parsley[compiler.Ast.Stat]]).<|>[compiler.Ast.Stat](parsley.Parsley.attempt[compiler.Ast.Stat](Parser.this.skipStat)))(scala.Predef.$conforms[parsley.Parsley[compiler.Ast.Stat]]).<|>[compiler.Ast.Stat](parsley.Parsley.attempt[compiler.Ast.Stat](Parser.this.whileStat)))(scala.Predef.$conforms[parsley.Parsley[compiler.Ast.Stat]]).<|>[compiler.Ast.Stat](parsley.Parsley.attempt[compiler.Ast.Stat](Parser.this.beginStat)))(scala.Predef.$conforms[parsley.Parsley[compiler.Ast.Stat]]).<|>[compiler.Ast.Stat](parsley.Parsley.attempt[compiler.Ast.Stat](Parser.this.ifStat)))(scala.Predef.$conforms[parsley.Parsley[compiler.Ast.Stat]]).<|>[compiler.Ast.Stat](parsley.Parsley.attempt[compiler.Ast.Stat](Parser.this.typeAssignStat)))(scala.Predef.$conforms[parsley.Parsley[compiler.Ast.Stat]]).<|>[compiler.Ast.Stat](parsley.Parsley.attempt[compiler.Ast.Stat](Parser.this.readStat)))(scala.Predef.$conforms[parsley.Parsley[compiler.Ast.Stat]]).<|>[compiler.Ast.Stat](parsley.Parsley.attempt[compiler.Ast.Stat](Parser.this.freeStat)))(scala.Predef.$conforms[parsley.Parsley[compiler.Ast.Stat]]).<|>[compiler.Ast.Stat](parsley.Parsley.attempt[compiler.Ast.Stat](Parser.this.returnStat))
+
+344
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+7753
+7753
+239
+scala.Predef.$conforms
+TypeApply
+false
+0
+false
+scala.Predef.$conforms[parsley.Parsley[compiler.Ast.Stat]]
+
+345
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+7805
+7813
+241
+compiler.Parser.exitStat
+Select
+false
+0
+false
+Parser.this.exitStat
+
+346
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+7797
+7814
+241
+parsley.Parsley.attempt
+Apply
+false
+0
+false
+parsley.Parsley.attempt[compiler.Ast.Stat](Parser.this.exitStat)
+
+347
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+7482
+7814
+240
+parsley.Parsley.LazyParsley.<|>
+Apply
+false
+0
+false
+parsley.Parsley.LazyParsley[parsley.Parsley[compiler.Ast.Stat], compiler.Ast.Stat](parsley.Parsley.LazyParsley[parsley.Parsley[compiler.Ast.Stat], compiler.Ast.Stat](parsley.Parsley.LazyParsley[parsley.Parsley[compiler.Ast.Stat], compiler.Ast.Stat](parsley.Parsley.LazyParsley[parsley.Parsley[compiler.Ast.Stat], compiler.Ast.Stat](parsley.Parsley.LazyParsley[parsley.Parsley[compiler.Ast.Stat], compiler.Ast.Stat](parsley.Parsley.LazyParsley[parsley.Parsley[compiler.Ast.Stat], compiler.Ast.Stat](parsley.Parsley.LazyParsley[parsley.Parsley[compiler.Ast.Stat], compiler.Ast.Stat](parsley.Parsley.LazyParsley[parsley.Parsley[compiler.Ast.Stat], compiler.Ast.Stat](parsley.Parsley.LazyParsley[parsley.Parsley[compiler.Ast.Stat], compiler.Ast.Stat](parsley.Parsley.LazyParsley[parsley.Parsley[compiler.Ast.Stat], compiler.Ast.Stat](parsley.Parsley.attempt[compiler.Ast.Stat](Parser.this.printlnStat))(scala.Predef.$conforms[parsley.Parsley[compiler.Ast.Stat]]).<|>[compiler.Ast.Stat](parsley.Parsley.attempt[compiler.Ast.Stat](Parser.this.assignLRStat)))(scala.Predef.$conforms[parsley.Parsley[compiler.Ast.Stat]]).<|>[compiler.Ast.Stat](parsley.Parsley.attempt[compiler.Ast.Stat](Parser.this.skipStat)))(scala.Predef.$conforms[parsley.Parsley[compiler.Ast.Stat]]).<|>[compiler.Ast.Stat](parsley.Parsley.attempt[compiler.Ast.Stat](Parser.this.whileStat)))(scala.Predef.$conforms[parsley.Parsley[compiler.Ast.Stat]]).<|>[compiler.Ast.Stat](parsley.Parsley.attempt[compiler.Ast.Stat](Parser.this.beginStat)))(scala.Predef.$conforms[parsley.Parsley[compiler.Ast.Stat]]).<|>[compiler.Ast.Stat](parsley.Parsley.attempt[compiler.Ast.Stat](Parser.this.ifStat)))(scala.Predef.$conforms[parsley.Parsley[compiler.Ast.Stat]]).<|>[compiler.Ast.Stat](parsley.Parsley.attempt[compiler.Ast.Stat](Parser.this.typeAssignStat)))(scala.Predef.$conforms[parsley.Parsley[compiler.Ast.Stat]]).<|>[compiler.Ast.Stat](parsley.Parsley.attempt[compiler.Ast.Stat](Parser.this.readStat)))(scala.Predef.$conforms[parsley.Parsley[compiler.Ast.Stat]]).<|>[compiler.Ast.Stat](parsley.Parsley.attempt[compiler.Ast.Stat](Parser.this.freeStat)))(scala.Predef.$conforms[parsley.Parsley[compiler.Ast.Stat]]).<|>[compiler.Ast.Stat](parsley.Parsley.attempt[compiler.Ast.Stat](Parser.this.returnStat)))(scala.Predef.$conforms[parsley.Parsley[compiler.Ast.Stat]]).<|>[compiler.Ast.Stat](parsley.Parsley.attempt[compiler.Ast.Stat](Parser.this.exitStat))
+
+348
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+7785
+7785
+240
+scala.Predef.$conforms
+TypeApply
+false
+0
+false
+scala.Predef.$conforms[parsley.Parsley[compiler.Ast.Stat]]
+
+349
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+7835
+7844
+242
+compiler.Parser.printStat
+Select
+false
+0
+false
+Parser.this.printStat
+
+350
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+7827
+7845
+242
+parsley.Parsley.attempt
+Apply
+false
+0
+false
+parsley.Parsley.attempt[compiler.Ast.Stat](Parser.this.printStat)
+
+351
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+7482
+7845
+241
+parsley.Parsley.LazyParsley.<|>
+Apply
+false
+0
+false
+parsley.Parsley.LazyParsley[parsley.Parsley[compiler.Ast.Stat], compiler.Ast.Stat](parsley.Parsley.LazyParsley[parsley.Parsley[compiler.Ast.Stat], compiler.Ast.Stat](parsley.Parsley.LazyParsley[parsley.Parsley[compiler.Ast.Stat], compiler.Ast.Stat](parsley.Parsley.LazyParsley[parsley.Parsley[compiler.Ast.Stat], compiler.Ast.Stat](parsley.Parsley.LazyParsley[parsley.Parsley[compiler.Ast.Stat], compiler.Ast.Stat](parsley.Parsley.LazyParsley[parsley.Parsley[compiler.Ast.Stat], compiler.Ast.Stat](parsley.Parsley.LazyParsley[parsley.Parsley[compiler.Ast.Stat], compiler.Ast.Stat](parsley.Parsley.LazyParsley[parsley.Parsley[compiler.Ast.Stat], compiler.Ast.Stat](parsley.Parsley.LazyParsley[parsley.Parsley[compiler.Ast.Stat], compiler.Ast.Stat](parsley.Parsley.LazyParsley[parsley.Parsley[compiler.Ast.Stat], compiler.Ast.Stat](parsley.Parsley.LazyParsley[parsley.Parsley[compiler.Ast.Stat], compiler.Ast.Stat](parsley.Parsley.attempt[compiler.Ast.Stat](Parser.this.printlnStat))(scala.Predef.$conforms[parsley.Parsley[compiler.Ast.Stat]]).<|>[compiler.Ast.Stat](parsley.Parsley.attempt[compiler.Ast.Stat](Parser.this.assignLRStat)))(scala.Predef.$conforms[parsley.Parsley[compiler.Ast.Stat]]).<|>[compiler.Ast.Stat](parsley.Parsley.attempt[compiler.Ast.Stat](Parser.this.skipStat)))(scala.Predef.$conforms[parsley.Parsley[compiler.Ast.Stat]]).<|>[compiler.Ast.Stat](parsley.Parsley.attempt[compiler.Ast.Stat](Parser.this.whileStat)))(scala.Predef.$conforms[parsley.Parsley[compiler.Ast.Stat]]).<|>[compiler.Ast.Stat](parsley.Parsley.attempt[compiler.Ast.Stat](Parser.this.beginStat)))(scala.Predef.$conforms[parsley.Parsley[compiler.Ast.Stat]]).<|>[compiler.Ast.Stat](parsley.Parsley.attempt[compiler.Ast.Stat](Parser.this.ifStat)))(scala.Predef.$conforms[parsley.Parsley[compiler.Ast.Stat]]).<|>[compiler.Ast.Stat](parsley.Parsley.attempt[compiler.Ast.Stat](Parser.this.typeAssignStat)))(scala.Predef.$conforms[parsley.Parsley[compiler.Ast.Stat]]).<|>[compiler.Ast.Stat](parsley.Parsley.attempt[compiler.Ast.Stat](Parser.this.readStat)))(scala.Predef.$conforms[parsley.Parsley[compiler.Ast.Stat]]).<|>[compiler.Ast.Stat](parsley.Parsley.attempt[compiler.Ast.Stat](Parser.this.freeStat)))(scala.Predef.$conforms[parsley.Parsley[compiler.Ast.Stat]]).<|>[compiler.Ast.Stat](parsley.Parsley.attempt[compiler.Ast.Stat](Parser.this.returnStat)))(scala.Predef.$conforms[parsley.Parsley[compiler.Ast.Stat]]).<|>[compiler.Ast.Stat](parsley.Parsley.attempt[compiler.Ast.Stat](Parser.this.exitStat)))(scala.Predef.$conforms[parsley.Parsley[compiler.Ast.Stat]]).<|>[compiler.Ast.Stat](parsley.Parsley.attempt[compiler.Ast.Stat](Parser.this.printStat))
+
+352
+/Users/siddhantsingh/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year 2/7 - Programming/Spring Lab/WACC_44/src/main/scala/WACCParser.scala
+compiler
+Parser
+Object
+compiler.Parser
+<none>
+7476
+7846
+231
+compiler.lexer.fully
+Apply
+false
+0
+false
+lexer.fully[compiler.Ast.Stat](parsley.Parsley.LazyParsley[parsley.Parsley[compiler.Ast.Stat], compiler.Ast.Stat](parsley.Parsley.LazyParsley[parsley.Parsley[compiler.Ast.Stat], compiler.Ast.Stat](parsley.Parsley.LazyParsley[parsley.Parsley[compiler.Ast.Stat], compiler.Ast.Stat](parsley.Parsley.LazyParsley[parsley.Parsley[compiler.Ast.Stat], compiler.Ast.Stat](parsley.Parsley.LazyParsley[parsley.Parsley[compiler.Ast.Stat], compiler.Ast.Stat](parsley.Parsley.LazyParsley[parsley.Parsley[compiler.Ast.Stat], compiler.Ast.Stat](parsley.Parsley.LazyParsley[parsley.Parsley[compiler.Ast.Stat], compiler.Ast.Stat](parsley.Parsley.LazyParsley[parsley.Parsley[compiler.Ast.Stat], compiler.Ast.Stat](parsley.Parsley.LazyParsley[parsley.Parsley[compiler.Ast.Stat], compiler.Ast.Stat](parsley.Parsley.LazyParsley[parsley.Parsley[compiler.Ast.Stat], compiler.Ast.Stat](parsley.Parsley.LazyParsley[parsley.Parsley[compiler.Ast.Stat], compiler.Ast.Stat](parsley.Parsley.attempt[compiler.Ast.Stat](Parser.this.printlnStat))(scala.Predef.$conforms[parsley.Parsley[compiler.Ast.Stat]]).<|>[compiler.Ast.Stat](parsley.Parsley.attempt[compiler.Ast.Stat](Parser.this.assignLRStat)))(scala.Predef.$conforms[parsley.Parsley[compiler.Ast.Stat]]).<|>[compiler.Ast.Stat](parsley.Parsley.attempt[compiler.Ast.Stat](Parser.this.skipStat)))(scala.Predef.$conforms[parsley.Parsley[compiler.Ast.Stat]]).<|>[compiler.Ast.Stat](parsley.Parsley.attempt[compiler.Ast.Stat](Parser.this.whileStat)))(scala.Predef.$conforms[parsley.Parsley[compiler.Ast.Stat]]).<|>[compiler.Ast.Stat](parsley.Parsley.attempt[compiler.Ast.Stat](Parser.this.beginStat)))(scala.Predef.$conforms[parsley.Parsley[compiler.Ast.Stat]]).<|>[compiler.Ast.Stat](parsley.Parsley.attempt[compiler.Ast.Stat](Parser.this.ifStat)))(scala.Predef.$conforms[parsley.Parsley[compiler.Ast.Stat]]).<|>[compiler.Ast.Stat](parsley.Parsley.attempt[compiler.Ast.Stat](Parser.this.typeAssignStat)))(scala.Predef.$conforms[parsley.Parsley[compiler.Ast.Stat]]).<|>[compiler.Ast.Stat](parsley.Parsley.attempt[compiler.Ast.Stat](Parser.this.readStat)))(scala.Predef.$conforms[parsley.Parsley[compiler.Ast.Stat]]).<|>[compiler.Ast.Stat](parsley.Parsley.attempt[compiler.Ast.Stat](Parser.this.freeStat)))(scala.Predef.$conforms[parsley.Parsley[compiler.Ast.Stat]]).<|>[compiler.Ast.Stat](parsley.Parsley.attempt[compiler.Ast.Stat](Parser.this.returnStat)))(scala.Predef.$conforms[parsley.Parsley[compiler.Ast.Stat]]).<|>[compiler.Ast.Stat](parsley.Parsley.attempt[compiler.Ast.Stat](Parser.this.exitStat)))(scala.Predef.$conforms[parsley.Parsley[compiler.Ast.Stat]]).<|>[compiler.Ast.Stat](parsley.Parsley.attempt[compiler.Ast.Stat](Parser.this.printStat)))
+
