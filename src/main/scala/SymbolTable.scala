@@ -5,7 +5,7 @@ import Ast._
 case class Meta(t: Type, pList: Option[List[Type]])
 
 case class SymbolTable(
-    parent: SymbolTable,
+    prev: SymbolTable,
     funcId: Ident,
     funcMap: HashMap[Ident, Meta]
 ) {
@@ -27,7 +27,7 @@ case class SymbolTable(
       if (d.contains(id)) {
         return d.apply(id)
       }
-      curSymbol = curSymbol.parent
+      curSymbol = curSymbol.prev
     }
     val t = funcMap.get(id)
     if (t.isEmpty) {
@@ -100,7 +100,7 @@ case class SymbolTable(
       }
       return List(invalidParams(id, 0, value.get.length))
     }
-    val argList = args.get
+    val argList = args.get.exprs
     val pList = value.get
     val paramLen = pList.length
     val argLen = argList.length
