@@ -117,12 +117,12 @@ object Parser {
         )
     
     lazy val atom: Parsley[Expr] =
-        attempt(`<bool-liter>`) <|>
+        attempt(`<ident>`) <|>
         attempt(`<pair-liter>`) <|>
+        `<bool-liter>` <|>
         `<int-liter>` <|>
         `<char-liter>` <|>
-        `<str-liter>` <|>
-        `<ident>`
+        `<str-liter>`
     
     private lazy val `<expr>` : Parsley[Expr] =
         fully(precedence(
@@ -145,8 +145,8 @@ object Parser {
             ) :+
 
             Ops(NonAssoc)(
-                attempt(">=" #> GTE), (">" #> GT),
-                attempt("<=" #> LTE), ("<" #> LT)
+                (">" *> ("=" #> GTE <|> "" #> GT)),
+                ("<" *> ("=" #> LTE <|> "" #> LT))
             ) :+      
 
             Ops(InfixL)(
@@ -218,17 +218,18 @@ object Parser {
         lift2(Colon, `<stat>`, ";" *> `<stat>`)
 
     private val atomStat: Parsley[Stat] =
-        fully(attempt(printlnStat) <|>
+        fully(
         attempt(assignLRStat) <|>
-        attempt(skipStat) <|>
-        whileStat <|>
-        attempt(beginStat) <|>
-        attempt(ifStat) <|>
         attempt(typeAssignStat) <|>
-        attempt(readStat) <|>
+        skipStat <|>
+        whileStat <|>
+        beginStat <|>
+        ifStat <|>
         freeStat <|>
-        returnStat <|>
         exitStat <|>
+        attempt(readStat) <|>
+        returnStat <|>
+        attempt(printlnStat) <|>
         printStat)
 
     private lazy val `<stat>` : Parsley[Stat] = 
