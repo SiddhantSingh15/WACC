@@ -1,5 +1,6 @@
 package compiler
 import scala.collection.mutable.HashMap
+import Ast._
 
 case class Meta(t: Type, pList: Option[List[Type]])
 
@@ -19,7 +20,6 @@ case class SymbolTable(
     SymbolTable(this, funcId, funcMap)
   }
 
-  // Returns Type of id if is a variable else gives the return type of the function id
   def lookupAll(id: Ident): Type = {
     var curSymbol = this
     while (curSymbol != null) {
@@ -48,7 +48,6 @@ case class SymbolTable(
     varMap.contains(id)
   }
 
-  // Add all variable declarations to dictionary
   def addVariables(vars: List[(Ident, Type)]): List[SemanticError] = {
     var semErrors: List[SemanticError] = List.empty[SemanticError]
     for (v <- vars) {
@@ -61,7 +60,6 @@ case class SymbolTable(
     semErrors
   }
 
-  // Add all function declarations to funcMap
   def addFunctions(funcs: List[(Ident, Meta)]): List[SemanticError] = {
     var semErrors: List[SemanticError] = List.empty[SemanticError]
     for (f <- funcs) {
@@ -89,35 +87,7 @@ case class SymbolTable(
     val meta = funcMap.get(id)
     meta.isDefined
   }
-  
-  def funcParamMatch(id: Ident, args: Option[ArgList]): List[SemanticError] = {
-    val meta = funcMap.get(id)
-    if (meta.isEmpty) {
-      return List[SemanticError](functionNotDeclared(id: Ident))
-    }
-    val Some(Meta(_, value)) = meta
-    if (args.isEmpty) {
-      if (value.exists(_.isEmpty)) {
-        return List[SemanticError]()
-      }
-      return List(invalidParams(id, 0, value.get.length))
-    }
-    val argList = args.get.args
-    val pList = value.get
-    val paramLen = pList.length
-    val argLen = argList.length
-    // false if number of arguments > number of parameters
-    if (argLen != paramLen) {
-      return List(invalidParams(id, argLen, paramLen))
-    }
-    var result = List[SemanticError]()
-    for (i <- 0 until argLen) {
-      val argType = argList(i).getType(this)
-      val paramType = pList(i)
-      if (argType != paramType) {
-        result ::= typeMismatch(argList(i), argType, List(paramType))
-      }
-    }
-    result
-  }
+  // TODO : implement parameter matching
+  // check if param supplied > arg of function
+  // check param type is the same as arg type
 }

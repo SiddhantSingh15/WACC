@@ -1,4 +1,5 @@
 package compiler
+import Ast._
 
 sealed trait SemanticError {
   override def toString: String = this match {
@@ -8,9 +9,9 @@ sealed trait SemanticError {
     case arrayOutOfBounds(id) => "Array index out of bounds for array " + id
     case elementAccessDenied(id) => "Element access of " + id + " is not permitted"
     case invalidReturn(e) => "Invalid return statement from main: return " + e
-    case functionIllegalAssignment(id) => "Illegal assignment to function " + id.s
+    case functionIllegalAssignment(id) => "Illegal assignment to function " + id
     case invalidParams(id, actual, expected) =>
-      "Invalid params for function " + id.s + " Expected number of params: " + expected + ". Actual: " + actual
+      "Invalid params for function " + id + " Expected number of params: " + expected + ". Actual: " + actual
     case invalidPairElem(pe) =>
       "Invalid input, expected: Pair, unable to perform " + pe
     case functionDeclared(id)    => identDeclared(id).toString()
