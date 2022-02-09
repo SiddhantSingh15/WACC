@@ -18,16 +18,11 @@ object Ast{
     case class TypeAssign(tpe : Type, ident: Ident, assignRHS : AssignRHS) extends Stat
     case class AssignLR(assignLHS : AssignLHS, assignRHS : AssignRHS) extends Stat
     case class Read(assignRHS : AssignLHS) extends Stat
-    case class Free(expr : Expr) extends Stat 
-    // { override def map(func: Expr => Expr) = Free(func(expr)) }
-    case class Return(expr : Expr) extends Stat 
-    // { override def map(func: Expr => Expr) = Return(func(expr)) }
-    case class Exit(expr : Expr) extends Stat 
-    // { override def map(func: Expr => Expr) = Exit(func(expr)) }
+    case class Free(expr : Expr) extends Stat
+    case class Return(expr : Expr) extends Stat
+    case class Exit(expr : Expr) extends Stat
     case class Print(expr : Expr) extends Stat 
-    // { override def map(func: Expr => Expr) = Print(func(expr)) }
     case class Println(expr : Expr) extends Stat 
-    // { override def map(func: Expr => Expr) = Println(func(expr)) }
     case class If(expr : Expr, statThen : Stat, statElse : Stat) extends Stat
     case class While(expr : Expr, stat : Stat) extends Stat
     case class Begin(stat: Stat) extends Stat
@@ -58,8 +53,6 @@ object Ast{
     sealed trait PairElemType
     case class Fst(fst : Expr) extends PairElem 
     case class Snd(snd : Expr) extends PairElem
-   // sealed trait BaseType extends PairElemType
-  //  case class ArrayType(tpe : Type) extends PairElemType
     case object Pair extends PairElemType
 
     sealed trait UnOp extends Expr
@@ -85,7 +78,7 @@ object Ast{
     case class Or(expr1 : Expr, expr2 : Expr) extends BinOp
 
     sealed trait Expr extends AssignRHS
-    case class IntLiter(number: Int) extends Expr // Should be a list of digits
+    case class IntLiter(number: Int) extends Expr
     sealed trait BoolLiter extends Expr
     case object True extends BoolLiter 
     case object False extends BoolLiter

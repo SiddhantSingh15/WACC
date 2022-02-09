@@ -16,7 +16,8 @@ object lexer {
     val keywords = Set("begin", "end", "is", "skip", "read", "free",
                     "return", "exit", "print", "println", "if", 
                     "then", "else", "fi", "while", "do", "done",
-                    "begin", "end", "newpair", "call"
+                    "begin", "end", "newpair", "call", "fst", "snd", 
+                    "newpair", "pair", "null", "true", "false"
                     )
                     
     val operators = Set("!", "-", "len", "ord", "chr", "*",
@@ -44,14 +45,11 @@ object lexer {
     
     def lexeme[A](p : =>Parsley[A]): Parsley[A] = lexer.lexeme(p)
 
-    val VAR_ID = lexer.lexeme(IDENTIFIER)
-
     val INTEGER = lexer.integer
     val STRING = lexer.stringLiteral
     val CHAR = lexer.charLiteral
     val IDENTIFIER = lexer.identifier
     val NEWLINE = void(lexer.lexeme(newline))
-    // val WHITESPACE = lexer.whiteSpace
 
     object implicits {
         implicit def implicitToken(s : String): Parsley[Unit] = {
