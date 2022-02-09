@@ -1,3 +1,4 @@
+package compiler
 import scala.collection.mutable.HashMap
 
 case class Meta(t: Type, pList: Option[List[Type]])
