@@ -2,7 +2,11 @@
 # Official OpenJDK Java image. Look for the different tagged releases at
 # https://hub.docker.com/_/openjdk/ . A Java image is not required
 # but an image with a JVM speeds up the build a bit.
-image: openjdk:8
+
+stages:
+  - build
+  - test
+  - code-coverage
 
 before_script:
   # Enable the usage of sources over https
@@ -20,10 +24,12 @@ before_script:
   - sbt sbtVersion
 
 build:
+  image: openjdk:8
   script:
     - sbt compile
 
 test:
+  image: openjdk:8
   script:
     # Execute your project's tests
     - sbt clean test
@@ -31,6 +37,7 @@ test:
     ["build"]
 
 code-coverage:
+  image: openjdk:8
   script:
     - sbt coverage test coverageReport
   needs:
