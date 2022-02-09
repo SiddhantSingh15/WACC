@@ -19,14 +19,13 @@ object SemanticChecker {
       }
 
       checkStat(stat, globSymTable)
-
       (globSymTable, semanticErrors)
 	}
 
   def checkFunc(func: Func, symbTable: SymbolTable): Unit = {
     val Func(tpe, ident, paramList, stat) = func 
     paramList match { 
-      case Some(ParamList(pList)) =>
+      case ParamList(pList) =>
       symbTable.addVariables(pList.map((param: Param) => (param.ident, param.tpe)))
       case _ =>   
     }
@@ -65,15 +64,16 @@ object SemanticChecker {
 
   private def checkAssign(lhs: AssignLHS, rhs: AssignRHS, symbTable: SymbolTable): Unit
     = lhs match {
-      case ident: Ident        =>
-        checkEqAssignType(checkType(ident, symbTable), rhs, symbTable)
+      case ident: Ident     =>
+        checkEqAssignType(ident, rhs, symbTable)
       case aElem: ArrayElem =>
         checkAssignType(checkType(aElem, symbTable), rhs, symbTable)
       case pElem: PairElem  =>
         checkAssignType(checkType(pElem, symbTable), rhs, symbTable)
-    }
+  }
+
   
-  private def checkEqAssignType(ident: Ident, rhs: AssignRHS, symbTable: SymbolTabole): Unit = {
+  private def checkEqAssignType(ident: Ident, rhs: AssignRHS, symbTable: SymbolTable): Unit = {
     if (!symbTable.contains(ident)) {
       semanticErrors += NotDeclaredVarErr(ident)
       return
@@ -90,7 +90,7 @@ object SemanticChecker {
   private def checkAssignType(lType: Type, rhs: AssignRHS, symbTable: SymbolTable) = {
     val rType = checkType(rhs, symbTable)
     
-    if ((lType != rType) && (!lType) && (!rType)) {
+    if ((lType != rType) && (lType != null) && (rType != null)) {
       semanticErrors += MismatchTypesErr(rhs, rType, List(lType))
     }
   }
@@ -138,7 +138,7 @@ object SemanticChecker {
 	}
 
 	private def checkType(assignRHS : AssignRHS, symbTable : SymbolTable) : Type = {
-		val tpe = expr.getType(symbTable)
+		val tpe = assignRHS.getType(symbTable)
 		
 		if(assignRHS.semanticErrors.nonEmpty){
 			semanticErrors ++= assignRHS.semanticErrors
@@ -150,11 +150,14 @@ object SemanticChecker {
 
 	private def checkFree(expr : Expr, symbolTable : SymbolTable): Unit = {
 		val tpe = checkType(expr, symbolTable)
-		if((tpe == null) || tpe.isPair) {
-			return
-		}
-
-		semanticErrors  += MismatchTypesErr(expr, tpe, List(Pair(null, null)), ArrayType(null)))
+		if((tpe == null) || tpe.isPair || tpe.isArray) {
+			expr match {
+        case _ : Ident =>
+        case _         => semanticErrors += IllegalFree(expr)
+      }
+		} else {
+      semanticErrors += MismatchTypesErr(expr, tpe, List(PairType(null, null), ArrayType(null)))
+    }
 	}
 
 	private def sameBaseType(tpeOne : BaseType, tpeTwo : BaseType) : Boolean = {
@@ -178,78 +181,21 @@ object SemanticChecker {
     }
   }
 
-
-  private def sameStatType(statOne: Stat, statTwo : Stat){
-	  statOne match{
-		case Skip => statTwo match{
-			case Skip => true
-			case _ => false
-		}
-		case TypeAssign => statTwo match{
-      case TypeAssign => true
-      case _ => false
-		}
-		case AssignLR => statTwo match{
-      case AssignLR => true
-      case _ => false
-		}
-		case Read => statTwo match{
-      case Read => true
-      case _ => false
-		}
-		case Free => statTwo match{
-      case Free => true
-      case _ => false
-	  }
-		case Return => statTwo match{
-      case Return => true
-      case _ => false
-		}
-		case Exit => statTwo match{
-      case Exit => true
-      case _ => false
-		}
-		case Print => statTwo match{
-      case Print => true
-      case _ => false		
-    }
-		case Println => statTwo match{
-      case Println => true
-      case _ => false		
-		}
-		case If => statTwo match{
-      case If => true
-      case _ => false
-		}
-		case While => statTwo match{
-      case While => true
-      case _ => false
-		}
-		case Begin => statTwo match{
-      case Begin => true
-      case _ => false
-		}
-		case Colon => statTwo match{
-      case Colon => true
-      case _ => false
-      }
+  private def checkRead(assignL : AssignLHS, symbTable : SymbolTable) : Unit = {
+		assignL match {
+      case ident: Ident     => readStat(ident, symbTable)
+      case array: ArrayElem => readStat(array, symbTable)
+      case pair: PairElem   => readStat(pair, symbTable)
     }
   }
 
-
-  private def getTypeStat(stat: Stat): Stat = {
-    stat match {
-      case AssignLR => AssignLR
-      case _ => Skip
+  private def readStat(assignR: AssignRHS, symbTable: SymbolTable) : Unit = {
+    val rType = checkType(assignR, symbTable)
+    rType match {
+      case CharType | Int => 
+      case _              => 
+        semanticErrors += MismatchTypesErr(assignR, rType, List(CharType, Int))
     }
-  }
-
-  private def checkRead(lhs : AssignLHS, symbTable : SymbolTable) : Unit = {
-		val otherType = checkType(lhs, symbTable)
-		otherType match {
-			case Ast.CharType | Ast.Int =>
-			case _ => semanticErrors += MismatchTypesErr(lhs, otherType, List(CharType, Int))
-		}
   }
 
 }

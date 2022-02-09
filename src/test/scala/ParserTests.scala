@@ -1,8 +1,8 @@
-import org.scalatest.funsuite.AnyFunSuite
+import org.scalatest.funsuite.DummyTypeFunSuite
 import java.nio.file.Paths
 import java.io.File
 
-class LexerTest extends AnyFunSuite {
+class LexerTest extends DummyTypeFunSuite {
   
   val newParser = compiler.Parser;
 

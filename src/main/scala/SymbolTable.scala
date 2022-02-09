@@ -1,5 +1,7 @@
 package compiler
+
 import scala.collection.mutable.HashMap
+import scala.collection.mutable
 import Ast._
 
 case class Meta(t: Type, pList: Option[List[Type]])
@@ -48,23 +50,23 @@ case class SymbolTable(
     varMap.contains(id)
   }
 
-  def addVariables(vars: List[(Ident, Type)]): List[SemanticError] = {
-    var semErrors: List[SemanticError] = List.empty[SemanticError]
+  def addVariables(vars: List[(Ident, Type)]): mutable.ListBuffer[SemanticError] = {
+    var semanticErrors = mutable.ListBuffer.empty[SemanticError]
     for (v <- vars) {
       if (varMap.contains(v._1)) {
-        semErrors ::= variableDeclared(v._1)
+        semanticErrors += DeclaredVarErr(v._1)
       } else {
         varMap.addOne(v)
       }
     }
-    semErrors
+    semanticErrors
   }
 
-  def addFunctions(funcs: List[(Ident, Meta)]): List[SemanticError] = {
-    var semErrors: List[SemanticError] = List.empty[SemanticError]
+  def addFunctions(funcs: List[(Ident, Meta)]): mutable.ListBuffer[SemanticError] = {
+    var semErrors = mutable.ListBuffer.empty[SemanticError]
     for (f <- funcs) {
       if (funcMap.contains(f._1)) {
-        semErrors ::= functionDeclared(f._1)
+        semErrors += DeclaredFuncErr(f._1)
       } else {
         funcMap.addOne(f)
       }
@@ -91,21 +93,21 @@ case class SymbolTable(
   def parameterMatch(id: Ident, args: Option[ArgList]): List[SemanticError] = {
     val meta = funcMap.get(id)
     if (meta.isEmpty) {
-      return List[SemanticError](functionNotDeclared(id: Ident))
+      return List[SemanticError](NotDeclaredFuncErr(id: Ident))
     }
     val Some(Meta(_, value)) = meta
     if (args.isEmpty) {
       if (value.exists(_.isEmpty)) {
         return List[SemanticError]()
       }
-      return List(invalidParams(id, 0, value.get.length))
+      return List(InvalidParamsErr(id, 0, value.get.length))
     }
     val argList = args.get.exprs
     val pList = value.get
     val paramLen = pList.length
     val argLen = argList.length
     if (argLen != paramLen) {
-      return List(invalidParams(id, argLen, paramLen))
+      return List(InvalidParamsErr(id, argLen, paramLen))
     }
     var result = List[SemanticError]()
     result

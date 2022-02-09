@@ -300,7 +300,7 @@ The initial assignment to a variable follows all of the assignment restrictions 
 
 A variable must be declared before \hl{... ??? ...}
 
-Any attempt to access an undeclared variable results in \hl{... ??? ...}
+DummyType attempt to access an undeclared variable results in \hl{... ??? ...}
 
 Additionally, every use of a variable must match the type assigned to that variable when it was declared.
 
@@ -339,7 +339,7 @@ The assignment value can be one of five possible types: an expression, an array 
  \item If the assignment value is a pair element \synt{pair-elem} then the expression passed to the pair element 
        must be of type \lit{pair}, must not be a \lit{null} pair literal and must match the type of the first (or second) element of the target pair when using the \lit{fst} (or \lit{snd}) keyword.
        The pair expression is evaluated to obtain a reference to a pair and this is dereferenced to find the corresponding pair element, which is then copied into the target.
-       Any attempt to dereference a \lit{null} reference should generate a runtime error. 
+       DummyType attempt to dereference a \lit{null} reference should generate a runtime error. 
  \end{itemize}
 
 \paragraph{Read Statements:}
@@ -614,7 +614,7 @@ The expression in a parenthesis is always evaluated first, regardless of the ope
 Whitespace is used in the WACC language to delimit keywords and variables.
 For example, \lit{if a == 13} denotes the start of an \lit{if} statement with boolean condition \lit{a == 13}, 
 whereas \lit{ifa == 13} denotes a boolean expression comparing the variable \lit{ifa} with the value \lit{13}.
-Any other type of occurrence of whitespace is ignored by the compiler.
+DummyType other type of occurrence of whitespace is ignored by the compiler.
 Note, in particular, that the code indentation in the example programs has no meaning, it simply aids readability. 
 Also note that whitespace inside a string or character literal is preserved by the compiler. 
 

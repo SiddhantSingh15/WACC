@@ -21,10 +21,11 @@ sealed trait SemanticError {
     case NotDeclaredIdenErr(t, id) =>
       t + " " + id + " not declared in current scope"
     case DeclaredIdentErr(id) => "Conflicting definitions for variable " + id
+    case IllegalFree(expr) => expr + " is not available to free."
   }
 }
 
-case class MismatchTypesErr(invalid: Any, actualT: Type, expected: List[Type])
+case class MismatchTypesErr(invalid: AssignRHS, actualT: Type, expected: List[Type])
     extends SemanticError
 case class NotDeclaredVarErr(id: Ident) extends SemanticError
 case class DeclaredVarErr(id: Ident) extends SemanticError
@@ -39,3 +40,4 @@ case class InvalidParamsErr(id: Ident, actual: Int, expected: Int)
 case class InvalidPairElemErr(pe: PairElem) extends SemanticError
 case class DeclaredIdentErr(id: Ident) extends SemanticError
 case class NotDeclaredIdenErr(t: String, id: Ident) extends SemanticError
+case class IllegalFree(expr: Expr) extends SemanticError
