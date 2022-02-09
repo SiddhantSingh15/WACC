@@ -88,7 +88,7 @@ case class SymbolTable(
     meta.isDefined
   }
   
-  def funcParamMatch(id: Ident, args: Option[ArgList]): List[SemanticError] = {
+  def ParameterMatch(id: Ident, args: Option[ArgList]): List[SemanticError] = {
     val meta = funcMap.get(id)
     if (meta.isEmpty) {
       return List[SemanticError](functionNotDeclared(id: Ident))
@@ -108,13 +108,6 @@ case class SymbolTable(
       return List(invalidParams(id, argLen, paramLen))
     }
     var result = List[SemanticError]()
-    for (i <- 0 until argLen) {
-      val argType = argList.lift(i).getType(this)
-      val paramType = pList(i)
-      if (argType != paramType) {
-        result ::= typeMismatch(argList(i), argType, List(paramType))
-      }
-    }
     result
   }
 }
