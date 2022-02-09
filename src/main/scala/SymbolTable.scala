@@ -7,8 +7,8 @@ case class Meta(t: Type, pList: Option[List[Type]])
 case class SymbolTable(
     prev: SymbolTable,
     funcId: Ident,
-    funcMap: HashMap[Ident, Meta]
-) {
+    funcMap: HashMap[Ident, Meta]) 
+  {
 
   val varMap = new HashMap[Ident, Type]
 
@@ -88,7 +88,7 @@ case class SymbolTable(
     meta.isDefined
   }
   
-  def ParameterMatch(id: Ident, args: Option[ArgList]): List[SemanticError] = {
+  def parameterMatch(id: Ident, args: Option[ArgList]): List[SemanticError] = {
     val meta = funcMap.get(id)
     if (meta.isEmpty) {
       return List[SemanticError](functionNotDeclared(id: Ident))

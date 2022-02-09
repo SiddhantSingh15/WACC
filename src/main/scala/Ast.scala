@@ -16,7 +16,7 @@ object Ast{
     case object Skip extends Stat
     case class TypeAssign(tpe : Type, ident: Ident, assignRHS : AssignRHS) extends Stat
     case class AssignLR(assignLHS : AssignLHS, assignRHS : AssignRHS) extends Stat
-    case class Read(assignRHS : AssignLHS) extends Stat
+    case class Read(assignLHS : AssignLHS) extends Stat
     case class Free(expr : Expr) extends Stat
     case class Return(expr : Expr) extends Stat
     case class Exit(expr : Expr) extends Stat
@@ -32,16 +32,59 @@ object Ast{
     case class ArrayElem(ident: Ident, exprList : List[Expr]) extends AssignLHS with Expr
     trait PairElem extends AssignLHS with AssignRHS
 
-    sealed trait AssignRHS
+    sealed trait AssignRHS {
+        def getType(symbolTable : SymbolTable): Type
+        var semanticErrors : mutable.ListBuffer.empty[SemanticError]
+    }
     case class ArrayLiter(list: List[Expr]) extends AssignRHS
-    case class NewPair(exprOne : Expr, exprTwo : Expr) extends AssignRHS
-    case class Call(ident : Ident, argList : ArgList) extends AssignRHS
+    case class NewPair(exprOne : Expr, exprTwo : Expr) extends AssignRHS{
+        override def getType(symbolTable: SymbolTable) : Type = {
+            val typeOne = exprOne.getType(symbolTable)
+            val typeTwo = exprTwo.getType(symbolTable)
+            semanticErrors = exprOne.semanticErrors ++ exprTwo.semanticErrors
+            var pairOneElem : PairElemType = PairElemPair //need to define PairElemPair
+            if(!typeOne.isPair){
+                pairOneElem = PairElemType(typeOne)
+            }
+            var pairTwoElem : PairElemType = PairElemPair
+            if(!typeTwo.isPair){
+                pairTwoElem = PairElemType(typeTwo)
+            }
 
-    case class ArgList(exprs : List[Expr])
+            return Pair(pairOneElem, pairTwoElem)
+        }
+    }
+    case class Call(ident : Ident, argList : ArgList) extends AssignRHS {
+			override def getType(symbTable: SymbolTable): Type = {
+				val identType = ident.getType(symbolTable)
+				semanticErrors ++= symbTable.parameterMatch(ident, argList)
+				identType
+			}
+		}
 
-    sealed trait Type 
+    case class ArgList(exprs : List[Expr]) {
+        def map(f : Expr => Expr) = ArgList(args.map(f))
+    }
+
+    sealed trait Type {
+        def isArray : Boolean = this match {
+            case ArrayType(_) => true 
+            case _ 				 	  => false 
+        }
+        def isPair : Boolean = this match {
+            case Pair(_,_)   => true 
+            case _           => false 
+        }
+		}		
+
     sealed trait BaseType extends Type with PairElemType
-    case class ArrayType(tpe : Type) extends Type with PairElemType
+    case class ArrayType(tpe : Type) extends Type with PairElemType {
+        override def equals(o : Any) : Boolean = o match{
+            case ArrayType(null) => true
+            case ArrayType(inner) => if (tpe == null) true else inner == tpe
+            case _ => False
+        }
+    }
     case class PairType(fst : PairElemType, snd : PairElemType) extends Type 
 
     case object Int extends BaseType
@@ -49,19 +92,96 @@ object Ast{
     case object CharType extends BaseType
     case object String extends BaseType
 
-    sealed trait PairElemType
-    case class Fst(fst : Expr) extends PairElem 
-    case class Snd(snd : Expr) extends PairElem
-    case object Pair extends PairElemType
+    sealed trait PairElemType {
+			def getType: Type
+		}
+    case class Fst(fst : Expr) extends PairElem {
+			override def getType(symbTable: SymbolTable): Type = {
+				fst match {
+					case Ident(_, _) => val fstType  = fst.getType(symbTable)
+						fstType match {
+							case Pair(fst, _) => return fst.getType
+							case _ 						=>
+						}
+					case _ =>
+				}
+			}
+    }
 
-    sealed trait UnOp extends Expr
+    case class Snd(snd : Expr) extends PairElem {
+			override def getType(symbTable: SymbolTable): Type = {
+				snd match {
+					case Ident(_, _) => val sndType = snd.getType(symbolTable)
+						fstType match {
+							case Pair(_, snd) => return snd.getType
+							case _ 					  =>
+						}
+					case _ => 
+				}
+			}
+		}
+			
+	
+    case object Pair extends PairElemType {
+			override def getType: Type = Pair(null, null)
+		}
+
+    sealed trait UnOp extends Expr {
+			val expr: Expr
+			val expected: (Type, Type)
+			override def getType(symbTable: SymbolTable): Type = {
+				val current = expr.getType(symbolTable)
+				semanticErrors = expr.semanticErrors
+				if (current != expected._1) {
+					semanticErrors += MismatchTypesErr(expr, expected, List(expected._1))
+				}
+				expected._2
+			}
+		}
     case class Not(expr : Expr) extends UnOp
     case class Negation(expr : Expr) extends UnOp
-    case class Len(expr : Expr) extends UnOp
+    case class Len(expr : Expr) extends UnOp {
+			override def getType(symbTable: SymbolTable): Type = {
+				val current = expr.getType(symbolTable)
+				semanticErrors = expr.semanticErrors
+				if (!current.isArray) {
+					semanticErrors += MismatchTypesErr(expr, current, List(expected._1))
+				}
+				expected._2
+			}
+		}
     case class Ord(expr : Expr) extends UnOp
     case class Chr(expr : Expr) extends UnOp
 
-    sealed trait BinOp extends Expr
+    sealed trait BinOp extends Expr {
+			val exp1: Expr
+			val exp2: Expr
+			val expected: (List[Type], Type)
+
+			override def getType(symbTable: SymbolTable): Type = {
+				val currentExp1 = exp1.getType(symbolTable)
+				val currentExp2 = exp2.getType(symbolTable)
+				semanticErrors = exp1.semanticErrors ++ exp2.semanticErrors
+
+				if (currentExp1 == Any || currentExp2 == Any) {
+					return expected._2
+				}
+
+				if (currentExp1 != currentExp2) {
+					if (!expected._1.contains(currentExp2)) {
+						semanticErrors += MismatchTypesErr(exp2, currentExp2, expected._1)
+					}
+					if (!expected._1.contains(currentExp1)) {
+						semanticErrors += MismatchTypesErr(exp1, currentExp1, expected._1)
+					} else if (!expected._1.contains(exp1) && expected._1.nonEmpty) {
+						semanticErrors 
+							+= MismatchTypesErr(exp1, currentExp1, expected._1) 
+							++ MismatchTypesErr(exp2, currentExp2, expected._2)
+					}
+				}
+				expected._2
+			}
+		}
     case class Mul(expr1 : Expr, expr2 : Expr) extends BinOp
     case class Div(expr1 : Expr, expr2 : Expr) extends BinOp
     case class Mod(expr1 : Expr, expr2 : Expr) extends BinOp
