@@ -1,4 +1,4 @@
-package compiler
+package frontend
 
 import scala.collection.mutable.HashMap
 import scala.collection.mutable

@@ -1,4 +1,4 @@
-package compiler
+package frontend
 
 import parsley.Parsley, Parsley._
 import scala.language.implicitConversions

@@ -1,10 +1,10 @@
-import org.scalatest.funsuite.DummyTypeFunSuite
+import org.scalatest.funsuite.AnyFunSuite
 import java.nio.file.Paths
 import java.io.File
 
-class LexerTest extends DummyTypeFunSuite {
+class LexerTest extends AnyFunSuite {
   
-  val newParser = compiler.Parser;
+  val newParser = frontend.Parser;
 
   test("Valid Advanced Tests") {
     assert(newParser.parseFromFile(new File("wacc_examples/valid/advanced/binarySortTree.wacc")).get.isSuccess)

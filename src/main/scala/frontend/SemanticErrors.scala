@@ -1,4 +1,4 @@
-package compiler
+package frontend
 import Ast._
 
 sealed trait SemanticError {
@@ -21,7 +21,7 @@ sealed trait SemanticError {
     case NotDeclaredIdenErr(t, id) =>
       t + " " + id + " not declared in current scope"
     case DeclaredIdentErr(id) => "Conflicting definitions for variable " + id
-    case IllegalFree(expr) => expr + " is not available to free."
+    case IllegalFree(expr) => expr.toString + " is not available to free."
   }
 }
 

@@ -1,4 +1,4 @@
-package compiler
+package frontend
 
 import Ast._
 import scala.collection.mutable
