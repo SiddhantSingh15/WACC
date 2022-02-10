@@ -7,7 +7,7 @@ object Main {
   val semChecker = frontend.SemanticChecker
 
   def main(args: Array[String]) =  {
-    val parsed = parser.parseFromFile(new File("wacc_examples/invalid/semanticErr/exit/exitNonInt.wacc")).get.get
+    val parsed = parser.parseFromFile(new File("wacc_examples/invalid/semanticErr/expressions/boolOpTypeErr.wacc")).get.get
     val (symbTable, semRes) = semChecker.checkProgram(parsed)
     println(semRes)
   }

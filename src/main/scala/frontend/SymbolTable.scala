@@ -110,6 +110,13 @@ case class SymbolTable(
       return List(InvalidParamsErr(id, argLen, paramLen))
     }
     var result = List[SemanticError]()
+    for (i <- 0 until argLen) {
+      val argType = argList(i).getType(this)
+      val paramType = pList(i)
+      if (argType != paramType) {
+        return result ++ List(MismatchTypesErr(argList(i), argType, List(paramType)))
+      }
+    }
     result
   }
 }
