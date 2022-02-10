@@ -155,6 +155,21 @@ object Ast {
 			expected._2
 		}
 	}
+
+    trait ParserBuilder[T] {
+        val parser: Parsley[T]
+        final def <#(p: Parsley[_]): Parsley[T] = parser <* p
+    }
+    trait ParserBuilder1[T1, R] extends ParserBuilder[T1 => R] {
+        def apply(x: T1): R
+        val parser = pure(apply(_))
+    }
+    trait ParserBuilder2[T1, T2, R] extends ParserBuilder[(T1, T2) => R] {
+        def apply(x: T1, y: T2): R
+        val parser = pure(apply(_, _))
+    }
+
+
 	case class Not(expr : Expr) extends UnOp
 	case class Negation(expr : Expr) extends UnOp
 	case class Len(expr : Expr) extends UnOp {
