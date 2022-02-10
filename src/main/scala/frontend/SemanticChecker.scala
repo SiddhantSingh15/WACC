@@ -44,7 +44,10 @@ object SemanticChecker {
       case While(expr, stat)              => checkWhile(expr, stat, symbTable)
       case Begin(stat)                    => checkStat(stat, symbTable.nextScope)
       case AssignLR(assignLHS, assignRHS) => checkAssign(assignLHS, assignRHS, symbTable)
-      case _ => 
+      case Colon(fstStat, sndStat)        => checkColon(fstStat, sndStat, symbTable)
+      case TypeAssign(t, ident, rhs)      => checkTypeAssign(t, ident, rhs, symbTable)
+      case _                              => 
+
   }
   
 
@@ -54,7 +57,32 @@ object SemanticChecker {
     (ident, Meta(tpe, Some(pTypes)))
   }
 
-  	private def checkOtherRead(lhs : AssignRHS, symbTable : SymbolTable) : Unit = {
+  private def checkColon(fstStat: Stat, sndStat: Stat, symbTable: SymbolTable): Unit = {
+    checkStat(fstStat, symbTable)
+    checkStat(sndStat, symbTable)
+  }
+
+  private def checkTypeAssign(tpe: Type, ident: Ident, rhs: AssignRHS, symbTable: SymbolTable): Unit = {
+    if (symbTable.containScope(ident)) {
+      semanticErrors += DeclaredVarErr(ident)
+      return
+    }
+
+    if (rhs.semanticErrors.nonEmpty) {
+      semanticErrors ++= rhs.semanticErrors
+      symbTable.add(ident, tpe)
+      return
+    }
+
+    val rType = rhs.getType(symbTable)
+    symbTable.add(ident, tpe)
+    if (tpe != rType) {
+      semanticErrors += MismatchTypesErr(rhs, rType, List(tpe))
+    }
+  }
+
+
+  private def checkOtherRead(lhs : AssignRHS, symbTable : SymbolTable) : Unit = {
 		val otherType = checkType(lhs, symbTable)
 		otherType match {
 			case Ast.CharType | Ast.Int =>
