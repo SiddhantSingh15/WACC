@@ -19,20 +19,27 @@ object Main {
     val parsedResult = parsed match {
         case Success(x) =>
           println(x)
-          println(s"${args(0)} is synctactically valid.")
           val semRes = semChecker.checkProgram(parsed.get)._2
-          if (semRes.toList.length == 0) {
+          for (err <- semRes) {
+            if (err.isInstanceOf[FuncNoRetErr]) {
+              println("[error]: " + err)
+              System.exit(100)
+            }
+          }
+
+          println(s"${args(0)} is synctactically valid.")
+          if (semRes.isEmpty) {
             println(s"${args(0)} is semantically valid.")
-            // System.exit(0)
+            System.exit(0)
           }
           for (error <- semRes.toList) {
-            println("[error]: " + error + "\n")
+            println("[error]: " + error)
           }
-          // System.exit(100)
+          System.exit(100)
         case Failure(err) =>
           println("reach here")
           print(err.getError())
-          // System.exit(200)
+          System.exit(200)
         }
     }
 }

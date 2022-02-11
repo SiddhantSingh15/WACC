@@ -28,7 +28,31 @@ object SemanticChecker {
       symbTable.addVariables(pList.map((param: Param) => (param.ident, param.tpe)))
       case _ =>   
     }
+    if (!returnExists(stat)) {
+      semanticErrors += FuncNoRetErr(func.ident)
+    }
     checkStat(stat, symbTable)
+  }
+
+  private def returnExists(stat: Stat): Boolean = {
+    if (stat.isInstanceOf[If]) {
+      val If(_, statThen, statElse) = stat
+      return returnExists(statThen) && returnExists(statElse)
+    } else if (stat.isInstanceOf[While]) {
+      val While(_, whileStat) = stat
+      return returnExists(whileStat)
+    } else if (stat.isInstanceOf[Colon]) {
+      val Colon(stat1, stat2) = stat
+      if (stat1.isInstanceOf[Return]) {
+        return true
+      } else {
+        return returnExists(stat1) && returnExists(stat2)
+      }
+    } else if (stat.isInstanceOf[Return]) {
+      return true
+    }
+
+    return false
   }
 
   def checkStat(stat: Stat, symbTable: SymbolTable): Unit = 

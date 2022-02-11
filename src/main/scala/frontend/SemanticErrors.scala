@@ -20,8 +20,11 @@ sealed trait SemanticError {
     case DeclaredVarErr(ident)    => DeclaredIdentErr(ident).toString()
     case NotDeclaredIdenErr(t, ident) =>
       t + " " + ident + " not declared in current scope"
-    case DeclaredIdentErr(ident) => "Conflicting definitions for variable " + ident
+    case DeclaredIdentErr(ident) => "Conflicting definitions for variable " + ident + "."
     case IllegalFree(expr) => expr.toString + " is not available to free."
+    case FuncNoRetErr(ident) => "Function \'" + ident.toString + "\' does not exit with " +
+      "{return, if, while, exit}" +
+      " or it is mutually recursive with another function."
   }
 }
 
@@ -41,3 +44,4 @@ case class InvalidPairElemErr(pe: PairElem) extends SemanticError
 case class DeclaredIdentErr(ident: Ident) extends SemanticError
 case class NotDeclaredIdenErr(t: String, ident: Ident) extends SemanticError
 case class IllegalFree(expr: Expr) extends SemanticError
+case class FuncNoRetErr(ident: Ident) extends SemanticError

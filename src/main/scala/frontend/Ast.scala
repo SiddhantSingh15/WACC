@@ -41,7 +41,7 @@ object Ast {
 	}
 	
 	sealed case class Ident(string: String) extends AssignLHS with AssignRHS with Expr {
-    // override def toString: String = string
+    override def toString: String = string
 		override def getType(symbTable: SymbolTable): Type = {
 			if (!symbTable.contains(this)) {
 				semanticErrors += NotDeclaredFuncErr(this)
