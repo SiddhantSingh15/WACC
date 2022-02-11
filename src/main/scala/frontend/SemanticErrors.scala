@@ -6,38 +6,38 @@ sealed trait SemanticError {
     case MismatchTypesErr(invalid, actualT, expected) =>
       "Type mismatch at " + invalid + " expected type " + expected.mkString( " or "
       ) + " but actual type " + actualT
-    case OutOfBoundErr(id) => "Array index out of bounds for array " + id
-    case AccessDeniedErr(id) => "Element access of " + id + " is not permitted"
+    case OutOfBoundErr(ident) => "Array index out of bounds for array " + ident
+    case AccessDeniedErr(ident) => "Element access of " + ident + " is not permitted"
     case InvalidRetErr(e) => "Invalid return statement from main: return " + e
-    case IllegallAssignFuncErr(id) => "Illegal assignment to function " + id
-    case InvalidParamsErr(id, actual, expected) =>
-      "Invalid params for function " + id + " Expected number of params: " + expected + ". Actual: " + actual
+    case IllegalAssignFuncErr(ident) => "Illegal assignment to function " + ident
+    case InvalidParamsErr(ident, actual, expected) =>
+      "Invalid params for function " + ident + " Expected number of params: " + expected + ". Actual: " + actual
     case InvalidPairElemErr(pe) =>
       "Invalid input, expected: Pair, unable to perform " + pe
-    case DeclaredFuncErr(id)    => DeclaredIdentErr(id).toString()
-    case NotDeclaredFuncErr(id) => NotDeclaredIdenErr("Function", id).toString
-    case NotDeclaredVarErr(id) => NotDeclaredIdenErr("Variable", id).toString()
-    case DeclaredVarErr(id)    => DeclaredIdentErr(id).toString()
-    case NotDeclaredIdenErr(t, id) =>
-      t + " " + id + " not declared in current scope"
-    case DeclaredIdentErr(id) => "Conflicting definitions for variable " + id
+    case DeclaredFuncErr(ident)    => DeclaredIdentErr(ident).toString()
+    case NotDeclaredFuncErr(ident) => NotDeclaredIdenErr("Function", ident).toString
+    case NotDeclaredVarErr(ident) => NotDeclaredIdenErr("Variable", ident).toString()
+    case DeclaredVarErr(ident)    => DeclaredIdentErr(ident).toString()
+    case NotDeclaredIdenErr(t, ident) =>
+      t + " " + ident + " not declared in current scope"
+    case DeclaredIdentErr(ident) => "Conflicting definitions for variable " + ident
     case IllegalFree(expr) => expr.toString + " is not available to free."
   }
 }
 
 case class MismatchTypesErr(invalid: AssignRHS, actualT: Type, expected: List[Type])
     extends SemanticError
-case class NotDeclaredVarErr(id: Ident) extends SemanticError
-case class DeclaredVarErr(id: Ident) extends SemanticError
-case class OutOfBoundErr(id: Ident) extends SemanticError
-case class AccessDeniedErr(id: Ident) extends SemanticError
+case class NotDeclaredVarErr(ident: Ident) extends SemanticError
+case class DeclaredVarErr(ident: Ident) extends SemanticError
+case class OutOfBoundErr(ident: Ident) extends SemanticError
+case class AccessDeniedErr(ident: Ident) extends SemanticError
 case class InvalidRetErr(e: Expr) extends SemanticError
-case class IllegallAssignFuncErr(id: Ident) extends SemanticError
-case class DeclaredFuncErr(id: Ident) extends SemanticError
-case class NotDeclaredFuncErr(id: Ident) extends SemanticError
-case class InvalidParamsErr(id: Ident, actual: Int, expected: Int)
+case class IllegalAssignFuncErr(ident: Ident) extends SemanticError
+case class DeclaredFuncErr(ident: Ident) extends SemanticError
+case class NotDeclaredFuncErr(ident: Ident) extends SemanticError
+case class InvalidParamsErr(ident: Ident, actual: Int, expected: Int)
     extends SemanticError
 case class InvalidPairElemErr(pe: PairElem) extends SemanticError
-case class DeclaredIdentErr(id: Ident) extends SemanticError
-case class NotDeclaredIdenErr(t: String, id: Ident) extends SemanticError
+case class DeclaredIdentErr(ident: Ident) extends SemanticError
+case class NotDeclaredIdenErr(t: String, ident: Ident) extends SemanticError
 case class IllegalFree(expr: Expr) extends SemanticError

@@ -33,12 +33,12 @@ object Parser {
         chain.postfix1((`<base-type>` <|> `<pair-type>`), "[]" #> ArrayType)
 
     private lazy val `<pair-elem-type>`: Parsley[PairElemType] =
-        fully("pair" #> Pair <|> lift1(ArrayType, `<type>`) <|> `<base-type>`)
+        fully("pair" #> PairElemPair <|> (PairElemWithType <#> `<type>`))
 
     private lazy val `<pair-type>` : Parsley[PairType] =
         ("pair" *> parens(
-            lift2(PairType, `<pair-elem-type>`,"," *> `<pair-elem-type>`)
-        ))
+            lift2(Pair, `<pair-elem-type>`,"," *> `<pair-elem-type>`))
+        )
 
     private val number = INTEGER
 

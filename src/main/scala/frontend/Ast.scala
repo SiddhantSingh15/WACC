@@ -14,6 +14,8 @@ object Ast {
 
 	case class ParamList(params : List[Param])
 
+  sealed trait Expr extends AssignRHS
+
 
 	sealed trait Stat
 	case object Skip extends Stat
@@ -39,6 +41,7 @@ object Ast {
 	}
 	
 	sealed case class Ident(string: String) extends AssignLHS with AssignRHS with Expr {
+    override def toString: String = string
 		override def getType(symbTable: SymbolTable): Type = {
 			if (!symbTable.contains(this)) {
 				semanticErrors += NotDeclaredFuncErr(this)
@@ -51,18 +54,16 @@ object Ast {
 	sealed case class ArrayElem(ident: Ident, exprList : List[Expr]) extends AssignLHS with Expr {
   		override def getType(symbTable: SymbolTable): Type = {
 			  val current = ident.getType(symbTable)
-				
-				current match {
-					case ArrayType(tpe) => return tpe
-					case _ 							=> 
-				}
-				ident.semanticErrors += AccessDeniedErr(ident)
+        if (current.isArray) {
+          val ArrayType(t) = current
+          return t
+        }
+				// ident.semanticErrors += AccessDeniedErr(ident)
 				ident.semanticErrors += MismatchTypesErr(ident, current, List(ArrayType(current)))
 				current
 		  }
 	}
 
-	sealed trait PairElem extends AssignLHS with AssignRHS
 
 	case class ArrayLiter(list: List[Expr]) extends AssignRHS {
 		override def getType(symbTable: SymbolTable): Type = {
@@ -74,30 +75,17 @@ object Ast {
 			var fstType = allExprTypes.head
 
 			if (allExprTypes.forall((t : Type) => t == fstType)) {
-				return fstType
+				return ArrayType(fstType)
 			}
 
 			ArrayType(null)
 		}
 	}
-	case class NewPair(exprOne : Expr, exprTwo : Expr) extends AssignRHS{
-		override def getType(symbolTable: SymbolTable) : Type = {
-			val typeOne = exprOne.getType(symbolTable)
-			val typeTwo = exprTwo.getType(symbolTable)
-			semanticErrors = exprOne.semanticErrors ++ exprTwo.semanticErrors
-			var pairOneElem : PairElemType = PairElemPair //need to define PairElemPair
-			if(!typeOne.isPair){
-					pairOneElem = PairElemWithType(typeOne)
-			}
-			var pairTwoElem : PairElemType = PairElemPair
-			if(!typeTwo.isPair){
-					pairTwoElem = PairElemWithType(typeTwo)
-			}
-
-			return PairType(pairOneElem, pairTwoElem)
-		}
-	}
+  
 	case class Call(ident : Ident, argList : ArgList) extends AssignRHS {
+		override def toString: String = {
+			ident.toString + "(" + argList + ")"
+		}
 		override def getType(symbTable: SymbolTable): Type = {
 			val identType = ident.getType(symbTable)
 			semanticErrors ++= symbTable.parameterMatch(ident, Some(argList))
@@ -106,7 +94,9 @@ object Ast {
 	}
 
 	case class ArgList(exprs : List[Expr]) {
-			def map(f : Expr => Expr) = ArgList(exprs.map(f))
+		override def toString: String = {
+			exprs.mkString(", ")
+		}
 	}
 
 	sealed trait Type {
@@ -115,8 +105,8 @@ object Ast {
 			case _ 				 	  => false 
 		}
 		def isPair : Boolean = this match {
-			case PairType(_,_) => true 
-			case _             => false 
+			case Pair(_,_) => true 
+			case _         => false 
 		}
 	}		
 
@@ -141,58 +131,96 @@ object Ast {
 
 			override def getType: Type = tpe
 	}
-	
-	case class PairType(fst : PairElemType, snd : PairElemType) extends Type 
 
 	case object Int extends BaseType {
+    override def toString: String = "int"
 		override def getType: Type = Int
 	}
 	case object Bool extends BaseType {
+    override def toString: String = "bool"
 		override def getType: Type = Bool
 	}
 	case object CharType extends BaseType {
+    override def toString: String = "char"
 		override def getType: Type = CharType
 	}
 	case object String extends BaseType {
+    override def toString: String = "char"
 		override def getType: Type = String
 	}
 
-	case object Pair extends PairElemType {
-		override def getType: Type = PairType(null, null)
+  sealed trait PairElem extends AssignLHS with AssignRHS {
+    val expr: Expr
+  }
+
+	case class NewPair(exprOne : Expr, exprTwo : Expr) extends AssignRHS{
+    override def toString: String = "newpair(" + exprOne + ", " + exprTwo + ")"
+		override def getType(symbolTable: SymbolTable) : Type = {
+			val typeOne = exprOne.getType(symbolTable)
+			val typeTwo = exprTwo.getType(symbolTable)
+			semanticErrors = exprOne.semanticErrors ++ exprTwo.semanticErrors
+			var pairOneElem : PairElemType = PairElemPair
+			if(!typeOne.isPair){
+					pairOneElem = PairElemWithType(typeOne)
+			}
+			var pairTwoElem : PairElemType = PairElemPair
+			if(!typeTwo.isPair){
+					pairTwoElem = PairElemWithType(typeTwo)
+			}
+
+			Pair(pairOneElem, pairTwoElem)
+		}
+	}
+
+  sealed trait PairType extends Type
+	case class Pair(fst: PairElemType, snd: PairElemType) extends PairType {
+    override def toString: String = {
+      if (fst == null || snd == null) {
+        return "pair"
+      }
+      "pair(" + fst + ", " + snd + ")"
+    }
 	}
 
 	sealed trait PairElemType extends Type {
 		def getType: Type
 	}
 
-	case class PairElemWithType(t: Type) extends PairElemType {
-		override def getType: Type = t
+	case object PairElemPair extends PairElemType {
+    override def toString: String = "pair"
+		override def getType: Type = Pair(null, null)
 	}
 
-	case object PairElemPair extends PairElemType {
-		override def getType: Type = PairType(null, null)
-	}
+  case class PairElemWithType(tpe: Type) extends PairElemType {
+    override def toString: String = tpe.toString
+    override def getType: Type = tpe
+  }
 	case class Fst(fst : Expr) extends PairElem {
+    override def toString: String = "fst: " + fst.toString
+    val expr = fst
 		override def getType(symbTable: SymbolTable): Type = {
 			fst match {
-				case Ident(_)             => val fstType  = fst.getType(symbTable)
+				case Ident(_)             => val fstType = fst.getType(symbTable)
 					fstType match {
-						case PairType(fst, _) => return fst.getType
+						case Pair(fst, _) => return fst.getType
 						case _ => 
 					}
-				case _ =>
+				case _                    =>
 			}
+      semanticErrors += InvalidPairElemErr(this)
 			Any
 		}
 	}
 
 	case class Snd(snd : Expr) extends PairElem {
+    override def toString: String = "snd: " + snd.toString
+    val expr = snd
 		override def getType(symbTable: SymbolTable): Type = {
 			snd match {
 				case Ident(_) => val sndType = snd.getType(symbTable)
 					sndType match {
-						case PairType(_, snd) => return snd.getType
-						case _ 					      =>
+						case Pair(_, snd) => return snd.getType
+						case _ 					  =>
 					}
 				case _        => 
 			}
@@ -218,6 +246,7 @@ object Ast {
 	sealed trait UnOp extends Expr {
 		val expr: Expr
 		val expected: (Type, Type)
+    val symbol: String
 		override def getType(symbTable: SymbolTable): Type = {
 			val current = expr.getType(symbTable)
 			semanticErrors = expr.semanticErrors
@@ -226,15 +255,19 @@ object Ast {
 			}
 			expected._2
 		}
+    override def toString: String = symbol + expr.toString
 	}
 
 	case class Not(expr : Expr) extends UnOp {
+    val symbol = "!"
 		override val expected: (Type, Type) = (Bool, Bool)
 	}
 	case class Negation(expr : Expr) extends UnOp {
+    val symbol = "-"
 		override val expected: (Type, Type) = (Int, Int)
 	}
 	case class Len(expr : Expr) extends UnOp {
+    val symbol = "len"
 		override val expected: (Type, Type) = (ArrayType(null), Int)
 		override def getType(symbTable: SymbolTable): Type = {
 			val current = expr.getType(symbTable)
@@ -247,14 +280,18 @@ object Ast {
 	}
 	
 	case class Ord(expr : Expr) extends UnOp {
+    val symbol = "ord "
 		override val expected: (Type, Type) = (CharType, Int)
 	}
 
 	case class Chr(expr : Expr) extends UnOp {
+    val symbol = "chr "
 		override val expected: (Type, Type) = (Int, CharType)
 	}
 
 	sealed trait BinOp extends Expr {
+	  // val semanticErrs = mutable.ListBuffer.empty[SemanticError]
+    val symbol: String
 		val exp1: Expr
 		val exp2: Expr
 		val expected: (List[Type], Type)
@@ -268,19 +305,34 @@ object Ast {
 				return expected._2
 			}
 
+			println(currentExp1)
+			println(currentExp2)
+			println(currentExp2 == currentExp1 && !(expected._1.contains(currentExp1)))
+			println(semanticErrors)
+			
 			if (currentExp1 != currentExp2) {
-				if (!expected._1.contains(currentExp2)) {
-					semanticErrors += MismatchTypesErr(exp2, currentExp2, expected._1)
-				}
-				if (!expected._1.contains(currentExp1)) {
-					semanticErrors += MismatchTypesErr(exp1, currentExp1, expected._1)
-				} else if (!expected._1.contains(exp1) && expected._1.nonEmpty) {
-					semanticErrors += MismatchTypesErr(exp1, currentExp1, expected._1)
-				  semanticErrors += MismatchTypesErr(exp2, currentExp2, expected._1)
-				}
-			}
+        if (expected._1.contains(currentExp1)) {
+          semanticErrors += MismatchTypesErr(exp2, currentExp2, List(currentExp1))
+          return expected._2
+        }
+        if (expected._1.contains(currentExp2)) {
+          semanticErrors += MismatchTypesErr(exp1, currentExp1, List(currentExp2))
+          return expected._2
+        }
+      } else {
+        if (expected._1.contains(currentExp1) && expected._1.contains(currentExp2)) {
+              return expected._2
+            }
+        if (expected._1.isEmpty) {
+          return expected._2
+        }
+      }
+      semanticErrors += MismatchTypesErr(exp1, currentExp1, expected._1)
+      semanticErrors += MismatchTypesErr(exp2, currentExp2, expected._1)
+			println(semanticErrors)
 			expected._2
 		}
+    override def toString: String = exp1.toString + " " + symbol + " " + exp2.toString
 	}
 
 	sealed trait MathFuncs extends BinOp {
@@ -299,61 +351,48 @@ object Ast {
 		override val expected: (List[Type], Type) = (List.empty, Bool)
 	}
 	
-	case class Mul(expr1 : Expr, expr2 : Expr) extends MathFuncs {
-		override val exp1 = expr1
-		override val exp2 = expr2
+	case class Mul(exp1 : Expr, exp2 : Expr) extends MathFuncs {
+    val symbol = "*"
 	}
-	case class Div(expr1 : Expr, expr2 : Expr) extends MathFuncs {
-		override val exp1 = expr1
-		override val exp2 = expr2
+	case class Div(exp1 : Expr, exp2 : Expr) extends MathFuncs {
+    val symbol = "/"
 	}
-	case class Mod(expr1 : Expr, expr2 : Expr) extends MathFuncs {
-		override val exp1 = expr1
-		override val exp2 = expr2
+	case class Mod(exp1 : Expr, exp2 : Expr) extends MathFuncs {
+    val symbol = "%"
 	}
-	case class Plus(expr1 : Expr, expr2 : Expr) extends MathFuncs {
-		override val exp1 = expr1
-		override val exp2 = expr2
+	case class Plus(exp1 : Expr, exp2 : Expr) extends MathFuncs {
+    val symbol = "+"
 	}
-	case class Sub(expr1 : Expr, expr2 : Expr) extends MathFuncs {
-		override val exp1 = expr1
-		override val exp2 = expr2
+	case class Sub(exp1 : Expr, exp2 : Expr) extends MathFuncs {
+    val symbol = "-"
 	}
-	case class GT(expr1 : Expr, expr2 : Expr) extends CompareFuncs {
-		override val exp1 = expr1
-		override val exp2 = expr2
+	case class GT(exp1 : Expr, exp2 : Expr) extends CompareFuncs {
+    val symbol = ">"
 	}
-	case class GTE(expr1 : Expr, expr2 : Expr) extends CompareFuncs {
-		override val exp1 = expr1
-		override val exp2 = expr2
+	case class GTE(exp1 : Expr, exp2 : Expr) extends CompareFuncs {
+    val symbol = ">="
 	}
-	case class LT(expr1 : Expr, expr2 : Expr) extends CompareFuncs {
-		override val exp1 = expr1
-		override val exp2 = expr2
+	case class LT(exp1 : Expr, exp2 : Expr) extends CompareFuncs {
+    val symbol = "<"
 	}
-	case class LTE(expr1 : Expr, expr2 : Expr) extends CompareFuncs {
-		override val exp1 = expr1
-		override val exp2 = expr2
+	case class LTE(exp1 : Expr, exp2 : Expr) extends CompareFuncs {
+    val symbol = "<="
 	}
-	case class Equal(expr1 : Expr, expr2 : Expr) extends EqualityFuncs {
-		override val exp1 = expr1
-		override val exp2 = expr2
+	case class Equal(exp1 : Expr, exp2 : Expr) extends EqualityFuncs {
+    val symbol = "=="
 	}
-	case class NotEqual(expr1 : Expr, expr2 : Expr) extends EqualityFuncs {
-		override val exp1 = expr1
-		override val exp2 = expr2
+	case class NotEqual(exp1 : Expr, exp2 : Expr) extends EqualityFuncs {
+    val symbol = "!="
 	}
-	case class And(expr1 : Expr, expr2 : Expr) extends LogicFuncs {
-		override val exp1 = expr1
-		override val exp2 = expr2
+	case class And(exp1 : Expr, exp2 : Expr) extends LogicFuncs {
+    val symbol = "&&"
 	}
-	case class Or(expr1 : Expr, expr2 : Expr) extends LogicFuncs {
-		override val exp1 = expr1
-		override val exp2 = expr2
+	case class Or(exp1 : Expr, exp2 : Expr) extends LogicFuncs {
+    val symbol = "||"
 	}
-
-	sealed trait Expr extends AssignRHS
+  
 	case class IntLiter(number: Int) extends Expr {
+    override def toString: String = number.toString
 		override def getType(symbTable: SymbolTable): Type = Int
 	}
 	sealed trait BoolLiter extends Expr
@@ -370,7 +409,8 @@ object Ast {
 		override def getType(symbTable: SymbolTable): Type = String
 	}
 	case class PairLiter() extends Expr {
-		override def getType(symbTable: SymbolTable): Type = Pair
+    override def toString: String = "pairLit"
+		override def getType(symbTable: SymbolTable): Type = Pair(null, null)
 	}
 	// case class UnOpExpr(op: UnOp, expr: Expr) extends Expr 
 	// case class BinOpExpr(expr1: Expr, op: BinOp, expr2: Expr) extends Expr {

@@ -8,7 +8,7 @@ object Main {
 
   def main(args: Array[String]) =  {
     val parsed = parser.parseFromFile(new File("wacc_examples/invalid/semanticErr/expressions/boolOpTypeErr.wacc")).get.get
-    val (symbTable, semRes) = semChecker.checkProgram(parsed)
-    println(semRes)
+    val semRes = semChecker.checkProgram(parsed)
+    println(semRes.toList.toString())
   }
 }

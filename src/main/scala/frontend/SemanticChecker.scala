@@ -7,10 +7,9 @@ object SemanticChecker {
   
   private var semanticErrors = mutable.ListBuffer.empty[SemanticError]
 
-  def checkProgram(prog: WaccProgram): 
-    (SymbolTable, mutable.ListBuffer[SemanticError]) = {
+  def checkProgram(prog: WaccProgram): mutable.ListBuffer[SemanticError] = {
       val WaccProgram(s, stat) = prog
-      val globSymTable: SymbolTable = SymbolTable(null, null, new mutable.HashMap[Ident, Meta])
+      val globSymTable: SymbolTable = SymbolTable(null, null, new mutable.HashMap[Ident, Info])
       val globFuncs = s.map(convertFuncType)
       semanticErrors ++= globSymTable.addFunctions(globFuncs)
       
@@ -19,7 +18,7 @@ object SemanticChecker {
       }
 
       checkStat(stat, globSymTable)
-      (globSymTable, semanticErrors)
+      semanticErrors
 	}
 
   def checkFunc(func: Func, symbTable: SymbolTable): Unit = {
@@ -50,11 +49,10 @@ object SemanticChecker {
 
   }
   
-
-  private def convertFuncType(f: Func): (Ident, Meta) = {
+  private def convertFuncType(f: Func): (Ident, Info) = {
     val Func(tpe, ident, ParamList(pList), _) = f
     val pTypes = pList.map(_.tpe)
-    (ident, Meta(tpe, Some(pTypes)))
+    (ident, Info(tpe, Some(pTypes)))
   }
 
   private def checkColon(fstStat: Stat, sndStat: Stat, symbTable: SymbolTable): Unit = {
@@ -107,8 +105,8 @@ object SemanticChecker {
       return
     }
 
-    if (!symbTable.isFunc(ident)) {
-      semanticErrors += IllegallAssignFuncErr(ident)
+    if (symbTable.isFunc(ident)) {
+      semanticErrors += IllegalAssignFuncErr(ident)
       return
     }
 
@@ -124,14 +122,14 @@ object SemanticChecker {
   }
 
 	private def checkReturn(expr: Expr, symbTable: SymbolTable): Unit = {
-		val expected = symbTable.getFuncRetType
+		val expected = symbTable.getFuncReturnType
 
 		if(expected == null){
 			semanticErrors += InvalidRetErr(expr)
 			return        
 		}
 
-		val tpe = symbTable.getFuncRetType
+		val tpe = checkType(expr, symbTable)
 
 		if(expected != tpe){
 			semanticErrors += MismatchTypesErr(expr, tpe, List(expected))
@@ -166,48 +164,47 @@ object SemanticChecker {
 	}
 
 	private def checkType(assignRHS : AssignRHS, symbTable : SymbolTable) : Type = {
+    println("168 " + assignRHS)
 		val tpe = assignRHS.getType(symbTable)
 		
 		if(assignRHS.semanticErrors.nonEmpty){
 			semanticErrors ++= assignRHS.semanticErrors
 			return null
 		}
+
+    println(assignRHS.semanticErrors)
     
     return tpe
 	}
 
 	private def checkFree(expr : Expr, symbolTable : SymbolTable): Unit = {
 		val tpe = checkType(expr, symbolTable)
-		if((tpe == null) || tpe.isPair || tpe.isArray) {
-			expr match {
-        case _ : Ident =>
-        case _         => semanticErrors += IllegalFree(expr)
-      }
-		} else {
-      semanticErrors += MismatchTypesErr(expr, tpe, List(PairType(null, null), ArrayType(null)))
-    }
+		if ((tpe == null) || tpe.isPair || tpe.isArray) {
+			return
+		}
+    semanticErrors += MismatchTypesErr(expr, tpe, List(Pair(null, null), ArrayType(null)))
 	}
 
-	private def sameBaseType(tpeOne : BaseType, tpeTwo : BaseType) : Boolean = {
-		tpeOne match {
-			case String     => tpeTwo match {
-				case String   => true
-				case _        => false		
-			}
-			case Int        => tpeTwo match {
-				case Int      => true
-				case _        => false
-			}
-			case CharType   => tpeTwo match {
-				case CharType => false
-				case _        => false
-			}
-			case Bool       => tpeTwo match {
-				case Bool     => false 
-				case _        => false
-		  }
-    }
-  }
+	// private def sameBaseType(tpeOne : BaseType, tpeTwo : BaseType) : Boolean = {
+	// 	tpeOne match {
+	// 		case String     => tpeTwo match {
+	// 			case String   => true
+	// 			case _        => false		
+	// 		}
+	// 		case Int        => tpeTwo match {
+	// 			case Int      => true
+	// 			case _        => false
+	// 		}
+	// 		case CharType   => tpeTwo match {
+	// 			case CharType => false
+	// 			case _        => false
+	// 		}
+	// 		case Bool       => tpeTwo match {
+	// 			case Bool     => false 
+	// 			case _        => false
+	// 	  }
+  //   }
+  // }
 
   private def checkRead(assignL : AssignLHS, symbTable : SymbolTable) : Unit = {
 		assignL match {

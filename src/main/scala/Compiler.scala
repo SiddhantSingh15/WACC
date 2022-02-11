@@ -6,7 +6,7 @@ object Compiler {
 
   def check: Unit = {
     val parsed = parser.parseFromFile(new File("wacc_examples/invalid/semanticErr/exit/badCharExit.wacc")).get.get
-    val (symbTable, semRes) = semChecker.checkProgram(parsed)
+    val semRes = semChecker.checkProgram(parsed)
     print(semRes)
   }
 }
