@@ -18,7 +18,6 @@ object Main {
 
     val parsedResult = parsed match {
         case Success(x) =>
-          println(x)
           val semRes = semChecker.checkProgram(parsed.get)._2
           for (err <- semRes) {
             if (err.isInstanceOf[FuncNoRetErr]) {
@@ -35,11 +34,10 @@ object Main {
           for (error <- semRes.toList) {
             println("[error]: " + error)
           }
-          System.exit(100)
-        case Failure(err) =>
-          println("reach here")
-          print(err.getError())
           System.exit(200)
+        case Failure(err) =>
+          print(err.getError())
+          System.exit(100)
         }
     }
 }

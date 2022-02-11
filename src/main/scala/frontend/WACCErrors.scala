@@ -35,7 +35,7 @@ object WACCErrors {
                         s"unexpected input: ${item match {
                             case TestNamed(s) => s
                             case TestRaw(s) => s"\'${s}\'"
-                            case _          => "TODO"
+                            case _          => "Should have an unexpected"
                             }}"
                 })
                 sb += '\n'
