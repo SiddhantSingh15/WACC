@@ -41,7 +41,7 @@ object Ast {
 	}
 	
 	sealed case class Ident(string: String) extends AssignLHS with AssignRHS with Expr {
-    override def toString: String = string
+    // override def toString: String = string
 		override def getType(symbTable: SymbolTable): Type = {
 			if (!symbTable.contains(this)) {
 				semanticErrors += NotDeclaredFuncErr(this)
@@ -58,7 +58,7 @@ object Ast {
           val ArrayType(t) = current
           return t
         }
-				// ident.semanticErrors += AccessDeniedErr(ident)
+				ident.semanticErrors += AccessDeniedErr(ident)
 				ident.semanticErrors += MismatchTypesErr(ident, current, List(ArrayType(current)))
 				current
 		  }
@@ -66,6 +66,7 @@ object Ast {
 
 
 	case class ArrayLiter(list: List[Expr]) extends AssignRHS {
+    override def toString: String = list.toString
 		override def getType(symbTable: SymbolTable): Type = {
 			if (list.isEmpty) {
 				return ArrayType(null)
@@ -120,14 +121,20 @@ object Ast {
 
 	sealed trait BaseType extends Type with PairElemType
 	sealed case class ArrayType(tpe : Type) extends Type with PairElemType {
-			override def equals(a : Any) : Boolean = 
-			    a match{
-					case ArrayType(null)  => true
-					case ArrayType(inner) => 
-						if (tpe == null) true 
-						else inner == tpe
-					case _ 				  => false
-			}
+    override def toString: String = {
+      if (tpe != null) {
+        return tpe.toString + "[]"
+      }
+      return "null[]"
+    }
+    override def equals(any : Any) : Boolean = 
+        any match{
+        case ArrayType(null)  => true
+        case ArrayType(inner) => 
+          if (tpe == null) true 
+          else inner == tpe
+        case _ 				  => false
+    }
 
 			override def getType: Type = tpe
 	}
@@ -180,6 +187,11 @@ object Ast {
       }
       "pair(" + fst + ", " + snd + ")"
     }
+    override def equals(p: Any): Boolean = 
+      p match {
+        case Pair(_, _) => true
+        case _          => false
+      }
 	}
 
 	sealed trait PairElemType extends Type {
@@ -304,11 +316,6 @@ object Ast {
 			if (currentExp1 == Any || currentExp2 == Any) {
 				return expected._2
 			}
-
-			println(currentExp1)
-			println(currentExp2)
-			println(currentExp2 == currentExp1 && !(expected._1.contains(currentExp1)))
-			println(semanticErrors)
 			
 			if (currentExp1 != currentExp2) {
         if (expected._1.contains(currentExp1)) {
@@ -329,7 +336,6 @@ object Ast {
       }
       semanticErrors += MismatchTypesErr(exp1, currentExp1, expected._1)
       semanticErrors += MismatchTypesErr(exp2, currentExp2, expected._1)
-			println(semanticErrors)
 			expected._2
 		}
     override def toString: String = exp1.toString + " " + symbol + " " + exp2.toString
@@ -403,9 +409,11 @@ object Ast {
 		override def getType(symbTable: SymbolTable): Type = Bool
 	}
 	case class CharLiter(character: Char) extends Expr{
+    override def toString: String = "\'" + character + "\'"
 		override def getType(symbTable: SymbolTable): Type = CharType
 	}
-	case class StrLiter(character: String) extends Expr{
+	case class StrLiter(string: String) extends Expr{
+    override def toString: String = string
 		override def getType(symbTable: SymbolTable): Type = String
 	}
 	case class PairLiter() extends Expr {

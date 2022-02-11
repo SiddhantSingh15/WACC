@@ -7,18 +7,18 @@ object SemanticChecker {
   
   private var semanticErrors = mutable.ListBuffer.empty[SemanticError]
 
-  def checkProgram(prog: WaccProgram): mutable.ListBuffer[SemanticError] = {
+  def checkProgram(prog: WaccProgram): (SymbolTable, mutable.ListBuffer[SemanticError]) = {
       val WaccProgram(s, stat) = prog
       val globSymTable: SymbolTable = SymbolTable(null, null, new mutable.HashMap[Ident, Info])
       val globFuncs = s.map(convertFuncType)
       semanticErrors ++= globSymTable.addFunctions(globFuncs)
-      
+
       for (func <- s) {
         checkFunc(func, globSymTable.nextScope(func.ident))
       }
 
       checkStat(stat, globSymTable)
-      semanticErrors
+      (globSymTable, semanticErrors)
 	}
 
   def checkFunc(func: Func, symbTable: SymbolTable): Unit = {
@@ -65,14 +65,14 @@ object SemanticChecker {
       semanticErrors += DeclaredVarErr(ident)
       return
     }
-
+    
+    val rType = rhs.getType(symbTable)
     if (rhs.semanticErrors.nonEmpty) {
       semanticErrors ++= rhs.semanticErrors
       symbTable.add(ident, tpe)
       return
     }
 
-    val rType = rhs.getType(symbTable)
     symbTable.add(ident, tpe)
     if (tpe != rType) {
       semanticErrors += MismatchTypesErr(rhs, rType, List(tpe))
@@ -164,15 +164,12 @@ object SemanticChecker {
 	}
 
 	private def checkType(assignRHS : AssignRHS, symbTable : SymbolTable) : Type = {
-    println("168 " + assignRHS)
 		val tpe = assignRHS.getType(symbTable)
 		
 		if(assignRHS.semanticErrors.nonEmpty){
 			semanticErrors ++= assignRHS.semanticErrors
 			return null
 		}
-
-    println(assignRHS.semanticErrors)
     
     return tpe
 	}

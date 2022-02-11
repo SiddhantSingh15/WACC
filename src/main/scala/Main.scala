@@ -7,8 +7,10 @@ object Main {
   val semChecker = frontend.SemanticChecker
 
   def main(args: Array[String]) =  {
-    val parsed = parser.parseFromFile(new File("wacc_examples/invalid/semanticErr/expressions/boolOpTypeErr.wacc")).get.get
-    val semRes = semChecker.checkProgram(parsed)
-    println(semRes.toList.toString())
+    val parsed = parser.parseFromFile(new File(args(0))).get.get
+    val semRes = semChecker.checkProgram(parsed)._2
+    for (error <- semRes.toList) {
+      println("[error]: " + error)
+    }
   }
 }
