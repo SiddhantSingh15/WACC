@@ -18,7 +18,6 @@ object Main {
 
     val parsedResult = parsed match {
         case Success(x) =>
-          println(x)
           val semRes = semChecker.checkProgram(parsed.get)._2
           for (err <- semRes) {
             if (err.isInstanceOf[FuncNoRetErr]) {
