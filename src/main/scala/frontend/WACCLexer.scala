@@ -11,13 +11,14 @@ object lexer {
     import parsley.combinator.{many, option, eof}
     import parsley.implicits.character.{stringLift, charLift}
     import parsley.implicits.zipped.Zipped3
-    import parsley.errors.combinator.ErrorMethods
+    import parsley.errors.combinator._
 
     val keywords = Set("begin", "end", "is", "skip", "read", "free",
                     "return", "exit", "print", "println", "if", 
                     "then", "else", "fi", "while", "do", "done",
                     "begin", "end", "newpair", "call", "fst", "snd", 
-                    "newpair", "pair", "null", "true", "false"
+                    "newpair", "pair", "null", "true", "false", "int",
+                    "char", "string", "bool"
                     )
                     
     val operators = Set("!", "-", "len", "ord", "chr", "*",
@@ -29,8 +30,8 @@ object lexer {
         nestedComments = false,
         keywords = this.keywords,
         operators = this.operators,
-        identStart = parsley.token.Parser(char('_') <|> letter <|> upper),
-        identLetter  = parsley.token.Parser(char('_') <|> letter <|> upper <|> digit),
+        identStart = Predicate(c => (c == '_' || c.isLetter)),
+        identLetter  = Predicate(c => (c == '_' || c.isLetterOrDigit)),
         space = Predicate(c => c == ' ' || c == '\t' || c == '\n' || c == '\u000d')
     )
 
@@ -40,16 +41,20 @@ object lexer {
 
     def brackets[A](p: => Parsley[A]): Parsley[A] = lexer.brackets(p)
 
+    def programfully[A](p : =>Parsley[A]): Parsley[A] =
+        lexer.whiteSpace *> p <* eof.label("end of input")
+        .explain("WACC file should contain only one WACC program")
+        .explain("Extra code detected after \"end\"")
+
     def fully[A](p : =>Parsley[A]): Parsley[A] = 
        lexer.whiteSpace *> p <* lexer.whiteSpace
-    
-    def lexeme[A](p : =>Parsley[A]): Parsley[A] = lexer.lexeme(p)
 
-    val INTEGER = lexer.integer
+    val INTEGER = lexer.integer.label("number")
     val STRING = lexer.stringLiteral
     val CHAR = lexer.charLiteral
-    val IDENTIFIER = lexer.identifier
+    val IDENTIFIER = amend {lexer.identifier}.label("identifier")
     val NEWLINE = void(lexer.lexeme(newline))
+    val NUMBER = lexer.lexeme(digit.label("end of number").foldLeft1[Long](0)((n, d) => n * 10 + d.asDigit)).label("number")
 
     object implicits {
         implicit def implicitToken(s : String): Parsley[Unit] = {
