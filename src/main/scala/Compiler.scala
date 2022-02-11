@@ -1,6 +1,12 @@
+import java.io.File
 object Compiler {
-  
-  def main(args: Array[String]): Unit = {
-    println("Hello World")
+
+  val parser = frontend.Parser
+  val semChecker = frontend.SemanticChecker
+
+  def check: Unit = {
+    val parsed = parser.parseFromFile(new File("wacc_examples/invalid/semanticErr/exit/badCharExit.wacc")).get.get
+    val semRes = semChecker.checkProgram(parsed)
+    print(semRes)
   }
 }

@@ -4,7 +4,7 @@ import java.io.File
 
 class LexerTest extends AnyFunSuite {
   
-  val newParser = compiler.Parser;
+  val newParser = frontend.Parser;
 
   test("Valid Advanced Tests") {
     assert(newParser.parseFromFile(new File("wacc_examples/valid/advanced/binarySortTree.wacc")).get.isSuccess)
@@ -213,5 +213,84 @@ class LexerTest extends AnyFunSuite {
     assert(newParser.parseFromFile(new File("wacc_examples/valid/while/whileFalse.wacc")).get.isSuccess)
   }
 
+  test("Invalid Array Tests") {
+    assert(newParser.parseFromFile(new File("wacc_examples/invalid/syntaxErr/array/arrayExpr.wacc")).get.isFailure)
+  }
+
+  test("Invalid Basic Tests") {
+    assert(newParser.parseFromFile(new File("wacc_examples/invalid/syntaxErr/basic/badComment.wacc")).get.isFailure)
+    assert(newParser.parseFromFile(new File("wacc_examples/invalid/syntaxErr/basic/badComment2.wacc")).get.isFailure)
+    assert(newParser.parseFromFile(new File("wacc_examples/invalid/syntaxErr/basic/badEscape.wacc")).get.isFailure)
+    assert(newParser.parseFromFile(new File("wacc_examples/invalid/syntaxErr/basic/bgnErr.wacc")).get.isFailure)
+    assert(newParser.parseFromFile(new File("wacc_examples/invalid/syntaxErr/basic/multipleBegins.wacc")).get.isFailure)
+    assert(newParser.parseFromFile(new File("wacc_examples/invalid/syntaxErr/basic/noBody.wacc")).get.isFailure)
+    assert(newParser.parseFromFile(new File("wacc_examples/invalid/syntaxErr/basic/skpErr.wacc")).get.isFailure)
+    assert(newParser.parseFromFile(new File("wacc_examples/invalid/syntaxErr/basic/unescapedChar.wacc")).get.isFailure)
+  }
+
+  test("Invalid Expressions Tests") {
+    assert(newParser.parseFromFile(new File("wacc_examples/invalid/syntaxErr/expressions/missingOperand1.wacc")).get.isFailure)
+    assert(newParser.parseFromFile(new File("wacc_examples/invalid/syntaxErr/expressions/missingOperand2.wacc")).get.isFailure)
+    assert(newParser.parseFromFile(new File("wacc_examples/invalid/syntaxErr/expressions/printlnConcat.wacc")).get.isFailure)
+  }
+
+   test("Invalid Function Tests") {
+    assert(newParser.parseFromFile(new File("wacc_examples/invalid/syntaxErr/function/badlyNamed.wacc")).get.isFailure)
+    assert(newParser.parseFromFile(new File("wacc_examples/invalid/syntaxErr/function/badlyPlaced.wacc")).get.isFailure)
+    assert(newParser.parseFromFile(new File("wacc_examples/invalid/syntaxErr/function/funcExpr.wacc")).get.isFailure)
+    assert(newParser.parseFromFile(new File("wacc_examples/invalid/syntaxErr/function/funcExpr2.wacc")).get.isFailure)
+    // assert(newParser.parseFromFile(new File("wacc_examples/invalid/syntaxErr/function/functionConditionalNoReturn.wacc")).get.isFailure)
+    // assert(newParser.parseFromFile(new File("wacc_examples/invalid/syntaxErr/function/functionJunkAfterReturn.wacc")).get.isFailure)
+    assert(newParser.parseFromFile(new File("wacc_examples/invalid/syntaxErr/function/functionLateDefine.wacc")).get.isFailure)
+    assert(newParser.parseFromFile(new File("wacc_examples/invalid/syntaxErr/function/functionMissingCall.wacc")).get.isFailure)
+    assert(newParser.parseFromFile(new File("wacc_examples/invalid/syntaxErr/function/functionMissingParam.wacc")).get.isFailure)
+    assert(newParser.parseFromFile(new File("wacc_examples/invalid/syntaxErr/function/functionMissingPType.wacc")).get.isFailure)
+    assert(newParser.parseFromFile(new File("wacc_examples/invalid/syntaxErr/function/functionMissingType.wacc")).get.isFailure)
+    // assert(newParser.parseFromFile(new File("wacc_examples/invalid/syntaxErr/function/functionNoReturn.wacc")).get.isFailure)
+    assert(newParser.parseFromFile(new File("wacc_examples/invalid/syntaxErr/function/functionScopeDef.wacc")).get.isFailure)
+    // assert(newParser.parseFromFile(new File("wacc_examples/invalid/syntaxErr/function/mutualRecursionNoReturn.wacc")).get.isFailure)
+    assert(newParser.parseFromFile(new File("wacc_examples/invalid/syntaxErr/function/noBodyAfterFuncs.wacc")).get.isFailure)
+    assert(newParser.parseFromFile(new File("wacc_examples/invalid/syntaxErr/function/thisIsNotC.wacc")).get.isFailure)
+  }
+
+  test("Invalid If Tests") {
+    assert(newParser.parseFromFile(new File("wacc_examples/invalid/syntaxErr/if/ifiErr.wacc")).get.isFailure)
+    assert(newParser.parseFromFile(new File("wacc_examples/invalid/syntaxErr/if/ifNoelse.wacc")).get.isFailure)
+    assert(newParser.parseFromFile(new File("wacc_examples/invalid/syntaxErr/if/ifNofi.wacc")).get.isFailure)
+    assert(newParser.parseFromFile(new File("wacc_examples/invalid/syntaxErr/if/ifNothen.wacc")).get.isFailure)
+  }
+
+  test("Invalid Pairs Tests") {
+    assert(newParser.parseFromFile(new File("wacc_examples/invalid/syntaxErr/pairs/badLookup01.wacc")).get.isFailure)
+    assert(newParser.parseFromFile(new File("wacc_examples/invalid/syntaxErr/pairs/badLookup02.wacc")).get.isFailure)
+  }
+
+  test("Invalid Print Tests") {
+    assert(newParser.parseFromFile(new File("wacc_examples/invalid/syntaxErr/print/printlnCharArry.wacc")).get.isFailure)
+  }
+
+  test("Invalid Sequence Tests") {
+    assert(newParser.parseFromFile(new File("wacc_examples/invalid/syntaxErr/sequence/doubleSeq.wacc")).get.isFailure)
+    assert(newParser.parseFromFile(new File("wacc_examples/invalid/syntaxErr/sequence/emptySeq.wacc")).get.isFailure)
+    assert(newParser.parseFromFile(new File("wacc_examples/invalid/syntaxErr/sequence/endSeq.wacc")).get.isFailure)
+    assert(newParser.parseFromFile(new File("wacc_examples/invalid/syntaxErr/sequence/extraSeq.wacc")).get.isFailure)
+    assert(newParser.parseFromFile(new File("wacc_examples/invalid/syntaxErr/sequence/missingSeq.wacc")).get.isFailure)
+  }
+
+  test("Invalid Variables Tests") {
+    assert(newParser.parseFromFile(new File("wacc_examples/invalid/syntaxErr/variables/badintAssignments.wacc")).get.isFailure)
+    assert(newParser.parseFromFile(new File("wacc_examples/invalid/syntaxErr/variables/badintAssignments1.wacc")).get.isFailure)
+    assert(newParser.parseFromFile(new File("wacc_examples/invalid/syntaxErr/variables/badintAssignments2.wacc")).get.isFailure)
+    assert(newParser.parseFromFile(new File("wacc_examples/invalid/syntaxErr/variables/bigIntAssignment.wacc")).get.isFailure)
+    assert(newParser.parseFromFile(new File("wacc_examples/invalid/syntaxErr/variables/varNoName.wacc")).get.isFailure)
+  }
+
+  test("Invalid While Tests") {
+    assert(newParser.parseFromFile(new File("wacc_examples/invalid/syntaxErr/while/donoErr.wacc")).get.isFailure)
+    assert(newParser.parseFromFile(new File("wacc_examples/invalid/syntaxErr/while/dooErr.wacc")).get.isFailure)
+    assert(newParser.parseFromFile(new File("wacc_examples/invalid/syntaxErr/while/whileNodo.wacc")).get.isFailure)
+    assert(newParser.parseFromFile(new File("wacc_examples/invalid/syntaxErr/while/whileNodone.wacc")).get.isFailure)
+    assert(newParser.parseFromFile(new File("wacc_examples/invalid/syntaxErr/while/whilErr.wacc")).get.isFailure)
+  }
 
 }
