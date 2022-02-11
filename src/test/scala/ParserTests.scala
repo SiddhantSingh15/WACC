@@ -1,6 +1,9 @@
 import org.scalatest.funsuite.AnyFunSuite
 import java.nio.file.Paths
 import java.io.File
+import parsley.Success
+import parsley.Failure
+import frontend._
 
 class LexerTest extends AnyFunSuite {
   
@@ -293,4 +296,32 @@ class LexerTest extends AnyFunSuite {
     assert(newParser.parseFromFile(new File("wacc_examples/invalid/syntaxErr/while/whilErr.wacc")).get.isFailure)
   }
 
-}
+  test("Function has return Tests") {
+    // assert(helperFunc(new File("wacc_examples/invalid/syntaxErr/function/functionConditionalNoReturn.wacc")) == true)
+    // assert(helperFunc(new File("wacc_examples/invalid/syntaxErr/function/functionJunkAfterReturn.wacc")) == true)
+    // assert(helperFunc(new File("wacc_examples/invalid/syntaxErr/function/functionNoReturn.wacc")) == true)
+    // assert(helperFunc(new File("wacc_examples/invalid/syntaxErr/function/mutualRecursionNoReturn.wacc")) == true)
+  }
+
+  def helperFunc(file: File): Boolean = {
+    val parser = frontend.Parser
+    val semChecker = frontend.SemanticChecker
+    val parsed = parser.parseFromFile(file).get
+
+    val parsedResult = parsed match {
+        case Success(x) =>
+          val semRes = semChecker.checkProgram(parsed.get)._2
+          print(semRes)
+          for (err <- semRes) {
+            if (err.isInstanceOf[FuncNoRetErr]) {
+              true
+            }
+          }  
+          false      
+        case Failure(err) =>
+          false
+        }
+    
+    parsedResult
+    }
+  }
