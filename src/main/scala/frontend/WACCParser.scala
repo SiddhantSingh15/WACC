@@ -6,7 +6,7 @@ import AST._
 import lexer._
 import parsley.character.{noneOf, oneOf}
 import SyntaxErrors.{TestError, TestErrorBuilder}
-import parsley.combinator.{many, sepBy, some, sepEndBy}
+import parsley.combinator.{many, sepBy, some, sepEndBy, sepBy1}
 import parsley.lift.{lift1, lift2, lift3, lift4}
 import parsley.expr.{Atoms, InfixL, InfixR, NonAssoc, Ops, Prefix, SOps, Postfix, chain, precedence}
 import parsley.implicits.character.{charLift}
@@ -113,7 +113,7 @@ object Parser {
   private val `<program>` : Parsley[WaccProgram] = 
     programfully(
         "begin".explain("every program must start with \"begin\"") *> 
-        lift2(WaccProgram, many(attempt(`<func>`)), `<stat>`) <* 
+        lift2(WaccProgram, many(attempt(`<func>`)), sepBy1(`<stat>`, ";")) <* 
         "end".explain("every program must terminate with \"end\"")
     )
 
@@ -123,7 +123,7 @@ object Parser {
         `<type>`,
         `<ident>`,
         parens(lift1(ParamList, sepBy(`<param>`, ","))),
-        ("is" *> `<stat>` <* "end")
+        ("is" *> sepBy1(`<stat>`, ";") <* "end")
     ).label("function")
   
   lazy val atom: Parsley[Expr] =
@@ -213,21 +213,21 @@ object Parser {
     ("if" *> lift3(
         If,
         `<expr>`,
-        "then" *> `<stat>`,
-        "else" *> `<stat>`,
+        "then" *> sepBy1(`<stat>`, ";"),
+        "else" *> sepBy1(`<stat>`, ";"),
     ) <* "fi")
   
   private val whileStat : Parsley[Stat] = 
     ("while" *> lift2(
         While,
         `<expr>`,
-        "do" *> `<stat>`,
+        "do" *> sepBy1(`<stat>`, ";"),
     ) <* "done")
   
   private val beginStat : Parsley[Stat] = 
-    Begin <#> ("begin" *> `<stat>` <* "end")
+    Begin <#> ("begin" *> sepBy1(`<stat>`, ";") <* "end")
 
-  private val atomStat: Parsley[Stat] =
+  private val `<stat>`: Parsley[Stat] =
     (assignLRStat <|>
     typeAssignStat <|>
     skipStat <|>
@@ -240,14 +240,5 @@ object Parser {
     returnStat <|>
     printlnStat <|>
     printStat).label("statement")
-
-  private lazy val `<stat>` : Parsley[Stat] = 
-    precedence(
-        Atoms(atomStat) :+
-        SOps(InfixR)(
-            ";".label("new statement starting with a ;") #> Colon
-        )
-    )
-
 
 }

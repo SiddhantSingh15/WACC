@@ -7,9 +7,9 @@ import scala.io.AnsiColor._
 object AST {
 	import parsley.implicits.zipped.{Zipped2, Zipped3, Zipped4}
 	
-	case class WaccProgram(s : List[Func], stat: Stat)
+	case class WaccProgram(s : List[Func], stats: List[Stat])
 
-	case class Func(tpe : Type, ident : Ident, paramList : ParamList, stat : Stat)
+	case class Func(tpe : Type, ident : Ident, paramList : ParamList, stats : List[Stat])
 	
 	case class ParamList(params : List[Param])
 	
@@ -28,10 +28,10 @@ object AST {
 	case class Exit(expr : Expr) extends Stat
 	case class Print(expr : Expr) extends Stat 
 	case class Println(expr : Expr) extends Stat 
-	case class If(expr : Expr, statThen : Stat, statElse : Stat) extends Stat
-	case class While(expr : Expr, stat : Stat) extends Stat
-	case class Begin(stat: Stat) extends Stat
-	case class Colon(firstStat: Stat, secondStat: Stat) extends Stat
+	case class If(expr : Expr, statThen : List[Stat], statElse : List[Stat]) extends Stat
+	case class While(expr : Expr, stat : List[Stat]) extends Stat
+	case class Begin(stat: List[Stat]) extends Stat
+	// case class Colon(firstStat: Stat, secondStat: Stat) extends Stat
 
 	sealed trait AssignLHS
 
