@@ -5,6 +5,7 @@ import scala.language.implicitConversions
 import Ast._
 import lexer._
 import parsley.character.{noneOf, oneOf}
+import WACCErrors.{TestError, TestErrorBuilder}
 import parsley.combinator.{many, sepBy, some, sepEndBy}
 import parsley.lift.{lift1, lift2, lift3, lift4}
 import parsley.expr.{Atoms, InfixL, InfixR, NonAssoc, Ops, Prefix, SOps, Postfix, chain, precedence}
@@ -16,11 +17,14 @@ import parsley.Result
 import parsley.io.ParseFromIO
 import java.io.File
 import scala.util.Try
+import scala.io.Codec
 
 object Parser {
+    
+    val eb = new TestErrorBuilder
 
-    def parse[Err: ErrorBuilder](input: String): Result[Err, WaccProgram] = `<program>`.parse(input)
-    def parseFromFile[Err: ErrorBuilder](file: File): Try[Result[Err, WaccProgram]] = `<program>`.parseFromFile(file)
+    def parse[Err: ErrorBuilder](input: String): Result[TestError, WaccProgram] = `<program>`.parse[TestError](input)(eb)
+    def parseFromFile[Err: ErrorBuilder](file: File): Try[Result[TestError, WaccProgram]] = `<program>`.parseFromFile[TestError](file)(eb, Codec.ISO8859)
     
     private lazy val `<base-type>`: Parsley[BaseType] = 
       ("int" #> Int) <|> 
