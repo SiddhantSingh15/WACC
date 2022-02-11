@@ -41,11 +41,20 @@ object SemanticChecker {
   private def checkReturnExits(func: Func, symbTable: SymbolTable): Unit = {
     val Func(_, _, _, stats) = func
 
+    if (!checkReturnHelper(stats)) {
+      semanticErrors += FuncNoRetErr(func.ident)
+    }
+  }
+
+  private def checkReturnHelper(stats: List[Stat]): Boolean = {
+
     val lastStat = stats.last
 
     lastStat match {
-      case Return(_) | Exit(_) => 
-      case _               => semanticErrors += FuncNoRetErr(func.ident)
+      case Return(_) | Exit(_) => return true
+      case While(_, stats) => checkReturnHelper(stats)
+      case If(_, statIf, statThen) => checkReturnHelper(statIf) && checkReturnHelper(statThen)
+      case _                => false
     }
   }
 
