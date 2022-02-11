@@ -2,7 +2,7 @@ import org.scalatest.funsuite.AnyFunSuite
 import java.nio.file.Paths
 import java.io.File
 
-class LexerTest extends AnyFunSuite {
+class ParserTests extends AnyFunSuite {
   
   val newParser = frontend.Parser;
 
@@ -38,11 +38,15 @@ class LexerTest extends AnyFunSuite {
 
   test("Valid Expressions Tests") {
     assert(newParser.parseFromFile(new File("wacc_examples/valid/expressions/andExpr.wacc")).get.isSuccess) 
+    assert(newParser.parseFromFile(new File("wacc_examples/valid/expressions/andOverOrExpr.wacc")).get.isSuccess)
     assert(newParser.parseFromFile(new File("wacc_examples/valid/expressions/boolCalc.wacc")).get.isSuccess) 
     assert(newParser.parseFromFile(new File("wacc_examples/valid/expressions/boolExpr1.wacc")).get.isSuccess) 
     assert(newParser.parseFromFile(new File("wacc_examples/valid/expressions/charComparisonExpr.wacc")).get.isSuccess) 
     assert(newParser.parseFromFile(new File("wacc_examples/valid/expressions/divExpr.wacc")).get.isSuccess) 
     assert(newParser.parseFromFile(new File("wacc_examples/valid/expressions/equalsExpr.wacc")).get.isSuccess) 
+    assert(newParser.parseFromFile(new File("wacc_examples/valid/expressions/equalsOverAnd.wacc")).get.isSuccess) 
+    assert(newParser.parseFromFile(new File("wacc_examples/valid/expressions/equalsOverBool.wacc")).get.isSuccess) 
+    assert(newParser.parseFromFile(new File("wacc_examples/valid/expressions/equalsOverOr.wacc")).get.isSuccess) 
     assert(newParser.parseFromFile(new File("wacc_examples/valid/expressions/greaterEqExpr.wacc")).get.isSuccess) 
     assert(newParser.parseFromFile(new File("wacc_examples/valid/expressions/greaterExpr.wacc")).get.isSuccess) 
     assert(newParser.parseFromFile(new File("wacc_examples/valid/expressions/intCalc.wacc")).get.isSuccess) 
@@ -62,7 +66,10 @@ class LexerTest extends AnyFunSuite {
 
     assert(newParser.parseFromFile(new File("wacc_examples/valid/function/simple_functions/asciiTable.wacc")).get.isSuccess)
     assert(newParser.parseFromFile(new File("wacc_examples/valid/function/simple_functions/functionDeclaration.wacc")).get.isSuccess)
+    assert(newParser.parseFromFile(new File("wacc_examples/valid/function/simple_functions/functionDoubleReturn.wacc")).get.isSuccess)
+    assert(newParser.parseFromFile(new File("wacc_examples/valid/function/simple_functions/functionIfReturns.wacc")).get.isSuccess)
     assert(newParser.parseFromFile(new File("wacc_examples/valid/function/simple_functions/functionManyArguments.wacc")).get.isSuccess)
+    assert(newParser.parseFromFile(new File("wacc_examples/valid/function/simple_functions/functionMultiReturns.wacc")).get.isSuccess)
     assert(newParser.parseFromFile(new File("wacc_examples/valid/function/simple_functions/functionReturnPair.wacc")).get.isSuccess)
     assert(newParser.parseFromFile(new File("wacc_examples/valid/function/simple_functions/functionSimple.wacc")).get.isSuccess)
     assert(newParser.parseFromFile(new File("wacc_examples/valid/function/simple_functions/functionSimpleLoop.wacc")).get.isSuccess)
@@ -165,9 +172,12 @@ class LexerTest extends AnyFunSuite {
     assert(newParser.parseFromFile(new File("wacc_examples/valid/scope/printAllTypes.wacc")).get.isSuccess)
     assert(newParser.parseFromFile(new File("wacc_examples/valid/scope/scope.wacc")).get.isSuccess)
     assert(newParser.parseFromFile(new File("wacc_examples/valid/scope/scopeBasic.wacc")).get.isSuccess)
+    assert(newParser.parseFromFile(new File("wacc_examples/valid/scope/scopeIfRedefine.wacc")).get.isSuccess)
     assert(newParser.parseFromFile(new File("wacc_examples/valid/scope/scopeRedefine.wacc")).get.isSuccess)
     assert(newParser.parseFromFile(new File("wacc_examples/valid/scope/scopeSimpleRedefine.wacc")).get.isSuccess)
     assert(newParser.parseFromFile(new File("wacc_examples/valid/scope/scopeVars.wacc")).get.isSuccess)
+    assert(newParser.parseFromFile(new File("wacc_examples/valid/scope/scopeWhileNested.wacc")).get.isSuccess)
+    assert(newParser.parseFromFile(new File("wacc_examples/valid/scope/scopeWhileRedefine.wacc")).get.isSuccess)
   }
 
   test("Valid Sequence Tests") {

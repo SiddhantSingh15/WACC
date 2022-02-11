@@ -2,17 +2,18 @@ package frontend
 
 import parsley.Parsley, Parsley._
 import scala.collection.mutable
+import scala.io.AnsiColor._
 
-object Ast {
+object AST {
 	import parsley.implicits.zipped.{Zipped2, Zipped3, Zipped4}
 	
 	case class WaccProgram(s : List[Func], stat: Stat)
 
 	case class Func(tpe : Type, ident : Ident, paramList : ParamList, stat : Stat)
 	
-	case class Param(tpe : Type, ident : Ident)
-
 	case class ParamList(params : List[Param])
+	
+	case class Param(tpe : Type, ident : Ident)
 
   sealed trait Expr extends AssignRHS
 
@@ -51,17 +52,18 @@ object Ast {
 		}
 	}
 
-	sealed case class ArrayElem(ident: Ident, exprList : List[Expr]) extends AssignLHS with Expr {
-  		override def getType(symbTable: SymbolTable): Type = {
-			  val current = ident.getType(symbTable)
-        if (current.isArray) {
-          val ArrayType(t) = current
-          return t
-        }
-				ident.semanticErrors += AccessDeniedErr(ident)
-				ident.semanticErrors += MismatchTypesErr(ident, current, List(ArrayType(current)))
-				current
-		  }
+sealed case class ArrayElem(ident: Ident, exprList : List[Expr]) extends AssignLHS with Expr {
+    override def getType(symbTable: SymbolTable): Type = {
+    val current = ident.getType(symbTable)
+    if (current.isArray) {
+      val ArrayType(t) = current
+      return t
+    }
+    ident.semanticErrors += AccessDeniedErr(ident)
+    ident.semanticErrors += 
+      MismatchTypesErr(ident, current, List(ArrayType(current)))
+    current
+    }
 	}
 
 
@@ -128,31 +130,34 @@ object Ast {
       return "null[]"
     }
     override def equals(any : Any) : Boolean = 
-        any match{
-        case ArrayType(null)  => true
-        case ArrayType(inner) => 
-          if (tpe == null) true 
-          else inner == tpe
-        case _ 				  => false
+      any match{
+      case ArrayType(null)  => true
+      case ArrayType(inner) => 
+        if (tpe == null) true 
+        else inner == tpe
+      case _ 				  => false
     }
 
-			override def getType: Type = tpe
+		override def getType: Type = tpe
 	}
 
 	case object Int extends BaseType {
     override def toString: String = "int"
 		override def getType: Type = Int
 	}
+
 	case object Bool extends BaseType {
     override def toString: String = "bool"
 		override def getType: Type = Bool
 	}
+
 	case object CharType extends BaseType {
     override def toString: String = "char"
 		override def getType: Type = CharType
 	}
+
 	case object String extends BaseType {
-    override def toString: String = "char"
+    override def toString: String = "string"
 		override def getType: Type = String
 	}
 
@@ -207,6 +212,7 @@ object Ast {
     override def toString: String = tpe.toString
     override def getType: Type = tpe
   }
+
 	case class Fst(fst : Expr) extends PairElem {
     override def toString: String = "fst: " + fst.toString
     val expr = fst
@@ -240,20 +246,6 @@ object Ast {
 			Any
 		}
 	}
-
-	trait ParserBuilder[T] {
-			val parser: Parsley[T]
-			final def <#(p: Parsley[_]): Parsley[T] = parser <* p
-	}
-	trait ParserBuilder1[T1, R] extends ParserBuilder[T1 => R] {
-			def apply(x: T1): R
-			val parser = pure(apply(_))
-	}
-	trait ParserBuilder2[T1, T2, R] extends ParserBuilder[(T1, T2) => R] {
-			def apply(x: T1, y: T2): R
-			val parser = pure(apply(_, _))
-	}
-
 
 	sealed trait UnOp extends Expr {
 		val expr: Expr
@@ -319,15 +311,18 @@ object Ast {
 			
 			if (currentExp1 != currentExp2) {
         if (expected._1.contains(currentExp1)) {
-          semanticErrors += MismatchTypesErr(exp2, currentExp2, List(currentExp1))
+          semanticErrors += 
+            MismatchTypesErr(exp2, currentExp2, List(currentExp1))
           return expected._2
         }
         if (expected._1.contains(currentExp2)) {
-          semanticErrors += MismatchTypesErr(exp1, currentExp1, List(currentExp2))
+          semanticErrors += 
+            MismatchTypesErr(exp1, currentExp1, List(currentExp2))
           return expected._2
         }
       } else {
-        if (expected._1.contains(currentExp1) && expected._1.contains(currentExp2)) {
+        if (expected._1.contains(currentExp1) && 
+            expected._1.contains(currentExp2)) {
               return expected._2
             }
         if (expected._1.isEmpty) {
@@ -338,7 +333,8 @@ object Ast {
       semanticErrors += MismatchTypesErr(exp2, currentExp2, expected._1)
 			expected._2
 		}
-    override def toString: String = exp1.toString + " " + symbol + " " + exp2.toString
+    override def toString: String = 
+      exp1.toString + " " + symbol + " " + exp2.toString
 	}
 
 	sealed trait MathFuncs extends BinOp {
@@ -420,10 +416,4 @@ object Ast {
     override def toString: String = "pairLit"
 		override def getType(symbTable: SymbolTable): Type = Pair(null, null)
 	}
-	// case class UnOpExpr(op: UnOp, expr: Expr) extends Expr 
-	// case class BinOpExpr(expr1: Expr, op: BinOp, expr2: Expr) extends Expr {
-	// 	override def getType : Type = Expr
-	// }
-
 }
-

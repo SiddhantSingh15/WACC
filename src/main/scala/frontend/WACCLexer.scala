@@ -32,7 +32,8 @@ object lexer {
         operators = this.operators,
         identStart = Predicate(c => (c == '_' || c.isLetter)),
         identLetter  = Predicate(c => (c == '_' || c.isLetterOrDigit)),
-        space = Predicate(c => c == ' ' || c == '\t' || c == '\n' || c == '\u000d')
+        space = 
+            Predicate(c => c == ' ' || c == '\t' || c == '\n' || c == '\u000d')
     )
 
     private val lexer = new Lexer(wacc)
@@ -49,12 +50,12 @@ object lexer {
     def fully[A](p : =>Parsley[A]): Parsley[A] = 
        lexer.whiteSpace *> p <* lexer.whiteSpace
 
-    val INTEGER = lexer.integer.label("number")
-    val STRING = lexer.stringLiteral
-    val CHAR = lexer.charLiteral
     val IDENTIFIER = amend {lexer.identifier}.label("identifier")
-    val NEWLINE = void(lexer.lexeme(newline))
-    val NUMBER = lexer.lexeme(digit.label("end of number").foldLeft1[Long](0)((n, d) => n * 10 + d.asDigit)).label("number")
+    val NUMBER = 
+        lexer
+        .lexeme(digit.label("end of number")
+                    .foldLeft1[Long](0)((n, d) => n * 10 + d.asDigit))
+        .label("number")
 
     object implicits {
         implicit def implicitToken(s : String): Parsley[Unit] = {

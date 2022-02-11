@@ -1,5 +1,5 @@
 package frontend
-import Ast._
+import AST._
 
 sealed trait SemanticError {
   override def toString: String = this match {
@@ -23,8 +23,7 @@ sealed trait SemanticError {
     case DeclaredIdentErr(ident) => "Conflicting definitions for variable " + ident + "."
     case IllegalFree(expr) => expr.toString + " is not available to free."
     case FuncNoRetErr(ident) => "Function \'" + ident.toString + "\' does not exit with " +
-      "{return, if, while, exit}" +
-      " or it is mutually recursive with another function."
+      "{return, if, while, exit}" 
   }
 }
 

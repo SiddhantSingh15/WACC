@@ -2,7 +2,7 @@ import java.io.File
 
 import frontend._
 import parsley.Parsley, Parsley._
-import WACCErrors.{TestError}
+import SyntaxErrors.{TestError}
 import parsley.Success
 import parsley.Failure
 
@@ -14,32 +14,39 @@ object Main {
     assert(args.length == 1)
     println("Parsing: " + args(0))
 
+    val EXITCODE_SUCC = 0
+    val EXITCODE_SYNTAX_ERROR = 100
+    val EXITCODE_SEM_ERROR = 200
+
     val parsed = parser.parseFromFile(new File(args(0))).get
 
     val parsedResult = parsed match {
-        case Success(x) =>
-          println(x)
-          val semRes = semChecker.checkProgram(parsed.get)._2
-          for (err <- semRes) {
-            if (err.isInstanceOf[FuncNoRetErr]) {
-              println("[error]: " + err)
-              System.exit(100)
-            }
+      case Success(x) =>
+        // println(x)
+        val semRes = semChecker.checkProgram(parsed.get)._2
+        for (err <- semRes) {
+          if (err.isInstanceOf[FuncNoRetErr]) {
+            println("[" + Console.RED + "error" + Console.RESET+ "]: " + err)
+            System.exit(EXITCODE_SYNTAX_ERROR)
           }
-
-          println(s"${args(0)} is synctactically valid.")
-          if (semRes.isEmpty) {
-            println(s"${args(0)} is semantically valid.")
-            System.exit(0)
-          }
-          for (error <- semRes.toList) {
-            println("[error]: " + error)
-          }
-          System.exit(100)
-        case Failure(err) =>
-          println("reach here")
-          print(err.getError())
-          System.exit(200)
         }
+
+        println(Console.GREEN + s"${args(0)} is synctactically valid.")
+        if (semRes.isEmpty) {
+          println(Console.GREEN + s"${args(0)} is semantically valid.")
+          System.exit(EXITCODE_SUCC)
+        }
+
+        for (error <- semRes.toList) {
+          println("[" + Console.RED + "error" + Console.RESET + "]: " + error)
+        }
+
+        System.exit(EXITCODE_SEM_ERROR)
+      case Failure(err) =>
+        print(err.getError())
+        System.exit(EXITCODE_SYNTAX_ERROR)
+      }
+
     }
+
 }

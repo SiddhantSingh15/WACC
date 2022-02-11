@@ -2,7 +2,7 @@ package frontend
 
 import scala.collection.mutable.HashMap
 import scala.collection.mutable
-import Ast._
+import AST._
 
 case class Info(t: Type, pList: Option[List[Type]])
 
@@ -50,7 +50,8 @@ case class SymbolTable(
     varMap.contains(ident)
   }
 
-  def addVariables(vars: List[(Ident, Type)]): mutable.ListBuffer[SemanticError] = {
+  def addVariables(vars: List[(Ident, Type)]): 
+                   mutable.ListBuffer[SemanticError] = {
     var semanticErrors = mutable.ListBuffer.empty[SemanticError]
     for (v <- vars) {
       if (varMap.contains(v._1)) {
@@ -62,7 +63,8 @@ case class SymbolTable(
     semanticErrors
   }
 
-  def addFunctions(funcs: List[(Ident, Info)]): mutable.ListBuffer[SemanticError] = {
+  def addFunctions(funcs: List[(Ident, Info)]): 
+                   mutable.ListBuffer[SemanticError] = {
     var semanticErrors = mutable.ListBuffer.empty[SemanticError]
     for (f <- funcs) {
       if (funcMap.contains(f._1)) {
@@ -90,7 +92,8 @@ case class SymbolTable(
     info.isDefined
   }
   
-  def parameterMatch(ident: Ident, args: Option[ArgList]): mutable.ListBuffer[SemanticError] = {
+  def parameterMatch(ident: Ident, args: Option[ArgList]): 
+                    mutable.ListBuffer[SemanticError] = {
     val info = funcMap.get(ident)
     if (info.isEmpty) {
       return mutable.ListBuffer[SemanticError](NotDeclaredFuncErr(ident: Ident))
@@ -123,5 +126,5 @@ case class SymbolTable(
     }
     result
   }
-  
+
 }
