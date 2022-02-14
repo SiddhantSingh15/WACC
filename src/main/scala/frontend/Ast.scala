@@ -2,11 +2,48 @@ package frontend
 
 import parsley.Parsley, Parsley._
 import scala.collection.mutable
+import parsley.implicits.zipped.LazyZipped2
 
 object Ast {
 	import parsley.implicits.zipped.{Zipped2, Zipped3, Zipped4}
-	
-	case class WaccProgram(s : List[Func], stat: Stat)
+
+	type Row = Int 
+	type Col = Int
+
+	def printPosition(pos : (Row, Col)): String = pos match {
+		case (r : Int, c : Int) => "line: " + line + ", column: " + c
+	}
+
+	case class WaccProgram(funcs : List[Func], stat: Stat){
+		
+		def printStats(stat : Stat, str : String) : StringBuilder = {
+			val sb = new StringBuilder()
+			sb.append(stat)
+			// stat match {
+				// 
+				// case Seq(stats) => 
+					// for(s <- stats){
+						// sb.append(s"$str $s\n")
+					// }
+				// case _ => sb.append(stat)
+			// }
+		}
+		
+		
+		override def toString : String = {
+			val sb = new StringBuilder()
+			for(func <- funcs){
+				val Func(tpe, ident, pls, stat) = func 
+				sb.append(s"function $ident, $pls \n")
+				sb.append(printStats(stat, "\t"))
+				sb.append("end of function")
+			}
+			sb.append("main\n")
+			sb.append(printStats(stat, ""))
+			sb.append("end of main\n")
+			return sb.toString()
+		}
+	}
 
 	case class Func(tpe : Type, ident : Ident, paramList : ParamList, stat : Stat)
 	
@@ -14,19 +51,33 @@ object Ast {
 
 	case class ParamList(params : List[Param])
 
-  sealed trait Expr extends AssignRHS
+  sealed trait Expr extends AssignRHS {
+	override def map[B >: AssignRHS](f: Expr => Expr): Expr = this
+    val identPresent = false 
+  }
 
-
-	sealed trait Stat
+	sealed trait Stat{
+		def map(f : Expr => Expr) : Stat = this
+	}
 	case object Skip extends Stat
 	case class TypeAssign(tpe : Type, ident: Ident, assignRHS : AssignRHS) extends Stat
 	case class AssignLR(assignLHS : AssignLHS, assignRHS : AssignRHS) extends Stat
 	case class Read(assignLHS : AssignLHS) extends Stat
-	case class Free(expr : Expr) extends Stat
-	case class Return(expr : Expr) extends Stat
-	case class Exit(expr : Expr) extends Stat
-	case class Print(expr : Expr) extends Stat 
-	case class Println(expr : Expr) extends Stat 
+	case class Free(expr : Expr) extends Stat {
+		override def map(f : Expr => Expr) = Free(f(expr))
+	}
+	case class Return(expr : Expr) extends Stat {
+		override def map(f : Expr => Expr) = Return(f(expr))
+	}
+	case class Exit(expr : Expr) extends Stat {
+		override def map(f : Expr => Expr) = Exit(f(expr))
+	}
+	case class Print(expr : Expr) extends Stat {
+		override def map(f : Expr => Expr) = Print(f(expr))
+	}
+	case class Println(expr : Expr) extends Stat {
+		override def map(f : Expr => Expr) = Println(f(expr))
+	}
 	case class If(expr : Expr, statThen : Stat, statElse : Stat) extends Stat
 	case class While(expr : Expr, stat : Stat) extends Stat
 	case class Begin(stat: Stat) extends Stat
@@ -35,13 +86,18 @@ object Ast {
 	sealed trait AssignLHS
 
 	sealed trait AssignRHS {
+
+		val pos : (Row, Col)
+
 		def getType(symbolTable : SymbolTable): Type
 		var semanticErrors : mutable.ListBuffer[SemanticError]
 			= mutable.ListBuffer.empty[SemanticError]
+		
+		def map[B >: AssignRHS](f : Expr => Expr): B = this
 	}
 	
 	sealed case class Ident(string: String) extends AssignLHS with AssignRHS with Expr {
-    // override def toString: String = string
+    override def toString: String = string
 		override def getType(symbTable: SymbolTable): Type = {
 			if (!symbTable.contains(this)) {
 				semanticErrors += NotDeclaredFuncErr(this)
@@ -50,6 +106,12 @@ object Ast {
 			symbTable.lookupAll(this)
 		}
 	}
+
+	object Ident {
+    	def apply(str: Parsley[String]): Parsley[Ident] =
+     		 str.map((s: String) => (p: (Row, Col)) => Ident(s, p)) <*> pos
+	}
+
 
 	sealed case class ArrayElem(ident: Ident, exprList : List[Expr]) extends AssignLHS with Expr {
   		override def getType(symbTable: SymbolTable): Type = {
@@ -83,21 +145,28 @@ object Ast {
 		}
 	}
   
-	case class Call(ident : Ident, argList : ArgList) extends AssignRHS {
-		override def toString: String = {
-			ident.toString + "(" + argList + ")"
-		}
-		override def getType(symbTable: SymbolTable): Type = {
-			val identType = ident.getType(symbTable)
-			semanticErrors ++= symbTable.parameterMatch(ident, Some(argList))
-			identType
-		}
-	}
+	// case class Call(ident : Ident, argList : Option[ArgList])(val pos : (Row, Col)) extends AssignRHS {
+		// override def toString: String = {
+			// ident.toString + "(" + argList + ")"
+		// }
+		// override def getType(symbTable: SymbolTable): Type = {
+			// val identType = ident.getType(symbTable)
+			// semanticErrors ++= symbTable.parameterMatch(ident, argList)
+			// identType
+		// }
+		// override def map[B >: AssignRHS](f : Expr => Expr) = 
+			// Call(ident, argList.map(arg => arg.map(f)))(pos)
+	// }
+	// object Call {
+		// def apply(id: Parsley[Ident], args: Parsley[Option[ArgList]]):Parsley[Call] =
+			// pos <**> (id, args).lazyZipped(Call(_, _) _)
+	// }
 
 	case class ArgList(exprs : List[Expr]) {
 		override def toString: String = {
 			exprs.mkString(", ")
 		}
+		def map(f : Expr => Expr) = ArgList(exprs.map(f))
 	}
 
 	sealed trait Type {
@@ -160,7 +229,7 @@ object Ast {
     val expr: Expr
   }
 
-	case class NewPair(exprOne : Expr, exprTwo : Expr) extends AssignRHS{
+	case class NewPair(exprOne : Expr, exprTwo : Expr, pos : (Row, Col)) extends AssignRHS{
     override def toString: String = "newpair(" + exprOne + ", " + exprTwo + ")"
 		override def getType(symbolTable: SymbolTable) : Type = {
 			val typeOne = exprOne.getType(symbolTable)
@@ -177,6 +246,13 @@ object Ast {
 
 			Pair(pairOneElem, pairTwoElem)
 		}
+	}
+	object NewPair{		
+		def apply(fst : Parsley[Expr], snd : Parsley[Expr]) : Parsley[NewPair] =
+			pos <**> (fst, snd).lazyZipped(NewPair(_, _) _)
+			//((fst, snd)_).map((fst: Expr, snd: Expr) =>
+			//        (p: (Row, Col)) => NewPair(fst, snd, p)
+			//		) <*> pos
 	}
 
   sealed trait PairType extends Type
@@ -207,12 +283,14 @@ object Ast {
     override def toString: String = tpe.toString
     override def getType: Type = tpe
   }
-	case class Fst(fst : Expr) extends PairElem {
+	case class Fst(fst : Expr, pos : (Row, Col)) extends PairElem {
     override def toString: String = "fst: " + fst.toString
+
+	override def map[B >: AssignRHS](f: Expr => Expr) = Fst(f(expr), pos)
     val expr = fst
 		override def getType(symbTable: SymbolTable): Type = {
 			fst match {
-				case Ident(_)             => val fstType = fst.getType(symbTable)
+				case Ident(_, _)             => val fstType = fst.getType(symbTable)
 					fstType match {
 						case Pair(fst, _) => return fst.getType
 						case _ => 
@@ -224,12 +302,19 @@ object Ast {
 		}
 	}
 
-	case class Snd(snd : Expr) extends PairElem {
-    override def toString: String = "snd: " + snd.toString
-    val expr = snd
+	object Fst {
+		def apply(e : Parsley[Expr]) : Parsley[Fst] = 
+			pos <**> e.map((e : Expr) => (p: (Row, Col)) => Fst(e, p))
+	}
+
+	case class Snd(snd : Expr, pos : (Row, Col)) extends PairElem {
+    	override def toString: String = "snd: " + snd.toString
+
+		override def map[B >: AssignRHS](f: Expr => Expr) = Snd(f(snd), pos)
+    	val expr = snd
 		override def getType(symbTable: SymbolTable): Type = {
 			snd match {
-				case Ident(_) => val sndType = snd.getType(symbTable)
+				case Ident(_, _) => val sndType = snd.getType(symbTable)
 					sndType match {
 						case Pair(_, snd) => return snd.getType
 						case _ 					  =>
@@ -241,19 +326,10 @@ object Ast {
 		}
 	}
 
-	trait ParserBuilder[T] {
-			val parser: Parsley[T]
-			final def <#(p: Parsley[_]): Parsley[T] = parser <* p
+	object Snd {
+		def apply(e : Parsley[Expr]) : Parsley[Snd] =
+			pos <**> e.map((e : Expr) => (p : (Row, Col)) => Snd(e, p))
 	}
-	trait ParserBuilder1[T1, R] extends ParserBuilder[T1 => R] {
-			def apply(x: T1): R
-			val parser = pure(apply(_))
-	}
-	trait ParserBuilder2[T1, T2, R] extends ParserBuilder[(T1, T2) => R] {
-			def apply(x: T1, y: T2): R
-			val parser = pure(apply(_, _))
-	}
-
 
 	sealed trait UnOp extends Expr {
 		val expr: Expr
@@ -270,17 +346,27 @@ object Ast {
     override def toString: String = symbol + expr.toString
 	}
 
-	case class Not(expr : Expr) extends UnOp {
-    val symbol = "!"
+	case class Not(expr : Expr, pos : (Row, Col)) extends UnOp {
+    	val symbol = "!"
 		override val expected: (Type, Type) = (Bool, Bool)
+
+		override def map[B >: AssignRHS](f : Expr => Expr) = Not(f(expr), pos)
 	}
-	case class Negation(expr : Expr) extends UnOp {
-    val symbol = "-"
+	object Not {
+		def apply(op : Parsley[_]): Parsley[Expr => Expr] =
+			pos.map((p : (Row, Col)) => (e : Expr) => Not(e, p)) <* op
+	}
+	case class Negation(expr : Expr, pos : (Row, Col)) extends UnOp {
+    	val symbol = "-"
 		override val expected: (Type, Type) = (Int, Int)
+
+		override def map[B >: AssignRHS](f : Expr => Expr) = Negation(f(expr), pos)
 	}
-	case class Len(expr : Expr) extends UnOp {
-    val symbol = "len"
+	case class Len(expr : Expr, pos : (Row, Col)) extends UnOp {
+    	val symbol = "len"
 		override val expected: (Type, Type) = (ArrayType(null), Int)
+
+		override def map[B >: AssignRHS](f: Expr => Expr) = Len(f(expr), pos)
 		override def getType(symbTable: SymbolTable): Type = {
 			val current = expr.getType(symbTable)
 			semanticErrors = expr.semanticErrors
@@ -290,15 +376,34 @@ object Ast {
 			expected._2
 		}
 	}
+
+	object Len {
+		def apply(op : Parsley[_]) : Parsley[Expr => Expr] =
+			pos.map((p: (Row, Col)) => (e: Expr) => Len(e, p)) <* op
+	}
 	
-	case class Ord(expr : Expr) extends UnOp {
-    val symbol = "ord "
+	case class Ord(expr : Expr, pos : (Row, Col)) extends UnOp {
+   		val symbol = "ord "
 		override val expected: (Type, Type) = (CharType, Int)
+
+		override def map[B >: AssignRHS](f : Expr => Expr) = Ord(f(expr), pos)
 	}
 
-	case class Chr(expr : Expr) extends UnOp {
-    val symbol = "chr "
+	object Ord {
+    	def apply(op: Parsley[_]): Parsley[Expr => Expr] =
+      		pos.map((p: (Row, Col)) => (e: Expr) => Ord(e, p)) <* op
+  }
+
+	case class Chr(expr : Expr, pos : (Row, Col)) extends UnOp {
+    	val symbol = "chr "
 		override val expected: (Type, Type) = (Int, CharType)
+
+		override def map[B >: AssignRHS](f : Expr => Expr) = Chr(f(expr), pos)
+	}
+
+	object Chr {
+		def apply(op : Parsley[_]): Parsley[Expr => Expr] = 
+			pos.map((p : (Row, Col)) => (e : Expr) => Chr(e, p))
 	}
 
 	sealed trait BinOp extends Expr {
@@ -357,44 +462,136 @@ object Ast {
 		override val expected: (List[Type], Type) = (List.empty, Bool)
 	}
 	
-	case class Mul(exp1 : Expr, exp2 : Expr) extends MathFuncs {
+	case class Mul(exp1 : Expr, exp2 : Expr, pos : (Row, Col)) extends MathFuncs {
     val symbol = "*"
+	
+	override def map[B >: AssignRHS](f: Expr => Expr) =
+      Mul(f(exp1), f(exp2), pos)
 	}
-	case class Div(exp1 : Expr, exp2 : Expr) extends MathFuncs {
-    val symbol = "/"
+	object Mul {
+		def apply(op : Parsley[_]) : Parsley[(Expr, Expr) => Expr] = 
+			pos.map((p : (Row, Col)) => (l : Expr, r : Expr) => Mul(l,r,p)) <* op
 	}
-	case class Mod(exp1 : Expr, exp2 : Expr) extends MathFuncs {
-    val symbol = "%"
+	case class Div(exp1 : Expr, exp2 : Expr, pos : (Row, Col)) extends MathFuncs {
+    	val symbol = "/"
+		override def map[B >: AssignRHS](f: Expr => Expr) =
+			Div(f(exp1), f(exp2), pos)
 	}
-	case class Plus(exp1 : Expr, exp2 : Expr) extends MathFuncs {
-    val symbol = "+"
+
+	object Div {
+		def apply(op : Parsley[_]) : Parsley[(Expr, Expr) => Expr] =
+			pos.map((p: (Row, Col)) => (l: Expr, r: Expr) => Div(l, r, p)) <* op
 	}
-	case class Sub(exp1 : Expr, exp2 : Expr) extends MathFuncs {
-    val symbol = "-"
+	case class Mod(exp1 : Expr, exp2 : Expr, pos : (Row, Col)) extends MathFuncs {
+    	val symbol = "%"
+		override def map[B >: AssignRHS](f : Expr => Expr) =
+			Mod(f(exp1), f(exp2), pos)
 	}
-	case class GT(exp1 : Expr, exp2 : Expr) extends CompareFuncs {
+
+	object Mod {
+    	def apply(op: Parsley[_]): Parsley[(Expr, Expr) => Expr] =
+      		pos.map((p: (Row, Col)) => (l: Expr, r: Expr) => Mod(l, r, p)) <* op
+  }
+	case class Plus(exp1 : Expr, exp2 : Expr, pos : (Row, Col)) extends MathFuncs {
+    	val symbol = "+"
+		override def map[B >: AssignRHS](f : Expr => Expr) = 
+			Plus(f(exp1), f(exp2), pos)
+	}
+
+	object Plus {
+    	def apply(op: Parsley[_]): Parsley[(Expr, Expr) => Expr] =
+      		pos.map((p: (Row, Col)) => (l: Expr, r: Expr) => Plus(l, r, p)) <* op
+  }
+	case class Sub(exp1 : Expr, exp2 : Expr, pos : (Row, Col)) extends MathFuncs {
+    	val symbol = "-"
+		override def map[B >: AssignRHS](f: Expr => Expr) =
+      		Sub(f(exp1), f(exp2), pos)
+	}
+
+	object Sub {
+    	def apply(op: Parsley[_]): Parsley[(Expr, Expr) => Expr] =
+      		pos.map((p: (Row, Col)) => (l: Expr, r: Expr) => Sub(l, r, p)) <* op
+  }
+
+	case class GT(exp1 : Expr, exp2 : Expr, pos : (Row, Col)) extends CompareFuncs {
     val symbol = ">"
+	override def map[B >: AssignRHS](f: Expr => Expr) =
+      GT(f(exp1), f(exp2), pos)
 	}
-	case class GTE(exp1 : Expr, exp2 : Expr) extends CompareFuncs {
-    val symbol = ">="
+
+	object GT {
+		def apply(op: Parsley[_]): Parsley[(Expr, Expr) => Expr] =
+      		pos.map((p: (Row, Col)) => (l: Expr, r: Expr) => GT(l, r, p)) <* op
 	}
-	case class LT(exp1 : Expr, exp2 : Expr) extends CompareFuncs {
-    val symbol = "<"
+	case class GTE(exp1 : Expr, exp2 : Expr, pos : (Row, Col)) extends CompareFuncs {
+    	val symbol = ">="
+		override def map[B >: AssignRHS](f: Expr => Expr) =
+      		GTE(f(exp1), f(exp2), pos)
 	}
-	case class LTE(exp1 : Expr, exp2 : Expr) extends CompareFuncs {
-    val symbol = "<="
+
+	object GTE {
+		def apply(op : Parsley[_]) : Parsley[(Expr, Expr) => Expr] = 
+			pos.map((p : (Row, Col)) => (l : Expr, r : Expr) => GTE(l,r,p)) <* op
 	}
-	case class Equal(exp1 : Expr, exp2 : Expr) extends EqualityFuncs {
-    val symbol = "=="
+	case class LT(exp1 : Expr, exp2 : Expr, pos : (Row, Col)) extends CompareFuncs {
+    	val symbol = "<"
+		override def map[B >: AssignRHS](f: Expr => Expr) =
+      		LT(f(exp1), f(exp2), pos)
 	}
-	case class NotEqual(exp1 : Expr, exp2 : Expr) extends EqualityFuncs {
-    val symbol = "!="
+
+	object LT {
+		def apply(op : Parsley[_]) : Parsley[(Expr, Expr) => Expr] = 
+			pos.map((p : (Row, Col)) => (l : Expr, r : Expr) => LT(l,r,p)) <* op
 	}
-	case class And(exp1 : Expr, exp2 : Expr) extends LogicFuncs {
-    val symbol = "&&"
+	case class LTE(exp1 : Expr, exp2 : Expr, pos : (Row, Col)) extends CompareFuncs {
+    	val symbol = "<="
+		override def map[B >: AssignRHS](f: Expr => Expr) =
+      		LTE(f(exp1), f(exp2), pos)
 	}
-	case class Or(exp1 : Expr, exp2 : Expr) extends LogicFuncs {
-    val symbol = "||"
+
+	object LTE {
+		def apply(op : Parsley[_]) : Parsley[(Expr, Expr) => Expr] = 
+			pos.map((p : (Row, Col)) => (l : Expr, r : Expr) => LTE(l,r,p)) <* op
+	}
+	case class Equal(exp1 : Expr, exp2 : Expr, pos : (Row, Col)) extends EqualityFuncs {
+    	val symbol = "=="
+		override def map[B >: AssignRHS](f: Expr => Expr) =
+      		Equal(f(exp1), f(exp2), pos)
+	}
+
+	object Equal {
+		def apply(op : Parsley[_]) : Parsley[(Expr, Expr) => Expr] = 
+			pos.map((p : (Row, Col)) => (l : Expr, r : Expr) => Equal(l,r,p)) <* op
+	}
+	case class NotEqual(exp1 : Expr, exp2 : Expr, pos : (Row, Col)) extends EqualityFuncs {
+    	val symbol = "!="
+		override def map[B >: AssignRHS](f: Expr => Expr) =
+      		NotEqual(f(exp1), f(exp2), pos)
+	}
+
+	object NotEqual {
+		def apply(op : Parsley[_]) : Parsley[(Expr, Expr) => Expr] = 
+			pos.map((p : (Row, Col)) => (l : Expr, r : Expr) => NotEqual(l,r,p)) <* op
+	}
+	case class And(exp1 : Expr, exp2 : Expr, pos : (Row, Col)) extends LogicFuncs {
+    	val symbol = "&&"
+		override def map[B >: AssignRHS](f: Expr => Expr) =
+      		And(f(exp1), f(exp2), pos)
+	}
+	
+	object And {
+		def apply(op : Parsley[_]) : Parsley[(Expr, Expr) => Expr] = 
+			pos.map((p : (Row, Col)) => (l : Expr, r : Expr) => And(l,r,p)) <* op
+	}
+	case class Or(exp1 : Expr, exp2 : Expr, pos : (Row, Col)) extends LogicFuncs {
+    	val symbol = "||"
+		override def map[B >: AssignRHS](f: Expr => Expr) =
+      		Or(f(exp1), f(exp2), pos)
+	}
+
+	object Or {
+		def apply(op : Parsley[_]) : Parsley[(Expr, Expr) => Expr] = 
+			pos.map((p : (Row, Col)) => (l : Expr, r : Expr) => Or(l,r,p)) <* op
 	}
   
 	case class IntLiter(number: Int) extends Expr {
