@@ -4,31 +4,34 @@ import backend.Operand
 import scala.collection.mutable.ListBuffer
 
 object Opcodes {
-    sealed trait Opcode 
+	sealed trait Instr 
 
-    // ARITHMETIC
+	// ARITHMETIC
 
-    case class Add(rd: Register, rn: Register, op2: Operand) extends Opcode
-    case class Sub(rd: Register, rn: Register, op2: Operand) extends Opcode
-    case class Mul(rd: Register, rm: Register, rs: Register) extends Opcode
+	case class Add(rd: Register, rn: Register, op2: Operand) extends Instr
+	case class Sub(rd: Register, rn: Register, op2: Operand) extends Instr
+	case class Mul(rd: Register, rm: Register, rs: Register) extends Instr
 
-    // COMPARE
+	// COMPARE
 
-    case class Cmp(rn: Register, op2: Operand) extends Opcode
+	case class Cmp(rn: Register, op2: Operand) extends Instr
 
-    // BRANCH
+	// BRANCH
 
-    case class B(label: String) extends Opcode
-    case class Bl(label: String) extends Opcode
+	case class B(label: String) extends Instr
+	case class Bl(label: String) extends Instr
 
-    // LOGICAL
+	// LOGICAL
 
-    case class Mov(rd: Register, op2: Operand) extends Opcode
-    case class And(rd: Register, rn: Register, op2: Operand) extends Opcode
-    case class Xor(rd: Register, rn: Register, op2: Operand) extends Opcode
-    case class Or(rd: Register, rn: Register, op2: Operand) extends Opcode
+	case class Mov(rd: Register, op2: Operand) extends Instr
+	case class And(rd: Register, rn: Register, op2: Operand) extends Instr
+	case class Xor(rd: Register, rn: Register, op2: Operand) extends Instr
+	case class Or(rd: Register, rn: Register, op2: Operand) extends Instr
 
-    // PUSH/ POP
-    case class Push(regList: ListBuffer[Register]) extends Opcode
-    case class Pop(regList: ListBuffer[Register]) extends Opcode
+	// PUSH/ POP
+	case class Push(regList: ListBuffer[Register]) extends Instr
+	case class Pop(regList: ListBuffer[Register]) extends Instr
+
+	// LOADING
+	case class Ldr(rd: Register, op2: Operand) extends Instr
 }
