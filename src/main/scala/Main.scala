@@ -19,7 +19,8 @@ object Main {
     val EXITCODE_SYNTAX_ERROR = 100
     val EXITCODE_SEM_ERROR = 200
 
-    val parsed = parser.parseFromFile(new File(args(0))).get
+    val file = new File(args(0))
+    val parsed = parser.parseFromFile(file).get
 
     val parsedResult = parsed match {
       case Success(x) =>
@@ -39,6 +40,8 @@ object Main {
           // System.exit(EXITCODE_SUCC)
           val codeGenerator = backend.CodeGen
           val instructions = codeGenerator.transProgram(programTree)
+          val prettyPrinter = backend.PrettyPrinter
+          prettyPrinter.prettyPrint(file.getName(), instructions)
         }
 
         for (error <- semRes.toList) {
