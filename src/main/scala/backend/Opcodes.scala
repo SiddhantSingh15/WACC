@@ -1,6 +1,6 @@
 package backend
 
-import backend.Operand
+import backend.Operand._
 import scala.collection.mutable.ListBuffer
 
 object Opcodes {
@@ -29,9 +29,26 @@ object Opcodes {
 	case class Or(rd: Register, rn: Register, op2: Operand) extends Instr
 
 	// PUSH/ POP
-	case class Push(regList: ListBuffer[Register]) extends Instr
-	case class Pop(regList: ListBuffer[Register]) extends Instr
+	case class Push(regList: ListBuffer[Register]) extends Instr {
+		override def toString: String = s"Push {${regList.mkString(", ")}}"
+	}
+	case class Pop(regList: ListBuffer[Register]) extends Instr {
+		override def toString: String = s"POP {${regList.mkString(", ")}}"
+	}
 
 	// LOADING
-	case class Ldr(rd: Register, op2: Operand) extends Instr
+	case class Ldr(rd: Register, op2: Operand) extends Instr {
+		override def toString: String = s"LDR $rd, $op2"
+	}
+
+	
+	case object Ltorg extends Instr {
+		override def toString: String = ".ltorg"
+	}
+
+	// Labels
+	case class Label(s: String) {
+		override def toString: String = s
+	}
+	case class Data(label: Label, s: String)
 }
