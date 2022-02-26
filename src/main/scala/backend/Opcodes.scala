@@ -30,7 +30,7 @@ object Opcodes {
 
 	// PUSH/ POP
 	case class Push(regList: ListBuffer[Register]) extends Instr {
-		override def toString: String = s"Push {${regList.mkString(", ")}}"
+		override def toString: String = s"PUSH {${regList.mkString(", ")}}"
 	}
 	case class Pop(regList: ListBuffer[Register]) extends Instr {
 		override def toString: String = s"POP {${regList.mkString(", ")}}"
