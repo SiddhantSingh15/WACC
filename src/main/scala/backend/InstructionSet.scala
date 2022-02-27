@@ -66,6 +66,103 @@ object InstructionSet {
     case class Pop(rs: ListBuffer[Register]) extends Instruction {
         override def toString: String = "POP " + "{" + rs.mkString(", ") + "}"
     }
+    //Move operations
+    case class Mov(rd: Register, op2: Operand) extends Instruction {
+        override def toString: String = "MOV " + rd + ", " + op2
+    }
+
+    case class MovCond(cond: Condition, rd: Register, op2: Operand)
+     extends Instruction {
+        override def toString: String = "MOV" + cond + " " + rd + ", " + op2
+    }
+
+    case class Ldr(rd: Register, op2: LoadOperand) extends Instruction {
+        override def toString: String = "LDR " + rd + ", " + op2
+    }
+    object Ldr {
+        def apply(isByte: Boolean, src: Register, dst: Register, offset: Int): Instruction = {
+            if (isByte) {
+                return LdrSB.apply(src, dst, offset)
+            }
+            apply(src, dst, offset)
+        }
+        def apply(src: Register, dst: Register, offset: Int): Instruction = {
+        if (offset == 0) {
+            return Ldr(src, RegAdd(dst))
+        }
+        Ldr(src, RegisterOffset(dst, offset))
+        }
+    }
+
+    case class LdrSB(rd: Register, op2: LoadOperand) extends Instruction {
+        override def toString: String = "LDRSB " + rd + ", " + op2
+    }
+    object LdrSB {
+        def apply(src: Register, dst: Register, offset: Int): Instruction = {
+            if (offset == 0) {
+                return LdrSB(src, RegAdd(dst))
+            }
+            LdrSB(src, RegisterOffset(dst, offset))
+        }
+    }
+
+    case class LdrCond(cond: Condition, rd: Register, op2: LoadOperand)
+        extends Instruction {
+        override def toString: String = "LDR" + cond + " " + rd + ", " + op2
+    }
+
+    case class Str(rd: Register, add: Address) extends Instruction {
+        override def toString: String = "STR " + rd + ", " + add
+    }
+    object Str {
+        def apply(isByte: Boolean, src: Register, dst: Register, offset: Int): Instruction = {
+            if (isByte) {
+                return StrB.apply(src, dst, offset)
+            }
+            apply(src, dst, offset)
+        }
+        def apply(src: Register, dst: Register, offset: Int): Instruction = {
+            if (offset == 0) {
+                return Str(src, RegAdd(dst))
+        }
+            Str(src, RegisterOffset(dst, offset))
+        }
+    }
+
+    case class StrB(rd: Register, add: Address) extends Instruction {
+        override def toString: String = "STRB " + rd + ", " + add
+    }
+    object StrB {
+        def apply(src: Register, dst: Register, offset: Int): Instruction = {
+            if (offset == 0) {
+                return StrB(src, RegAdd(dst))
+            }
+            StrB(src, RegisterOffset(dst, offset))
+        }
+    }
+
+    case class StrOffsetIndex(rd: Register, regAdd: Register, offset: Int)
+      extends Instruction {
+        override def toString: String =
+        "STR " + rd + ", " + "[" + regAdd + ", #" + offset + "]!"
+    }
+    object StrOffsetIndex {
+        def apply(isByte: Boolean, src: Register, dst: Register, offset: Int): Instruction = {
+            if (isByte) {
+                return StrBOffsetIndex(src, dst, offset)
+            }
+            StrOffsetIndex(src, dst, offset)
+        }
+    }
+    case class StrBOffsetIndex(rd: Register, regAdd: Register, offset: Int)
+      extends Instruction {
+        override def toString: String =
+        "STRB " + rd + ", " + "[" + regAdd + ", #" + offset + "]!"
+    }
+
+    case object Ltorg extends Instruction {
+        override def toString: String = ".ltorg"
+    }
 
     case class Label(s: String) {
         override def toString: String = s
