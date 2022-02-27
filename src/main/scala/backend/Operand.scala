@@ -3,11 +3,6 @@ package backend
 object Operand {
     sealed trait Operand
 
-    sealed case class ImmMem(n: Int) extends Operand {
-        override def toString: String = s"=$n"
-    }
-
-
     sealed trait Register extends Operand
     case object R0 extends Register
     case object R1 extends Register
@@ -32,5 +27,7 @@ object Operand {
 
     sealed case class Load_Imm(value: Int) extends Operand
 
-    sealed case class Load_Mem(value: Int) extends Operand
+    sealed case class Load_Mem(value: Int) extends Operand {
+        override def toString: String = s"=$value"
+    }
 }
