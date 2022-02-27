@@ -6,13 +6,13 @@ import scala.io.AnsiColor._
 
 object AST {
 	import parsley.implicits.zipped.{Zipped2, Zipped3, Zipped4}
-	
+
 	case class WaccProgram(s : List[Func], stats: List[Stat])
 
 	case class Func(tpe : Type, ident : Ident, paramList : ParamList, stats : List[Stat])
-	
+
 	case class ParamList(params : List[Param])
-	
+
 	case class Param(tpe : Type, ident : Ident)
 
   sealed trait Expr extends AssignRHS

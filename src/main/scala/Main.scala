@@ -5,6 +5,7 @@ import parsley.Parsley, Parsley._
 import SyntaxErrors.{TestError}
 import parsley.Success
 import parsley.Failure
+import backend._
 
 object Main {
   val parser = frontend.Parser
@@ -18,11 +19,13 @@ object Main {
     val EXITCODE_SYNTAX_ERROR = 100
     val EXITCODE_SEM_ERROR = 200
 
-    val parsed = parser.parseFromFile(new File(args(0))).get
+    val file = new File(args(0))
+    val parsed = parser.parseFromFile(file).get
 
     val parsedResult = parsed match {
       case Success(x) =>
         // println(x)
+        val programTree = parsed.get
         val semRes = semChecker.checkProgram(parsed.get)._2
         for (err <- semRes) {
           if (err.isInstanceOf[FuncNoRetErr]) {
@@ -34,7 +37,12 @@ object Main {
         println(Console.GREEN + s"${args(0)} is synctactically valid.")
         if (semRes.isEmpty) {
           println(Console.GREEN + s"${args(0)} is semantically valid.")
-          System.exit(EXITCODE_SUCC)
+          // System.exit(EXITCODE_SUCC)
+          val codeGenerator = backend.CodeGen
+          // val instructions = codeGenerator.transProgram(programTree)
+          val prettyPrinter = backend.PrettyPrinter
+          val (data, instructions) = codeGenerator.transProgram(programTree)
+          prettyPrinter.prettyPrint(file.getName(), data, instructions)
         }
 
         for (error <- semRes.toList) {
