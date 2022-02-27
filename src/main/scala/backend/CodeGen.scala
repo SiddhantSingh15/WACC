@@ -45,7 +45,7 @@ object CodeGen {
   }
 
   private def transExit(expr: Expr): ListBuffer[Instr] = {
-    val availReg = freeRegisters(0)
+    val availReg = freeReg()
     val instructions = ListBuffer.empty[Instr]
     freeRegisters.remove(0)
     instructions ++= transExp(expr, availReg)
