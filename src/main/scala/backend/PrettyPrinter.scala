@@ -20,6 +20,12 @@ object PrettyPrinter {
     
     val fileWriter = new FileWriter(file)
 
+    if (!data.isEmpty) {
+      fileWriter.write(tab + ".data\n\n")
+      data.foreach(d => printDataTable(d, fileWriter))
+      fileWriter.write("\n")
+    }
+
     fileWriter.write(tab + ".text\n\n" + tab + ".global main\n")
 
     instrs.foreach((x: (Label, List[Instr])) => {
@@ -28,5 +34,21 @@ object PrettyPrinter {
     }
     )
     fileWriter.close()
+  }
+
+  private def printDataTable(d: Data, fW: FileWriter): Unit = {
+    val Data(Label(l), s) = d
+    fW.write(tab + l)
+    fW.write(":\n")
+    fW.write(doubleTab + ".word")
+    fW.write(size(s))
+    fW.write("\n")
+    fW.write(doubleTab + ".ascii \"")
+    fW.write(s + "\"" + "\n")
+  }
+
+  private def size(str: String): Int = {
+    val chars = """"\\[0btnfr"'\\]""""
+    str.length -  chars.r.findAllIn(str).length
   }
 }
