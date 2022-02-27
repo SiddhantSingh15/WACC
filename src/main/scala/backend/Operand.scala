@@ -25,7 +25,9 @@ object Operand {
         override def toString: String = "pc"
     }
 
-    sealed case class Load_Imm(value: Int) extends Operand
+    sealed case class Load_Int(value: Int) extends Operand {
+        override def toString: String = s"#$value"
+    }
 
     sealed case class Load_Mem(value: Int) extends Operand {
         override def toString: String = s"=$value"
