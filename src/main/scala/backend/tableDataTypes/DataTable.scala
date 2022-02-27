@@ -29,11 +29,6 @@ class dataTable {
   }
 
   private def contains(label: Label): Boolean = {
-    for (Data(l, _) <- table) {
-      if (label == l) {
-        return true
-      }
-    }
-    return false
+    return !table.filter({case Data(l, _) => l == label}).isEmpty
   }
 }

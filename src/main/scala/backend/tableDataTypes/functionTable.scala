@@ -5,20 +5,33 @@ import scala.collection.mutable.ListBuffer
 
 class functionTable {
 
-  private var labelCounter = 0
+  private var counter = 0
   val table = ListBuffer.empty[(Label, List[Instr])]
+
+  def addFunction(label : Label, instrs : ListBuffer[Instr]) : Unit = {
+    table += ((label, instrs.toList))
+  }
+
+  def addFunction(tup : (Label, ListBuffer[Instr])) : Unit = {
+    val (label, instrs) = tup 
+    if(!contains(label)){
+      val entry = (label, instrs.toList)
+      table += entry 
+    }
+  }
 
   def add(label: Label, instrs: ListBuffer[Instr]): Unit = {
     table += ((label, instrs.toList))
   }
 
-  def contains(label: Label): Boolean = {
-    for ((l, _) <- table) {
-      if (label == l) {
-        return true
-      }
-    }
-    return false
+  private def contains(label: Label): Boolean = {
+    return !table.filter({case (l, _) => l==label}).isEmpty
+  }
+
+  def getNext() : Label = {
+    val nextLabel = Label("L" + counter)
+    counter += 1
+    nextLabel
   }
   
 }
