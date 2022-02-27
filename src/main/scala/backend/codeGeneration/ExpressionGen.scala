@@ -23,14 +23,13 @@ object ExpressionGen {
 
         expr match {
             case IntLiter(number) =>
-                val instrs = ListBuffer[Instr](Ldr(rd, Load_Mem(number)))
-                instructions ++= instrs
+                instructions += Ldr(rd, Load_Mem(number))
             case bool: BoolLiter =>
-                val instrs = ListBuffer[Instr](Ldr(rd, Load_Int(boolToInt(bool))))
-                instructions ++= instrs
+                instructions += Mov(rd, Load_Int(boolToInt(bool)))
             case CharLiter(character) =>
-            case StrLiter(string) =>
-            case PairLiter() =>
+                instructions += Mov(rd, Load_Char(character))
+            case StrLiter(string) => // requires use of data table
+            case PairLiter() => instructions += Ldr(rd, Load_Mem(0)) // TODO: remove magic number
             case Ident(id) =>
             case ArrayElem(id, exprs) =>
             case unOp: UnOp =>

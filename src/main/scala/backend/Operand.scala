@@ -25,6 +25,10 @@ object Operand {
         override def toString: String = "pc"
     }
 
+    sealed case class Load_Char(value: Char) extends Operand {
+        override def toString: String = s"#'$value'"
+    }
+
     sealed case class Load_Int(value: Int) extends Operand {
         override def toString: String = s"#$value"
     }
