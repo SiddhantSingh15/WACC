@@ -44,7 +44,7 @@ object SyntaxErrors {
                             case _          => "Will not end here"
                             }}"
                 })
-                sb ++= s" at line ${pos._1} and column ${pos._2}\n\n"
+                sb ++= s" at line ${pos._1} and column ${pos._2 -1}\n\n"
                 sb += '\n'
                 sb ++= (s"Expected input: ${expecteds
                     .map {
