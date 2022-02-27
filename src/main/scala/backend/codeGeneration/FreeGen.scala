@@ -24,10 +24,6 @@ object FreeGen {
 
         addReg(freeRegister)
 
-        t match {
-          
-        }
-
       case _ => 
     }
 

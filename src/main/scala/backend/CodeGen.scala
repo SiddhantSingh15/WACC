@@ -66,6 +66,10 @@ object CodeGen {
     register
   }
 
+  def addReg(reg: Register): Unit = {
+    reg +=: freeRegisters
+  }
+
   private def saveRegisters(regsNotInUse: ListBuffer[Register]): Instr = {
     Push(generalRegisters.filter(reg => !regsNotInUse.contains(reg)))
   }
