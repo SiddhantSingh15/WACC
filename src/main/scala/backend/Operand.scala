@@ -1,6 +1,6 @@
 package backend
 
-import backend.InstructionSet._
+import Opcodes._
 
 object Operand {
     sealed trait Operand
@@ -57,7 +57,11 @@ object Operand {
         override def toString: String = s"#$value"
     }
 
-    //sealed case class Load_Mem(value: Int) extends Operand {
-        //override def toString: String = s"=$value"
-    //}
+    sealed case class Load_Mem(value: Int) extends Operand {
+        override def toString: String = s"=$value"
+    }
+
+    sealed case class DataLabel(label: Label) extends Operand {
+        override def toString: String = s"=$label"
+    }
 }
