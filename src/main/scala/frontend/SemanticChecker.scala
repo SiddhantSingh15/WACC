@@ -36,7 +36,6 @@ object SemanticChecker {
         (param.ident, param.tpe)))
       case _ =>   
     }
-    checkStats(stat, symbTable)
   }
 
   private def checkReturnExits(func: Func, symbTable: SymbolTable): Unit = {
