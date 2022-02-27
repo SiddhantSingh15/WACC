@@ -12,7 +12,7 @@ case class SymbolTable(
     funcMap: HashMap[Ident, Info]) 
   {
 
-  val varMap = new HashMap[Ident, Type]
+  val varMap = new HashMap[Ident, (Int, Type)]
 
   def nextScope(nextFunc: Ident): SymbolTable = {
     SymbolTable(this, nextFunc, funcMap)
@@ -27,7 +27,7 @@ case class SymbolTable(
     while (current != null) {
       var vMap = current.varMap
       if (vMap.contains(ident)) {
-        return vMap.apply(ident)
+        return vMap.apply(ident)._2
       }
       current = current.prev
     }
@@ -38,8 +38,27 @@ case class SymbolTable(
     t.get.t
   }
 
+  def add(ident: Ident, n: Int, t: Type): Unit = {
+    varMap.addOne(ident, (n, t))
+  }
+
   def add(ident: Ident, t: Type): Unit = {
-    varMap.addOne(ident, t)
+    varMap.addOne(ident, (0, t))
+  }
+
+  def lookupCG(ident: Ident): (Int, Type) = {
+    var currentST = this
+    while (currentST != null) {
+      val vMap = currentST.varMap
+      if (vMap.contains(ident)) {
+        val (i, t) = vMap.apply(ident)
+        if (i != 0) {
+          return (i, t)
+        }
+      }
+      currentST = currentST.prev
+    }
+    null
   }
 
   def contains(ident: Ident): Boolean = {
@@ -57,7 +76,7 @@ case class SymbolTable(
       if (varMap.contains(v._1)) {
         semanticErrors += DeclaredVarErr(v._1)
       } else {
-        varMap.addOne(v)
+        add(v._1, v._2)
       }
     }
     semanticErrors
@@ -90,6 +109,10 @@ case class SymbolTable(
   def isFunc(ident: Ident): Boolean = {
     val info = funcMap.get(ident)
     info.isDefined
+  }
+
+  def apply(expr: Ident): (Int, Type) = {
+    lookupCG(expr)
   }
   
   def parameterMatch(ident: Ident, args: Option[ArgList]): 
