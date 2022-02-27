@@ -39,9 +39,10 @@ object Main {
           println(Console.GREEN + s"${args(0)} is semantically valid.")
           // System.exit(EXITCODE_SUCC)
           val codeGenerator = backend.CodeGen
-          val instructions = codeGenerator.transProgram(programTree)
+          // val instructions = codeGenerator.transProgram(programTree)
           val prettyPrinter = backend.PrettyPrinter
-          prettyPrinter.prettyPrint(file.getName(), instructions)
+          val (data, instructions) = codeGenerator.transProgram(programTree)
+          prettyPrinter.prettyPrint(file.getName(), data, instructions)
         }
 
         for (error <- semRes.toList) {

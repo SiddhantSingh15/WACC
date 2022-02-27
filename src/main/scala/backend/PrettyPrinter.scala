@@ -9,6 +9,7 @@ object PrettyPrinter {
 
   def prettyPrint(
       waccFilename: String,
+      data: List[Data],
       instrs: List[(Label, List[Instr])]
   ): Unit = {
     val assemblyFilename = waccFilename.replaceFirst(".wacc", ".s")
