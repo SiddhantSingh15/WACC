@@ -3,6 +3,7 @@ package backend
 import scala.collection.mutable.ListBuffer
 import backend.Opcodes._
 import backend.Operand._
+import backend.codeGeneration.ExpressionGen._
 import backend.tableDataTypes._
 import frontend.AST._
 
@@ -22,10 +23,6 @@ object CodeGen {
   final val resultRegister: Register = R0
 
   private var instrs: ListBuffer[Instr] = ListBuffer.empty[Instr]
-
-  private def transExp(exp: Expr): ListBuffer[Instr] = {
-    ListBuffer.empty[Instr]
-  }
 
   private def transStat(stat: Stat): ListBuffer[Instr] = {
     stat match {
@@ -47,15 +44,16 @@ object CodeGen {
   }
 
   private def transExit(expr: Expr): ListBuffer[Instr] = {
+    val availReg = freeRegisters(0)
+    freeRegisters.remove(0)
       expr match {
         case IntLiter(number) => 
-          val availReg = freeRegisters(0)
-          freeRegisters.remove(0)
           val instrs = ListBuffer[Instr](Ldr(availReg, Load_Mem(number)), Mov(resultRegister, availReg), Bl(Label("exit")))
-          availReg +=: freeRegisters
-          return instrs
-        case _                => transExp(expr)
+        case _                => 
+          val instrs = transExp(expr, availReg)
       }
+    availReg +=: freeRegisters
+    instrs
   }
 
   private def saveRegisters(regsNotInUse: ListBuffer[Register]): Instr = {
