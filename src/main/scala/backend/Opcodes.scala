@@ -106,10 +106,14 @@ object Opcodes {
         }
     }
 
-    case class LdrCond(cond: Condition, rd: Register, op2: Operand)
-        extends Instr {
-        override def toString: String = "LDR" + cond + " " + rd + ", " + op2
-    }
+	case class Mov(rd: Register, op2: Operand) extends Instr {
+		override def toString: String = s"MOV $rd, $op2"
+	}
+	case class And(rd: Register, rn: Register, op2: Operand) extends Instr
+	case class Xor(rd: Register, rn: Register, op2: Operand) extends Instr {
+		override def toString: String = s"EOR $rd, $rn, $op2"
+	}
+	case class Or(rd: Register, rn: Register, op2: Operand) extends Instr
 
     case class Str(rd: Register, add: Address) extends Instr {
         override def toString: String = "STR " + rd + ", " + add
