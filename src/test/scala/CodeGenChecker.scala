@@ -13,8 +13,8 @@ class CodeGenChecker extends AnyFunSuite {
     val prettyPrinter = backend.PrettyPrinter;
     val file = new File("wacc_examples/valid/basic/exit/exitBasic.wacc")
     val programTree = parser.parseFromFile(file).get.get
-    val instructions = codeGen.transProgram(programTree)
-    prettyPrinter.prettyPrint(file.getName(), instructions)
+    val (data, instructions) = codeGen.transProgram(programTree)
+    prettyPrinter.prettyPrint(file.getName(), data, instructions)
 
     assert(true)
 }

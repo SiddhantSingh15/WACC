@@ -12,7 +12,7 @@ object CodeGen {
   // Values for code generation 
   var stackPointer = 0
   var currLabel = Label("main")
-  // var dataTable = new DataTable
+  var dataTable = new dataTable
   var funcTable = new functionTable
 
   final val generalRegisters: ListBuffer[Register] = 
