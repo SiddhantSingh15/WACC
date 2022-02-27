@@ -13,6 +13,8 @@ object ExpressionGen {
 
         expr match {
             case IntLiter(number) =>
+                val instrs = ListBuffer[Instr](Ldr(rd, Load_Mem(number)))
+                instructions ++= instrs
             case bool: BoolLiter =>
             case CharLiter(character) =>
             case StrLiter(string) =>

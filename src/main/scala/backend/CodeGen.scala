@@ -45,15 +45,12 @@ object CodeGen {
 
   private def transExit(expr: Expr): ListBuffer[Instr] = {
     val availReg = freeRegisters(0)
+    val instructions = ListBuffer.empty[Instr]
     freeRegisters.remove(0)
-      expr match {
-        case IntLiter(number) => 
-          val instrs = ListBuffer[Instr](Ldr(availReg, Load_Mem(number)), Mov(resultRegister, availReg), Bl(Label("exit")))
-        case _                => 
-          val instrs = transExp(expr, availReg)
-      }
+    instructions ++= transExp(expr, availReg)
+    instructions ++= ListBuffer[Instr](Mov(resultRegister, availReg), Bl(Label("exit"))) 
     availReg +=: freeRegisters
-    instrs
+    instructions
   }
 
   private def saveRegisters(regsNotInUse: ListBuffer[Register]): Instr = {
