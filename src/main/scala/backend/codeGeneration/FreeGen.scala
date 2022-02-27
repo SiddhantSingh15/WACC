@@ -26,7 +26,6 @@ object FreeGen {
 
       case _ => 
     }
-
     instructions
   }
 }
