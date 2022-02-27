@@ -6,12 +6,14 @@ import backend.Operand._
 import backend.codeGeneration.ExpressionGen._
 import backend.tableDataTypes._
 import frontend.AST._
+import frontend.SymbolTable
 
 object CodeGen {
 
   // Values for code generation 
   var stackPointer = 0
   var currLabel = Label("main")
+  var symbTable: SymbolTable = _
   var dataTable = new dataTable
   var funcTable = new functionTable
 
@@ -74,6 +76,7 @@ object CodeGen {
 
   def transProgram(program: WaccProgram): (List[Data], List[(Label, List[Instr])]) = {
 
+    this.symbTable = symbTable
     val WaccProgram(funcs, stats) = program
 
     // TODO: functions
