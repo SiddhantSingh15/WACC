@@ -45,13 +45,23 @@ object CodeGen {
   }
 
   private def transExit(expr: Expr): ListBuffer[Instr] = {
-    val availReg = freeReg()
+    val availReg = freeRegs()
     val instructions = ListBuffer.empty[Instr]
     freeRegisters.remove(0)
     instructions ++= transExp(expr, availReg)
     instructions ++= ListBuffer[Instr](Mov(resultRegister, availReg), Bl(Label("exit"))) 
     availReg +=: freeRegisters
     instructions
+  }
+
+  def freeRegs(): Register = {
+    if (!freeRegisters.isEmpty) {
+      return R11
+    }
+    
+    val register = freeRegisters(0)
+    freeRegisters.remove(0)
+    register
   }
 
   private def saveRegisters(regsNotInUse: ListBuffer[Register]): Instr = {
