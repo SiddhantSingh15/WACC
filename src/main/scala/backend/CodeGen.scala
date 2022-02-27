@@ -16,6 +16,9 @@ object CodeGen {
   final val generalRegisters: ListBuffer[Register] = 
     ListBuffer(R0, R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R11, R12)
 
+  private var freeRegisters: ListBuffer[Register] =
+    ListBuffer(R4, R5, R6, R7, R8, R9, R10)
+
   final val resultRegister: Register = R0
 
   private var instrs: ListBuffer[Instr] = ListBuffer.empty[Instr]
@@ -24,14 +27,13 @@ object CodeGen {
     ListBuffer.empty[Instr]
   }
 
-  private def transStat(stat: Stat, 
-    regList: ListBuffer[Register]): ListBuffer[Instr] = {
+  private def transStat(stat: Stat): ListBuffer[Instr] = {
     stat match {
       case Read(assignLHS)                => // TODO
       case Free(expr)                     => // TODO
       case Return(expr)                   => // TODO
       case Exit(expr)                     => 
-        return transExit(expr, regList)
+        return transExit(expr)
       case Print(expr)                    => // TODO
       case Println(expr)                  => // TODO
       case If(expr, statThen, statElse)   => // TODO
@@ -44,12 +46,14 @@ object CodeGen {
     ListBuffer.empty[Instr]
   }
 
-  private def transExit(expr: Expr, 
-    regList: ListBuffer[Register]): ListBuffer[Instr] = {
+  private def transExit(expr: Expr): ListBuffer[Instr] = {
       expr match {
         case IntLiter(number) => 
-          val availReg = regList.filter(reg => reg != R0)(0)
-          ListBuffer[Instr](Ldr(availReg, Load_Mem(number)), Mov(R0, availReg), Bl("exit"))
+          val availReg = freeRegisters(0)
+          freeRegisters.remove(0)
+          val instrs = ListBuffer[Instr](Ldr(availReg, Load_Mem(number)), Mov(resultRegister, availReg), Bl(Label("exit")))
+          availReg +=: freeRegisters
+          return instrs
         case _                => transExp(expr)
       }
   }
@@ -70,8 +74,13 @@ object CodeGen {
 
     val instructions = ListBuffer[Instr](Push(ListBuffer(R14_LR)))
 
+    stats.foreach((s: Stat) => {
+      instructions ++= transStat(s)
+    }
+    )
+
     instructions ++= ListBuffer(
-      Ldr(resultRegister, ImmMem(0)), // TODO: magic number
+      Ldr(resultRegister, Load_Mem(0)), // TODO: magic number
       Pop(ListBuffer(R15_PC)),
       Ltorg
     )
