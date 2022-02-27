@@ -8,9 +8,9 @@ class dataTable {
   var table = ListBuffer.empty[Data]
   var size = 0
 
-  def addData(str: StrLiter): Label = {
+  def addData(str: String): Label = {
     val label = Label(getNext())
-    table += Data(label, str.toString())
+    table += Data(label, str)
     label
   }
 
