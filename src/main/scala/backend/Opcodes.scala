@@ -18,12 +18,16 @@ object Opcodes {
 
 	// BRANCH
 
-	case class B(label: String) extends Instr
-	case class Bl(label: String) extends Instr
+	case class B(label: Label) extends Instr
+	case class Bl(label: Label) extends Instr {
+		override def toString: String = s"BL $label"
+	}
 
 	// LOGICAL
 
-	case class Mov(rd: Register, op2: Operand) extends Instr
+	case class Mov(rd: Register, op2: Operand) extends Instr {
+		override def toString: String = s"MOV $rd, $op2"
+	}
 	case class And(rd: Register, rn: Register, op2: Operand) extends Instr
 	case class Xor(rd: Register, rn: Register, op2: Operand) extends Instr
 	case class Or(rd: Register, rn: Register, op2: Operand) extends Instr
