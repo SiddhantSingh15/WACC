@@ -128,7 +128,7 @@ object RuntimeErrors {
       ListBuffer[Instr](
         Push(ListBuffer(R14_LR)),
         Cmp(resultRegister, Imm_Int(FALSE)),
-        LdrCond(EQ, resultRegister, DataLabel(Label(NPE.msgName(0)))),
+        LdrCond(EQ, resultRegister, DataLabel(Label(NullPointer.msgName(0)))),
         BranchLinkCond(EQ, RuntimeError.functionLabel),
         Pop(ListBuffer(R15_PC))
       )
