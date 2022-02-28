@@ -19,7 +19,9 @@ object Operand {
     case object R10 extends Register
     case object R11 extends Register
     case object R12 extends Register
-    case object R13_SP extends Register
+    case object R13_SP extends Register {
+        override def toString: String = "sp"
+    }
     case object R14_LR extends Register {
         override def toString: String = "lr"
     }
@@ -50,5 +52,9 @@ object Operand {
 
   sealed case class DataLabel(label: Label) extends Operand {
       override def toString: String = s"=$label"
+  }
+
+  case class ASR(r: Register, value: Imm_Int) extends Operand {
+      override def toString: String = s"$r, ASR $value"
   }
 }
