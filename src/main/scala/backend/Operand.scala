@@ -53,4 +53,8 @@ object Operand {
   sealed case class DataLabel(label: Label) extends Operand {
       override def toString: String = s"=$label"
   }
+
+  case class ASR(r: Register, value: Imm_Int) extends Operand {
+      override def toString: String = s"$r, ASR $n"
+  }
 }
