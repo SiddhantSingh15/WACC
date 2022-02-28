@@ -61,7 +61,7 @@ object PreDefinedFuncs {
     override val function = freeArray
   }
 
-  case object NullPointer extends PreDefFunc {
+  case object NPE extends PreDefFunc {
     override val functionLabel = Label("p_check_null_pointer")
     override val msgName = List("msg_null_reference")
     override val msgs =
