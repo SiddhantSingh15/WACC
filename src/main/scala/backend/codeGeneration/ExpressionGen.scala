@@ -63,7 +63,13 @@ object ExpressionGen {
                     RsbS(rd, rd, Imm_Int(0)) // remove magic number
                  // , BranchLinkCond(OF, RunTimeRror) TODO: runtime errors
                 )
-            case Len(expr) =>
+            case Len(ident: Ident) =>
+                val (i, t) = symbTable(ident)
+                ListBuffer(
+                    Ldr(rd, RegisterOffset(R13_SP, stackPointer - i)),
+                    Ldr(rd, RegAdd(rd))
+                )
+                
             case Ord(expr) =>
                 transExp(expr, rd)
             case Chr(expr) =>
