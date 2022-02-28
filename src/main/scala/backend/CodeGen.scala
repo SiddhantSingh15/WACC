@@ -24,6 +24,7 @@ object CodeGen {
     ListBuffer(R4, R5, R6, R7, R8, R9, R10)
 
   final val resultRegister: Register = R0
+  final val popRegister: Register = R11
 
   private var instrs: ListBuffer[Instr] = ListBuffer.empty[Instr]
 
@@ -47,35 +48,27 @@ object CodeGen {
   }
 
   private def transExit(expr: Expr): ListBuffer[Instr] = {
-    val availReg = freeRegs()
+    val availReg = saveReg()
     val instructions = ListBuffer.empty[Instr]
-    freeRegisters.remove(0)
     instructions ++= transExp(expr, availReg)
     instructions ++= ListBuffer[Instr](Mov(resultRegister, availReg), Bl(Label("exit"))) 
-    availReg +=: freeRegisters
+    restoreReg(availReg)
     instructions
   }
 
-  def freeRegs(): Register = {
-    if (!freeRegisters.isEmpty) {
-      return R11
+  def saveReg(): Register = {
+    if (freeRegisters.isEmpty) {
+      return popRegister
     }
-    
     val register = freeRegisters(0)
     freeRegisters.remove(0)
     register
   }
 
-  def addReg(reg: Register): Unit = {
-    reg +=: freeRegisters
-  }
-
-  private def saveRegisters(regsNotInUse: ListBuffer[Register]): Instr = {
-    Push(generalRegisters.filter(reg => !regsNotInUse.contains(reg)))
-  }
-
-  private def restoreRegisters(regsNotInUse: ListBuffer[Register]): Instr = {
-    Pop(generalRegisters.filter(reg => !regsNotInUse.contains(reg)).reverse)
+  def restoreReg(reg: Register): Unit = {
+    if (reg != popRegister) {
+      reg +=: freeRegisters
+    }
   }
 
   def transProgram(program: WaccProgram): (List[Data], List[(Label, List[Instr])]) = {

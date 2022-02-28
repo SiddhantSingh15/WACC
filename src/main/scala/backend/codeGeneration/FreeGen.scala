@@ -16,13 +16,13 @@ object FreeGen {
     val instructions = ListBuffer.empty[Instr]
     expr match {
       case id: Ident => 
-        val freeRegister = freeRegs()
+        val freeRegister = saveReg()
         val (i, t) = symbTable(id)
 
         instructions += Ldr(freeRegister, R13_SP)
         instructions += Mov(resultRegister, freeRegister)
 
-        addReg(freeRegister)
+        restoreReg(freeRegister)
 
       case _ => 
     }
