@@ -106,13 +106,13 @@ object ExpressionGen {
     def transMathOp(op: MathFuncs, rd: Register, rm: Register): ListBuffer[Instr] = {
 
         op match {
-            case Mul =>
+            case frontend.AST.Mul(_,_) =>
                 ListBuffer(
                     SMul(rd, rm, rd, rm),
                     Cmp(rm, ASR(rd, Imm_Int(31))) // TODO: Remove magic number
                     // TODO: stuff for runtime error
                 )
-            case Div =>
+            case frontend.AST.Div(_,_) =>
                 ListBuffer(
                     Mov(resultRegister, rd),
                     Mov(R1, rm), // need to be in R0 and R1 for __aeabi_idiv
@@ -120,7 +120,7 @@ object ExpressionGen {
                     Bl(Label("__aeabi_idiv")),
                     Mov(rd, resultRegister)
                 )
-            case Mod => 
+            case frontend.AST.Mod(_,_) => 
                 ListBuffer(
                     Mov(resultRegister, rd),
                     Mov(R1, rm),
@@ -128,12 +128,12 @@ object ExpressionGen {
                     Bl(Label("__aeabi_idivmod")),
                     Mov(rd, R1)
                 )
-            case Plus =>
+            case frontend.AST.Plus(_,_) =>
                 ListBuffer(
                     AddS(rd, rd, rm)
                     // TODO: stuff for runtime error
                 )
-            case Sub =>
+            case frontend.AST.Sub(_,_) =>
                 ListBuffer(
                     SubS(rd, rd, rm)
                     // TODO: stuff for runtime error
@@ -143,27 +143,28 @@ object ExpressionGen {
     }
 
     def transCmpEqOp(op: BinOp, rd: Register, rm: Register): ListBuffer[Instr] = {
-        val cond: Condition;
+        var cond: Condition = null;
         op match {
-            case GT => cond = GT
-            case GTE => cond = GE
-            case LT => cond = LT
-            case LTE => cond = LE
-            case Equal => cond = EQ
-            case NotEqual => cond = NE
+            case frontend.AST.GT(_,_) => cond = backend.Condition.GT
+            case frontend.AST.GTE(_,_) => cond = backend.Condition.GE
+            case frontend.AST.LT(_,_) => cond = backend.Condition.LT
+            case frontend.AST.LTE(_,_) => cond = backend.Condition.LE
+            case frontend.AST.Equal(_,_) => cond = backend.Condition.EQ
+            case frontend.AST.NotEqual(_,_) => cond = backend.Condition.NE
+            case _ =>
         }
 
         ListBuffer(
             Cmp(rd, rm),
-            MovCond(cond, rd, Imm_Int(INT_FALSE))
+            MovCond(cond, rd, Imm_Int(INT_FALSE)),
             MovCond(cond.oppositeCmp, rd, Imm_Int(INT_FALSE))
         )
     }
 
-    def transLgOp(op: LogicFuncs, rd: Register, rm: Register): ListBuffer[Instr] = {
+    def transLgOp(op: LogicFuncs, rd: Register, rm: Register): Instr = {
         op match {
-            case And => And(rd, rd, rm)
-            case Or => Or(rd, rd, rm)
+            case frontend.AST.And(_,_) => backend.Opcodes.And(rd, rd, rm)
+            case frontend.AST.Or(_,_) => backend.Opcodes.Or(rd, rd, rm)
         }
     }
 }
