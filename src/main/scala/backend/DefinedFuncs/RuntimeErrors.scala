@@ -25,20 +25,20 @@ object RuntimeErrors {
   private val ERROR_EXIT_CODE = -1
 
   def addRuntimeError(err: PreDefFunc): Label = {
-    funcTable.addFunction(RuntimeError.func)
+    funcTable.addFunction(RuntimeError.function)
     funcTable.addFunction(stringPrintInstrs)
     dataTable.addLabel("msg_string", "%.*s\\0")
     for(n <- 0 until err.msgs.length){
       dataTable.addLabel(err.msgName(n), err.msgs(n))
     }
-    funcTable.addFunction(err.func)
-    err.funcLabel
+    funcTable.addFunction(err.function)
+    err.functionLabel
 
   }
 
   def throwRuntimeError: (Label, ListBuffer[Instr]) = {
     (
-      RuntimeError.funcLabel,
+      RuntimeError.functionLabel,
       ListBuffer[Instr](
         Bl(Label("p_print_string")),
         Mov(resultRegister, Imm_Int(ERROR_EXIT_CODE)),
@@ -49,16 +49,16 @@ object RuntimeErrors {
 
   def checkArrayBounds: (Label, ListBuffer[Instr]) = {
     (
-      ArrayBounds.funcLabel,
+      ArrayBounds.functionLabel,
       ListBuffer[Instr](
         Push(ListBuffer(R14_LR)),
         Cmp(resultRegister, Imm_Int(FALSE_INT)),
         LdrCond(LT, resultRegister, DataLabel(Label(ArrayBounds.msgName(0)))),
-        BranchLinkCond(LT, RuntimeError.funcLabel),
+        BranchLinkCond(LT, RuntimeError.functionLabel),
         Ldr(R1, RegAdd(R1)),
         Cmp(resultRegister, R1),
         LdrCond(CS, resultRegister, DataLabel(Label(ArrayBounds.msgName(1)))),
-        BranchLinkCond(CS, RuntimeError.funcLabel),
+        BranchLinkCond(CS, RuntimeError.functionLabel),
         Pop(ListBuffer(R15_PC))
       )
     )
@@ -66,12 +66,12 @@ object RuntimeErrors {
 
   def checkDivideByZero: (Label, ListBuffer[Instr]) = {
     (
-      DivideByZero.funcLabel,
+      DivideByZero.functionLabel,
       ListBuffer[Instr](
         Push(ListBuffer(R14_LR)),
         Cmp(R1, Imm_Int(FALSE_INT)),
         LdrCond(EQ, resultRegister, DataLabel(Label(DivideByZero.msgName(0)))),
-        BranchLinkCond(EQ, RuntimeError.funcLabel),
+        BranchLinkCond(EQ, RuntimeError.functionLabel),
         Pop(ListBuffer(R15_PC))
       )
     )
@@ -79,22 +79,22 @@ object RuntimeErrors {
 
   def throwOverflowError: (Label, ListBuffer[Instr]) = {
     (
-      Overflow.funcLabel,
+      Overflow.functionLabel,
       ListBuffer[Instr](
         Ldr(resultRegister, DataLabel(Label(Overflow.msgName(0)))),
-        Bl(RuntimeError.funcLabel)
+        Bl(RuntimeError.functionLabel)
       )
     )
   }
 
   def freePair: (Label, ListBuffer[Instr]) = {
     (
-      FreePair.funcLabel,
+      FreePair.functionLabel,
       ListBuffer[Instr](
         Push(ListBuffer(R14_LR)),
         Cmp(resultRegister, Imm_Int(FALSE_INT)),
         LdrCond(EQ, resultRegister, DataLabel(Label(FreePair.msgName(0)))),
-        BranchCond(EQ, RuntimeError.funcLabel),
+        BranchCond(EQ, RuntimeError.functionLabel),
         Push(ListBuffer(resultRegister)),
         Ldr(resultRegister, RegAdd(resultRegister)),
         Bl(Label("free")),
@@ -110,12 +110,12 @@ object RuntimeErrors {
 
   def freeArray: (Label, ListBuffer[Instr]) = {
     (
-      FreeArray.funcLabel,
+      FreeArray.functionLabel,
       ListBuffer[Instr](
         Push(ListBuffer(R14_LR)),
         Cmp(resultRegister, Imm_Int(FALSE_INT)),
         LdrCond(EQ, resultRegister, DataLabel(Label(FreeArray.msgName(0)))),
-        BranchCond(EQ, RuntimeError.funcLabel),
+        BranchCond(EQ, RuntimeError.functionLabel),
         Bl(Label("free")),
         Pop(ListBuffer(R15_PC))
       )
@@ -124,12 +124,12 @@ object RuntimeErrors {
 
   def checkNullPointer: (Label, ListBuffer[Instr]) = {
     (
-      NullPointer.funcLabel,
+      NullPointer.functionLabel,
       ListBuffer[Instr](
         Push(ListBuffer(R14_LR)),
         Cmp(resultRegister, Imm_Int(FALSE_INT)),
         LdrCond(EQ, resultRegister, DataLabel(Label(NullPointer.msgName(0)))),
-        BranchLinkCond(EQ, RuntimeError.funcLabel),
+        BranchLinkCond(EQ, RuntimeError.functionLabel),
         Pop(ListBuffer(R15_PC))
       )
     )

@@ -12,7 +12,7 @@ object PrintInstrs {
   private val RESET_INT = 0
 
   def stringPrintInstrs: (Label, ListBuffer[Instr]) = (
-    PrintString.funcLabel,
+    PrintString.functionLabel,
     ListBuffer[Instr](
       Push(ListBuffer(R14_LR)),
       Ldr(R1, RegAdd(resultRegister)),
@@ -27,7 +27,7 @@ object PrintInstrs {
   )
 
   def boolPrintInstrs: (Label, ListBuffer[Instr]) = (
-    PrintBool.funcLabel,
+    PrintBool.functionLabel,
     ListBuffer[Instr](
       Push(ListBuffer(R14_LR)),
       Cmp(resultRegister, Imm_Int(FALSE_INT)),
@@ -42,7 +42,7 @@ object PrintInstrs {
   )
 
   def intPrintInstrs: (Label, ListBuffer[Instr]) = (
-    PrintInt.funcLabel,
+    PrintInt.functionLabel,
     ListBuffer[Instr](
       Push(ListBuffer(R14_LR)),
       Mov(R1, resultRegister),
@@ -57,7 +57,7 @@ object PrintInstrs {
 
   def referencePrintInstrs: (Label, ListBuffer[Instr]) =
     (
-      PrintReference.funcLabel,
+      PrintReference.functionLabel,
       ListBuffer[Instr](
         Push(ListBuffer(R14_LR)),
         Mov(R1, resultRegister),
@@ -72,7 +72,7 @@ object PrintInstrs {
 
   def newLinePrintInstrs: (Label, ListBuffer[Instr]) =
     (
-      PrintLn.funcLabel,
+      PrintLn.functionLabel,
       ListBuffer[Instr](
         Push(ListBuffer(R14_LR)),
         Ldr(resultRegister, DataLabel(Label(PrintLn.msgName(0)))),
