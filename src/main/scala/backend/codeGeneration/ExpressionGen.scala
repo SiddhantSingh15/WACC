@@ -4,6 +4,7 @@ import backend.Operand._
 import frontend.AST._
 import backend.Opcodes._
 import backend.CodeGen._
+import frontend.SymbolTable
 
 import scala.collection.mutable.ListBuffer
 
@@ -58,9 +59,15 @@ object ExpressionGen {
             case Not(expr) =>
                 transExp(expr, rd) += Eor(rd, rd, Imm_Int(INT_TRUE))
             case Negation(expr) =>
+                transExp(expr, rd) ++= ListBuffer(
+                    RsbS(rd, rd, Imm_Int(0)) // remove magic number
+                 // , BranchLinkCond(OF, RunTimeRror) TODO: runtime errors
+                )
             case Len(expr) =>
             case Ord(expr) =>
+                transExp(expr, rd)
             case Chr(expr) =>
+                transExp(expr, rd)
             case _  =>
                 ListBuffer.empty[Instr]
         }
