@@ -18,6 +18,7 @@ object CodeGen {
   var funcTable = new functionTable
   var userTable = new functionTable
   
+  val FALSE = 0
   val SIZE_ADDR = 4
   val SIZE_PAIR = SIZE_ADDR
 
