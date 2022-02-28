@@ -16,7 +16,8 @@ object CodeGen {
   var symbTable: SymbolTable = _
   var dataTable = new dataTable
   var funcTable = new functionTable
-
+  var userTable = new functionTable
+  
   val SIZE_ADDR = 4
   val SIZE_PAIR = SIZE_ADDR
 
@@ -31,13 +32,13 @@ object CodeGen {
 
   private var instrs: ListBuffer[Instr] = ListBuffer.empty[Instr]
 
-  private def transStat(stat: Stat): ListBuffer[Instr] = {
+  def transStat(stat: Stat, instructions: ListBuffer[Instr]): ListBuffer[Instr] = {
     stat match {
       case Read(assignLHS)                => // TODO
       case Free(expr)                     => // TODO
       case Return(expr)                   => // TODO
       case Exit(expr)                     => 
-        return transExit(expr)
+        instructions ++= transExit(expr)
       case Print(expr)                    => // TODO
       case Println(expr)                  => // TODO
       case If(expr, statThen, statElse)   => // TODO
@@ -87,8 +88,9 @@ object CodeGen {
 
     val instructions = ListBuffer[Instr](Push(ListBuffer(R14_LR)))
 
+    // TODO: Scope
     stats.foreach((s: Stat) => {
-      instructions ++= transStat(s)
+      instructions ++= transStat(s, ListBuffer(Push(ListBuffer(R14_LR))))
     }
     )
 
