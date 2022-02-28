@@ -18,10 +18,13 @@ object CodeGen {
   var funcTable = new functionTable
   var userTable = new functionTable
   
+<<<<<<< HEAD
   val FALSE = 0
   val SIZE_ADDR = 4
   val SIZE_PAIR = SIZE_ADDR
 
+=======
+>>>>>>> b4a2bc4... [ss5120] feat: finished `Scope`.
   val SIZE_ADDR = 4
   val SIZE_PAIR = SIZE_ADDR
 
