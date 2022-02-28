@@ -41,7 +41,7 @@ object Operand {
   }
 
   sealed trait LoadOperand
-  sealed case class ImmMem(n: Int) extends LoadOperand {
+  sealed case class Load_Mem(n: Int) extends LoadOperand {
     override def toString: String = "=" + n
   }
 
@@ -57,7 +57,7 @@ object Operand {
         override def toString: String = s"#$value"
     }
 
-    sealed case class Load_Mem(value: Int) extends Operand {
-        override def toString: String = s"=$value"
-    }
+    //sealed case class Load_Mem(value: Int) extends Operand {
+        //override def toString: String = s"=$value"
+    //}
 }
