@@ -5,10 +5,12 @@ import frontend.AST
 import backend.Opcodes.Instr
 import backend.CodeGen._
 import frontend.SymbolTable
-import frontend.AST.{Expr, Ident}
+import frontend.AST.{Expr, Ident, Pair, ArrayType}
 import backend.Operand
-import backend.Opcodes.{Ldr, Mov}
+import backend.Opcodes.{Ldr, Mov, Bl}
 import backend.Operand.{R13_SP}
+import backend.DefinedFuncs.RuntimeErrors.addRTE
+import backend.DefinedFuncs.PreDefinedFuncs.{FreeArray, FreePair}
 
 object FreeGen {
 
@@ -24,9 +26,14 @@ object FreeGen {
 
         restoreReg(freeRegister)
 
-      case _ => 
-    }
+        t match {
+          case _: Pair      => Bl(addRTE(FreePair))
+          case _: ArrayType => Bl(addRTE(FreeArray))
+          case _            => 
+        }
 
+      case _ =>
+    }
     instructions
   }
 }

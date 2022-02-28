@@ -21,11 +21,11 @@ object Assignments {
         scopeSP += getTypeSize(t)
         symbTable.add(id, scopeSP, t)
         val spOffset = currSP - scopeSP
-        val freeRegister = getFreeRegister()
+        val freeRegister = saveReg()
         val (isByte, newInstrs) = translateAssignRHS(t, rhs, freeRegister)
         instrs ++= newInstrs
         instrs += Str(isByte, freeRegister, R13_SP, spOffset)
-        addBackRegister(freeRegister)
+        restoreReg(freeRegister)
         instrs
     }
 
@@ -36,7 +36,7 @@ object Assignments {
         rhs: AssignRHS
     ): ListBuffer[Instr] = {
         val instrs = ListBuffer.empty[Instr]
-        val freeRegister = getFreeRegister()
+        val freeRegister = saveReg()
 
         lhs match {
             case id : Ident =>
@@ -45,12 +45,13 @@ object Assignments {
                 instrs ++= newInstrs
                 val spOffset = currSP - index  
                 instrs += Str(isByte, freeRegister, R13_SP, spOffset)
-            case Fst(id : Ident) => null //TODO
+            case Fst(id : Ident) => 
+                instrs ++= 
             case Snd(id : Ident) => null //TODO
             case ArrayElem(ident, exprList) => null //TODO
             case _ => null  
         }
-        addBackRegister(freeRegister)
+        restoreReg(freeRegister)
         instrs
     }
 

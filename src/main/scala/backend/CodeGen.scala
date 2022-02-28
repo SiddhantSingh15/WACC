@@ -14,8 +14,13 @@ object CodeGen {
   var stackPointer = 0
   var currLabel = Label("main")
   var symbTable: SymbolTable = _
-  val dataTable = new dataTable
-  val funcTable = new functionTable
+  var dataTable = new dataTable
+  var funcTable = new functionTable
+  var userTable = new functionTable
+  
+  val FALSE = 0
+  val SIZE_ADDR = 4
+  val SIZE_PAIR = SIZE_ADDR
 
   //rename
   var scopeSP  = 0
@@ -33,13 +38,13 @@ object CodeGen {
 
   private var instrs: ListBuffer[Instr] = ListBuffer.empty[Instr]
 
-  private def transStat(stat: Stat): ListBuffer[Instr] = {
+  def transStat(stat: Stat, instructions: ListBuffer[Instr]): ListBuffer[Instr] = {
     stat match {
       case Read(assignLHS)                => // TODO
       case Free(expr)                     => // TODO
       case Return(expr)                   => // TODO
       case Exit(expr)                     => 
-        return transExit(expr)
+        instructions ++= transExit(expr)
       case Print(expr)                    => // TODO
       case Println(expr)                  => // TODO
       case If(expr, statThen, statElse)   => // TODO
@@ -70,6 +75,10 @@ object CodeGen {
     register
   }
 
+  def addFreeReg(reg: Register): Unit = {
+    reg +=: freeRegisters
+  }
+
   def restoreReg(reg: Register): Unit = {
     if (reg != popRegister) {
       reg +=: freeRegisters
@@ -85,8 +94,9 @@ object CodeGen {
 
     val instructions = ListBuffer[Instr](Push(ListBuffer(R14_LR)))
 
+    // TODO: Scope
     stats.foreach((s: Stat) => {
-      instructions ++= transStat(s)
+      instructions ++= transStat(s, ListBuffer(Push(ListBuffer(R14_LR))))
     }
     )
 
@@ -99,6 +109,7 @@ object CodeGen {
     funcTable.add(currLabel, instructions)
     (dataTable.table.toList, funcTable.table.toList)
   }
+<<<<<<< HEAD
 
   def getTypeSize(t: Type) : Int = {
     t match {
@@ -110,19 +121,6 @@ object CodeGen {
       case Pair(_, _)     => PAIR_SIZE
       case _              => ERROR
   }
-}
-
-def getFreeRegister(): Register = {
-  if (freeRegisters.isEmpty) {
-    return popRegister
-  }
-  val reg = freeRegisters(0)
-  freeRegisters.remove(0)
-  reg
-}
-
-def addBackRegister(reg : Register) : Unit = {
-  reg +=: freeRegisters
 }
 
 def isByte(t : Type): Boolean = {
@@ -142,4 +140,6 @@ def isByte(t : Type): Boolean = {
   val MAX_INT_IMM = 1024
 
 
+=======
+>>>>>>> 90c3c54e73b4f311b3b3166f15db0e47e855fa94
 }
