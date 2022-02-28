@@ -65,10 +65,9 @@ object ExpressionGen {
             case Len(ident: Ident) =>
                 val (i, t) = symbTable(ident)
                 ListBuffer(
-                    Ldr(rd, RegisterOffset(R13_SP, stackPointer - i)),
+                    Ldr(rd, RegisterOffset(R13_SP, stackPointer - i)), // TODO: stack pointer
                     Ldr(rd, RegAdd(rd))
                 )
-                
             case Ord(expr) =>
                 transExp(expr, rd)
             case Chr(expr) =>
