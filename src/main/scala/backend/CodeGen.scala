@@ -55,9 +55,9 @@ object CodeGen {
     var curToInc = toInc
     while (curToInc > MAX_INT_IMM) {
       curToInc -= MAX_INT_IMM
-      instrs += backend.Opcodes.Add(SP, SP, Imm_Int(MAX_INT_IMM))
+      instrs += backend.Opcodes.Add(R13_SP, R13_SP, Imm_Int(MAX_INT_IMM))
     }
-    instrs += backend.Opcodes.Add(SP, SP, ImmInt(curToInc))
+    instrs += backend.Opcodes.Add(R13_SP, R13_SP, Imm_Int(curToInc))
     instrs
   }
 
@@ -69,9 +69,9 @@ object CodeGen {
     var curToDec = toDec
     while (curToDec > MAX_INT_IMM) {
       curToDec -= MAX_INT_IMM
-      instrs += backend.Opcodes.Sub(SP, SP, Imm_Int(MAX_INT_IMM))
+      instrs += backend.Opcodes.Sub(R13_SP, R13_SP, Imm_Int(MAX_INT_IMM))
     }
-    instrs += backend.Opcodes.Sub(SP, SP, ImmInt(curToDec))
+    instrs += backend.Opcodes.Sub(R13_SP, R13_SP, Imm_Int(curToDec))
     instrs
   }
 
