@@ -27,10 +27,10 @@ object ExpressionGen {
                 instructions += Ldr(rd, Load_Mem(number))
 
             case bool: BoolLiter =>
-                instructions += Mov(rd, Load_Int(boolToInt(bool)))
+                instructions += Mov(rd, Imm_Int(boolToInt(bool)))
 
             case CharLiter(character) =>
-                instructions += Mov(rd, Load_Char(character))
+                instructions += Mov(rd, Imm_Char(character))
 
             case StrLiter(string) => 
                 val label = dataTable.addData(string)
@@ -56,7 +56,7 @@ object ExpressionGen {
     def transUnOp(op: UnOp, rd: Register): ListBuffer[Instr] = {
         op match {
             case Not(expr) =>
-                transExp(expr, rd) += Xor(rd, rd, Load_Int(INT_TRUE))
+                transExp(expr, rd) += Eor(rd, rd, Imm_Int(INT_TRUE))
             case Negation(expr) =>
             case Len(expr) =>
             case Ord(expr) =>

@@ -27,11 +27,7 @@ object Operand {
         override def toString: String = "pc"
     }
 
-    sealed case class ImmChar(c: Character) extends Operand with LoadOperand {
-    override def toString: String = "#'" + c + "'"
-  }
-
-  sealed trait Address extends LoadOperand
+  sealed trait Address extends Operand
   sealed case class RegisterOffset(r: Register, n: Int) extends Address {
     override def toString: String = "[" + r + ", #" + n + "]"
   }
@@ -40,28 +36,19 @@ object Operand {
     override def toString: String = "[" + r + "]"
   }
 
-  sealed trait LoadOperand
-  sealed case class Load_Mem(n: Int) extends LoadOperand {
-    override def toString: String = "=" + n
+  sealed case class Imm_Char(value: Char) extends Operand {
+      override def toString: String = s"#'$value'"
   }
 
-  sealed case class DataLabel(label: Label) extends Operand with LoadOperand {
-    override def toString: String = "=" + label
+  sealed case class Imm_Int(value: Int) extends Operand {
+      override def toString: String = s"#$value"
   }
 
-    sealed case class Load_Char(value: Char) extends Operand {
-        override def toString: String = s"#'$value'"
-    }
+  sealed case class Load_Mem(value: Int) extends Operand {
+      override def toString: String = s"=$value"
+  }
 
-    sealed case class Load_Int(value: Int) extends Operand {
-        override def toString: String = s"#$value"
-    }
-
-    sealed case class Load_Mem(value: Int) extends Operand {
-        override def toString: String = s"=$value"
-    }
-
-    sealed case class DataLabel(label: Label) extends Operand {
-        override def toString: String = s"=$label"
-    }
+  sealed case class DataLabel(label: Label) extends Operand {
+      override def toString: String = s"=$label"
+  }
 }

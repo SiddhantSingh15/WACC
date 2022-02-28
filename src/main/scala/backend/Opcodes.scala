@@ -76,7 +76,7 @@ object Opcodes {
         override def toString: String = "MOV" + cond + " " + rd + ", " + op2
     }
 
-    case class Ldr(rd: Register, op2: LoadOperand) extends Instr {
+    case class Ldr(rd: Register, op2: Operand) extends Instr {
         override def toString: String = "LDR " + rd + ", " + op2
     }
     object Ldr {
@@ -94,7 +94,7 @@ object Opcodes {
         }
     }
 
-    case class LdrSB(rd: Register, op2: LoadOperand) extends Instr {
+    case class LdrSB(rd: Register, op2: Operand) extends Instr {
         override def toString: String = "LDRSB " + rd + ", " + op2
     }
     object LdrSB {
@@ -106,7 +106,7 @@ object Opcodes {
         }
     }
 
-    case class LdrCond(cond: Condition, rd: Register, op2: LoadOperand)
+    case class LdrCond(cond: Condition, rd: Register, op2: Operand)
         extends Instr {
         override def toString: String = "LDR" + cond + " " + rd + ", " + op2
     }
