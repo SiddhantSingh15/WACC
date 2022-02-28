@@ -109,7 +109,6 @@ object CodeGen {
     funcTable.add(currLabel, instructions)
     (dataTable.table.toList, funcTable.table.toList)
   }
-<<<<<<< HEAD
 
   def getTypeSize(t: Type) : Int = {
     t match {
@@ -140,6 +139,4 @@ def isByte(t : Type): Boolean = {
   val MAX_INT_IMM = 1024
 
 
-=======
->>>>>>> 90c3c54e73b4f311b3b3166f15db0e47e855fa94
 }
