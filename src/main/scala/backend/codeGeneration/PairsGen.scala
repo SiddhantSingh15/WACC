@@ -4,17 +4,15 @@ import frontend.AST._
 import backend.Operand.{Register, RegAdd}
 import backend.CodeGen._
 import scala.collection.mutable.ListBuffer
-import backend.Opcodes.{Instr, Mov, Ldr, Bl}
+import backend.Opcodes.{Instr, Mov, Ldr}
 import backend.codeGeneration.ExpressionGen.transExp
-import backend.DefinedFuncs.RuntimeErrors._
-import backend.DefinedFuncs.PreDefinedFuncs.{NPE}
 
 object PairsGen {
   def transPairElem(ident: Ident, pos: Int, rd: Register): ListBuffer[Instr] = {
     val instructions = ListBuffer.empty[Instr]
     instructions ++= transExp(ident, rd)
     instructions += Mov(resultRegister, rd)
-    instructions += Bl(addRTE(NPE))
+    // instructions += Bl(addRTE(NPE))
     
     if (pos == 1) {
       instructions += Ldr(rd, RegAdd(rd))

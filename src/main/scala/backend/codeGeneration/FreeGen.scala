@@ -14,26 +14,26 @@ import backend.DefinedFuncs.PreDefinedFuncs.{FreeArray, FreePair}
 
 object FreeGen {
 
-  def transFree(expr: Expr): ListBuffer[Instr] = {
-    val instructions = ListBuffer.empty[Instr]
-    expr match {
-      case id: Ident => 
-        val freeRegister = saveReg()
-        val (i, t) = symbTable(id)
+  // def transFree(expr: Expr): ListBuffer[Instr] = {
+  //   val instructions = ListBuffer.empty[Instr]
+  //   expr match {
+  //     case id: Ident => 
+  //       val freeRegister = saveReg()
+  //       val (i, t) = symbTable(id)
 
-        instructions += Ldr(freeRegister, R13_SP)
-        instructions += Mov(resultRegister, freeRegister)
+  //       instructions += Ldr(freeRegister, R13_SP)
+  //       instructions += Mov(resultRegister, freeRegister)
 
-        restoreReg(freeRegister)
+  //       restoreReg(freeRegister)
 
-        t match {
-          case _: Pair      => Bl(addRTE(FreePair))
-          case _: ArrayType => Bl(addRTE(FreeArray))
-          case _            => 
-        }
+  //       t match {
+  //         case _: Pair      => Bl(addRTE(FreePair))
+  //         case _: ArrayType => Bl(addRTE(FreeArray))
+  //         case _            => 
+  //       }
 
-      case _ =>
-    }
-    instructions
-  }
+  //     case _ => memError
+  //   }
+  //   instructions
+  // }
 }
