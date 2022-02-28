@@ -40,8 +40,8 @@ object ExpressionGen {
             case PairLiter() => 
                 ListBuffer(Ldr(rd, Load_Mem(0))) // TODO: remove magic number
 
-            case Ident(id) =>
-            case ArrayElem(id, exprs) =>
+            case Ident(ident) => // TODO: ident, requires stackpointer
+            case ArrayElem(id, exprs) => // TODO: arrays
             case unOp: UnOp =>
                 transUnOp(unOp, rd)
 
