@@ -1,6 +1,5 @@
 package backend.DefinedFuncs
 
-//import backend.CodeGen.Expressions._
 import backend.CodeGen._
 import backend.Condition.{EQ, NE}
 import backend.Operand._
