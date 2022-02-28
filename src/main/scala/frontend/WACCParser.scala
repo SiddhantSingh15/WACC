@@ -83,7 +83,7 @@ object Parser {
     attempt(`<array-elem>`) <|>
     `<ident>`
   
-  private val `<assign-rhs>` : Parsley[AssignRHS] = 
+  val `<assign-rhs>` : Parsley[AssignRHS] = 
     `<pair-elem>` <|>
     `<expr>` <|>
     `<array-liter>` <|>
