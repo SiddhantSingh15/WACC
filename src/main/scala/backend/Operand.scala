@@ -55,6 +55,6 @@ object Operand {
   }
 
   case class ASR(r: Register, value: Imm_Int) extends Operand {
-      override def toString: String = s"$r, ASR $n"
+      override def toString: String = s"$r, ASR $value"
   }
 }
