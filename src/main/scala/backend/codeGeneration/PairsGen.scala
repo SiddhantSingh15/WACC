@@ -48,7 +48,7 @@ object PairsGen {
 
     val nextRegister = saveReg()
     instructions ++= transPairElem(ident, pos, nextRegister)
-    addFreeReg(nextRegister)
+    restoreReg(nextRegister)
     instructions
   }
 
@@ -85,7 +85,7 @@ object PairsGen {
       NO_OFFSET
     )
 
-    addFreeReg(nextRegister)
+    restoreReg(nextRegister)
     instrs += Str(resultRegister, register, SIZE_PAIR)
     instrs
   }
@@ -99,6 +99,7 @@ object PairsGen {
     tpe match {
       case PairElemPair => SIZE_PAIR
       case PairElemWithType(t) => getTypeSize(t)
+      case _ => ???
     }
   }
 
