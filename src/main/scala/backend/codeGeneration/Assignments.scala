@@ -32,34 +32,31 @@ object Assignments {
         instrs
     }
 
-
-
     def transAssignment(
         lhs: AssignLHS,
         rhs: AssignRHS
     ): ListBuffer[Instr] = {
-        val instrs = ListBuffer.empty[Instr]
+        val instructions = ListBuffer.empty[Instr]
         val freeRegister = saveReg()
 
         lhs match {
             case id : Ident =>
                 val (index, t) = symbTable(id)
                 val (isByte, newInstrs) = transAssignRHS(t, rhs, freeRegister)
-                instrs ++= newInstrs
+                instructions ++= newInstrs
                 val spOffset =SP_curr - index  
-                instrs += Str(isByte, freeRegister, R13_SP, spOffset)
+                instructions += Str(isByte, freeRegister, R13_SP, spOffset)
             case Fst(id : Ident) => 
-                instrs ++= transPairAssign(rhs, id, 0, freeRegister)
+                instructions ++= transPairAssign(rhs, id, 1, freeRegister)
             case Snd(id : Ident) => 
-                instrs ++= transPairAssign(rhs, id, 1, freeRegister)
+                instructions ++= transPairAssign(rhs, id, 2, freeRegister)
             case x@ArrayElem(ident, exprList) =>
-                val (_, instrs) = transAssignRHS(typeConvert(x), rhs, freeRegister)
                 val (_, newInstrs) = transAssignRHS(typeConvert(x), rhs, freeRegister)
-                instrs ++= newInstrs
-                instrs ++= storeArrayElem(ident, exprList, freeRegister) 
+                instructions ++= newInstrs
+                instructions ++= storeArrayElem(ident, exprList, freeRegister) 
         }
         restoreReg(freeRegister)
-        instrs
+        instructions
     }
 
     def transAssignRHS(
