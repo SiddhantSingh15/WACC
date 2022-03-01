@@ -76,6 +76,16 @@ object PreDefinedFuncs {
     override val function = throwRuntimeError
   }
 
+  case object PutChar extends PreDefFunc {
+    override val functionLabel = Label("putchar")
+
+    override val msgName = List.empty[String]
+
+    override val msgs = List.empty[String]
+
+    override val function = null
+  }
+
 
   case object PrintInt extends PreDefFunc {
     override val functionLabel = Label("p_print_int")
