@@ -182,7 +182,7 @@ object CodeGen {
     instructions
   }
 
-  def typeConverter(expr: Expr): Type = {
+  def typeConvert(expr: Expr): Type = {
     expr match {
       case _: EqualityFuncs => Bool
       

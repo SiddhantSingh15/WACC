@@ -55,7 +55,7 @@ object PairsGen {
   }
 
 
-  def translateAssignRHSPair(tpe : Type, fst : Expr, snd: Expr, register : Register) : ListBuffer[Instr] = {
+  def transAssignRHSPair(tpe : Type, fst : Expr, snd: Expr, register : Register) : ListBuffer[Instr] = {
     val instrs = ListBuffer.empty[Instr]
     val Pair(typeOne, typeTwo) = tpe 
     val nextRegister = saveReg()

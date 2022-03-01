@@ -12,7 +12,7 @@ import scala.collection.mutable.ListBuffer
 
 object Functions {
 
-    def transCall(ident : Ident, arguments : Option[ArgList], freeRegister : Register): ListBuffer[Instr] = {
+    def transCall(ident : Ident, arguments : ArgList, freeRegister : Register): ListBuffer[Instr] = {
       val (instrs, toInc) = storeArguments(arguments, freeRegister)
       instrs += Bl(Label("f_" + ident))
       instrs ++= incrementSP(toInc)
@@ -41,19 +41,20 @@ object Functions {
       userTable.add(currLabel, instructions)
     }
 
-    private def storeArguments(arguments : Option[ArgList] = None, register : Register): (ListBuffer[Instr], Int) = {
+    private def storeArguments(arguments : ArgList, register : Register): (ListBuffer[Instr], Int) = {
       var instructions = ListBuffer.empty[Instr]
       var offset = 0
       arguments match {
-        case Some(ArgList(args)) => 
+        case ArgList(args) => 
           for (a <- args.reverse) {
-            val tpe = typeConverter(a)
+            val tpe = typeConvert(a)
             instructions ++= transExp(a, register)
             instructions += StrOffsetIndex(isByte(tpe), register, R13_SP, -getTypeSize(tpe))
            SP_curr += getTypeSize(tpe)
             offset += getTypeSize(tpe)
           }
-        case None                =>
+          
+        case _ =>
       }
      SP_curr -= offset
       (instructions, offset)
