@@ -8,6 +8,7 @@ import backend.Opcodes.{Instr, Mov, Ldr, Bl}
 import backend.codeGeneration.ExpressionGen.transExp
 import backend.DefinedFuncs.RuntimeErrors._
 import backend.DefinedFuncs.PreDefinedFuncs.{NPE}
+import backend.codeGeneration.ExpressionGen._
 
 object PairsGen {
   def transPairElem(ident: Ident, pos: Int, rd: Register): ListBuffer[Instr] = {
@@ -64,15 +65,12 @@ object PairsGen {
     instrs += Bl(Label("malloc"))
     instrs += Mov(register, resultRegister)
 
-    //transExp??
     instrs += transExp(fst, nextRegister)
 
-    //getPairElemTypeSize??
-    instrs += Ldr(resultRegister ,Load_Mem())
+    instrs += Ldr(resultRegister ,Load_Mem(getPairElemTypeSize(typeOne)))
 
     instrs += Bl(Label("malloc"))
 
-    //NO_OFFSET??
     instrs += Str(
       isBytePair(p, 0),
       nextRegister,
@@ -82,10 +80,9 @@ object PairsGen {
 
     instrs += Str(resultRegister , RegAdd(register))
 
-    //transExp??
     instrs ++= transExp(snd, nextRegister)
 
-    instrs += Ldr(resultRegister, Load_Mem())
+    instrs += Ldr(resultRegister, Load_Mem(getPairElemTypeSize(typeTwo)))
     instrs += Bl(Label("malloc"))
 
     instrs += Str(
@@ -99,6 +96,13 @@ object PairsGen {
     instrs += Str(resultRegister, register, PAIR_SIZE)
     instrs
 
+  }
+
+  private def getPairTypeSize(tpe : PairElemType) : Int = {
+    tpe match {
+      case PairElemPair => PAIR_SIZE
+      case PairElemWithType(t) => getTypeSize(t)
+    }
   }
 
 }
