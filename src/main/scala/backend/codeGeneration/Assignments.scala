@@ -76,6 +76,7 @@ object Assignments {
                 // instrs ++= translateArrayLiter(t, list, freeRegister)
             case NewPair(fst, snd) =>  
                 // instrs ++= assignRHSPair(t, fst, snd, freeRegister)
+            case _ =>
         }
         (isByte(t), instrs)
     }

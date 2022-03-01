@@ -137,6 +137,7 @@ def isByte(t : Type): Boolean = {
   val ARRAY_SIZE = ADDRESS_SIZE
   val PAIR_SIZE = ADDRESS_SIZE
   val MAX_INT_IMM = 1024
+  val NO_OFFSET = 0
 
 
 }

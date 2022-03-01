@@ -1,13 +1,16 @@
 package backend.codeGeneration
 
 import frontend.AST._
-import backend.Operand.{Register, RegAdd}
+import backend.Operand.{Register, RegAdd, Load_Mem}
 import backend.CodeGen._
 import scala.collection.mutable.ListBuffer
 import backend.Opcodes.{Instr, Mov, Ldr, Bl}
 import backend.codeGeneration.ExpressionGen.transExp
 import backend.DefinedFuncs.RuntimeErrors._
 import backend.DefinedFuncs.PreDefinedFuncs.{NPE}
+import backend.codeGeneration.ExpressionGen._
+import backend.Opcodes._
+import parsley.internal.deepembedding.StringLiteral
 import backend.codeGeneration.ExpressionGen._
 
 object PairsGen {
@@ -65,14 +68,14 @@ object PairsGen {
     instrs += Bl(Label("malloc"))
     instrs += Mov(register, resultRegister)
 
-    instrs += transExp(fst, nextRegister)
+    instrs ++= transExp(fst, nextRegister)
 
-    instrs += Ldr(resultRegister ,Load_Mem(getPairElemTypeSize(typeOne)))
+    instrs += Ldr(resultRegister ,Load_Mem(getPairTypeSize(typeOne)))
 
     instrs += Bl(Label("malloc"))
 
     instrs += Str(
-      isBytePair(p, 0),
+      isBytePair(tpe, 0),
       nextRegister,
       resultRegister,
       NO_OFFSET
@@ -82,26 +85,48 @@ object PairsGen {
 
     instrs ++= transExp(snd, nextRegister)
 
-    instrs += Ldr(resultRegister, Load_Mem(getPairElemTypeSize(typeTwo)))
+    instrs += Ldr(resultRegister, Load_Mem(getPairTypeSize(typeTwo)))
     instrs += Bl(Label("malloc"))
 
     instrs += Str(
-      isBytePair(p, 1),
+      isBytePair(tpe, 1),
       nextRegister,
       resultRegister,
       NO_OFFSET
     )
 
-    freeRegister(nextRegister)
+    restoreReg(nextRegister)
     instrs += Str(resultRegister, register, PAIR_SIZE)
     instrs
 
   }
 
+
+
+
+
   private def getPairTypeSize(tpe : PairElemType) : Int = {
     tpe match {
       case PairElemPair => PAIR_SIZE
       case PairElemWithType(t) => getTypeSize(t)
+      case _ => -1 //is this correct?
+    }
+  }
+
+
+    // idType match {
+  // case Pair(PairElemT(x), PairElemT(y)) =>
+    // if (isFst) isByte(x) else isByte(y)
+  // case _ => false
+  private def isBytePair(tpe : Type, pos : Int) = {
+    if(!(pos == 0 || pos == 1)){
+      false
+    }
+    tpe match {
+      case Pair(PairElemWithType(a), PairElemWithType(b)) =>
+        if (pos == 0) isByte(a) else isByte(b)
+      case _ 
+        => false
     }
   }
 
