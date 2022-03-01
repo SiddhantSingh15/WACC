@@ -7,71 +7,87 @@ import backend.CodeGen._
 import frontend.SymbolTable
 import backend.codeGeneration.ExpressionGen._
 import backend.codeGeneration.PairsGen._
+import scala.collection.mutable.ListBuffer
 
 
 object Functions {
 
-    def translateCall(id : Ident, 
-                      arguments : Option[ArgList], 
-                      freeRegister : Register): ListBuffer[Instr] = {
-
-                        val (instrs, toInc) = storeArguments(arguments, freeRegister)
-                        instrs += Bl(Label("f_" + id))
-                        instrs ++= incrementSP(toInc)
-                        instrs += Mov(freeRegister, resultRegister)
-                        instrs
-
-                      }
-    private def storeArguments(arguments : Option[ArgList] = None,
-                               register : Register): (ListBuffer[Instr], Int) = {
-                                   null
-                               }
-    
-    private def translateFuncParams(params : Option[ParamList]) : Unit = {
-        params match {
-            case None =>
-            case Some(ParamList(paramList)) =>
-                var curr = ADDRESS_SIZE
-                var prev = 0
-                for(param <- paramList) {
-                    val Param(tpe, id) = param 
-
-                    //???
-                    curr += prevSize
-
-                    prevSize = getTypeSize(tpe)
-                    symbTable.add(id, -curr, tpe)
-                }
-        }
+    def transCall(ident : Ident, arguments : Option[ArgList], freeRegister : Register): ListBuffer[Instr] = {
+      val (instrs, toInc) = storeArguments(arguments, freeRegister)
+      instrs += Bl(Label("f_" + ident))
+      instrs ++= incrementSP(toInc)
+      instrs += Mov(freeRegister, resultRegister)
+      instrs
     }
 
-    //case class Func(tpe : Type, ident : Ident, paramList : ParamList, stats : List[Stat])
-    
-    //make sure to understand translateFunction before writing it
-    def translateFunction(f : Func) : Unit = {
-        val Func(tpe, id, paramList, stats) = f 
-        currLabel = Label("f_" + id)
-        val prevScopeSP = scopeSP
-        symbTable = symbTable.nextScope
-        
+    def transFunction (f : Func) : Unit = {
+      val Func(tpe, id, paramList, stats) = f 
+      currLabel = Label("f_" + id)
+      val prevScopeSP = SP_scope
+      symbTable = symbTable.nextScope
+
+      translateFuncParams(paramList)
+
+      SP_scope = SP_curr
+      
+      val instructions = ListBuffer.empty[Instr]
+
+      for (stat <- stats) {
+        instructions ++= transStat(stat, ListBuffer(Push(ListBuffer(R14_LR))))
+      }
+
+      SP_scope = prevScopeSP
+      symbTable = symbTable.prev
+      userTable.add(currLabel, instructions)
     }
 
+    private def storeArguments(arguments : Option[ArgList] = None, register : Register): (ListBuffer[Instr], Int) = {
+      var instructions = ListBuffer.empty[Instr]
+      var offset = 0
+      arguments match {
+        case Some(ArgList(args)) => 
+          for (a <- args.reverse) {
+            val tpe = typeConverter(a)
+            instructions ++= transExp(a, register)
+            instructions += StrOffsetIndex(isByte(tpe), register, R13_SP, -getTypeSize(tpe))
+           SP_curr += getTypeSize(tpe)
+            offset += getTypeSize(tpe)
+          }
+        case None                =>
+      }
+     SP_curr -= offset
+      (instructions, offset)
+    }
+    
+    private def translateFuncParams(params : ParamList) : Unit = {
+      params match {
+        case ParamList(pList) =>
+          var curr = SIZE_ADDR
+          var prev = 0
+          for(param <- pList) {
+              val Param(tpe, id) = param 
+            SP_curr += prev
+              prev = getTypeSize(tpe)
+              symbTable.add(id, -curr, tpe)
+          }
+      }
+    }
+    
 
-    def translateReturn(expr : Expr): ListBuffer[Instr] = {
+    def transReturn(expr : Expr): ListBuffer[Instr] = {
         val register = saveReg()
         val instrs = transExp(expr, register)
         instrs += Mov(resultRegister, register)
-        if(scopeSP > 0) { 
-            instrs ++= addSP(scopeSP)
+        if(SP_scope > 0) { 
+            instrs ++= addSP(SP_scope)
         }
 
         instrs ++= ListBuffer(
-            Pop(ListBuffer(PC)),
-            Pop(ListBuffer(PC)),
+            Pop(ListBuffer(R15_PC)),
+            Pop(ListBuffer(R15_PC)),
             Ltorg
         )
-        
-        restoreReg(register)
+        addFreeReg(register)
         instrs
     }
 }
