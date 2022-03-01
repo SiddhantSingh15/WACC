@@ -7,6 +7,8 @@ import backend.CodeGen._
 import frontend.SymbolTable
 import backend.Condition._
 import backend.codeGeneration.ArraysGen._
+import backend.DefinedFuncs.RuntimeErrors._
+import backend.DefinedFuncs.PreDefinedFuncs._
 
 import scala.collection.mutable.ListBuffer
 
@@ -60,8 +62,8 @@ object ExpressionGen {
                 transExp(expr, rd) += Eor(rd, rd, Imm_Int(INT_TRUE))
             case Negation(expr) =>
                 transExp(expr, rd) ++= ListBuffer(
-                    RsbS(rd, rd, Imm_Int(0)) // remove magic number
-                 // , BranchLinkCond(OF, RunTimeRror) TODO: runtime errors
+                    RsbS(rd, rd, Imm_Int(0)),
+                    BranchLinkCond(OF, addRTE(Overflow))
                 )
             case Len(ident: Ident) =>
                 val (i, t) = symbTable(ident)
@@ -110,14 +112,14 @@ object ExpressionGen {
             case frontend.AST.Mul(_,_) =>
                 ListBuffer(
                     SMul(rd, rm, rd, rm),
-                    Cmp(rm, ASR(rd, Imm_Int(31))) // TODO: Remove magic number
-                    // TODO: stuff for runtime error
+                    Cmp(rm, ASR(rd, Imm_Int(31))), // TODO: Remove magic number
+                    BranchLinkCond(NE, addRTE(Overflow))
                 )
             case frontend.AST.Div(_,_) =>
                 ListBuffer(
                     Mov(resultRegister, rd),
                     Mov(R1, rm), // need to be in R0 and R1 for __aeabi_idiv
-                    // TODO: stuff for runtime error
+                    Bl(addRTE(DivideByZero)),
                     Bl(Label("__aeabi_idiv")),
                     Mov(rd, resultRegister)
                 )
@@ -125,19 +127,19 @@ object ExpressionGen {
                 ListBuffer(
                     Mov(resultRegister, rd),
                     Mov(R1, rm),
-                    // TODO: stuff for runtime error
+                    Bl(addRTE(DivideByZero)),
                     Bl(Label("__aeabi_idivmod")),
                     Mov(rd, R1)
                 )
             case frontend.AST.Plus(_,_) =>
                 ListBuffer(
-                    AddS(rd, rd, rm)
-                    // TODO: stuff for runtime error
+                    AddS(rd, rd, rm),
+                    BranchLinkCond(OF, addRTE(Overflow))
                 )
             case frontend.AST.Sub(_,_) =>
                 ListBuffer(
-                    SubS(rd, rd, rm)
-                    // TODO: stuff for runtime error
+                    SubS(rd, rd, rm),
+                    BranchLinkCond(OF, addRTE(Overflow))
                 )
 
         }
