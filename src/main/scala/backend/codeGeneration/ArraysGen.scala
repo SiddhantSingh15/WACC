@@ -57,7 +57,7 @@ object ArraysGen {
             instructions += Mov(resultRegister, nextReg)
             instructions += Mov(R1, rd)
             instructions += Bl(addRTE(ArrayBounds))
-            instructions += Add(rd, rd, Imm_Int(INT_SIZE))
+            instructions += Add(rd, rd, Imm_Int(SIZE_INT))
             
             if (isByte(innerT)) {
                 instructions += Add(rd, rd, nextReg)
@@ -80,7 +80,7 @@ object ArraysGen {
 
         instructions += Ldr(
             resultRegister,
-            Imm_Int(INT_SIZE + size * getTypeSize(innerT))
+            Imm_Int(SIZE_INT + size * getTypeSize(innerT))
         )
         instructions += Bl(Label("malloc"))
         instructions += Mov(freeReg, resultRegister)
@@ -91,9 +91,9 @@ object ArraysGen {
         for (i <- 0 until size) {
             instructions ++= transExp(arr(i), nextFreeReg)
             if (isbyte) {
-                instructions += Str(isbyte, nextFreeReg, freeReg, i + INT_SIZE)
+                instructions += Str(isbyte, nextFreeReg, freeReg, i + SIZE_INT)
             } else {
-                instructions += Str(isbyte, nextFreeReg, freeReg, (i + 1) * ADDRESS_SIZE)
+                instructions += Str(isbyte, nextFreeReg, freeReg, (i + 1) * SIZE_ADDR)
             }
         }
 
@@ -102,6 +102,4 @@ object ArraysGen {
         restoreReg(nextFreeReg)
         instructions
     }
-
-
 }
