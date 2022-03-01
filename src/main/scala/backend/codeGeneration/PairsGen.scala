@@ -71,7 +71,7 @@ object PairsGen {
     instrs += Bl(Label("malloc"))
 
     instrs += Str(
-      isBytePair(tpe, 0),
+      isBytePair(tpe, 1),
       nextRegister,
       resultRegister,
       NO_OFFSET
@@ -85,7 +85,7 @@ object PairsGen {
     instrs += Bl(Label("malloc"))
 
     instrs += Str(
-      isBytePair(tpe, 1),
+      isBytePair(tpe, 2),
       nextRegister,
       resultRegister,
       NO_OFFSET
@@ -110,7 +110,7 @@ object PairsGen {
   }
 
   private def isBytePair(tpe : Type, pos : Int) = {
-    if(!(pos == 0 || pos == 1)){
+    if(!(pos == 1 || pos == 2)){
       false
     }
     tpe match {
