@@ -7,6 +7,13 @@ import backend.codeGeneration.ExpressionGen._
 import backend.tableDataTypes._
 import frontend.AST._
 import frontend.SymbolTable
+import backend.codeGeneration.ArraysGen._
+import backend.codeGeneration.ReadGen._
+import backend.codeGeneration.FreeGen._
+import backend.codeGeneration.Functions._
+import backend.codeGeneration.PrintGen._
+import backend.codeGeneration.ScopeGen._
+import backend.codeGeneration.Assignments._
 
 object CodeGen {
 
@@ -49,19 +56,18 @@ object CodeGen {
 
   def transStat(stat: Stat, instructions: ListBuffer[Instr]): ListBuffer[Instr] = {
     stat match {
-      case Read(assignLHS)                => // TODO
-      case Free(expr)                     => // TODO
-      case Return(expr)                   => // TODO
-      case Exit(expr)                     => 
-        instructions ++= transExit(expr)
-      case Print(expr)                    => // TODO
-      case Println(expr)                  => // TODO
-      case If(expr, statThen, statElse)   => // TODO
-      case While(expr, stats)             => // TODO
-      case Begin(stats)                   => // TODO
-      case AssignLR(assignLHS, assignRHS) => // TODO
-      case TypeAssign(t, ident, rhs)      => // TODO
-      case _                              => 
+      case Read(assignLHS)                => instructions ++= transRead(assignLHS)
+      case Free(expr)                     => instructions ++= transFree(expr)
+      case Return(expr)                   => instructions ++= transReturn(expr)
+      case Exit(expr)                     => instructions ++= transExit(expr)
+      case Print(expr)                    => instructions ++= transPrint(expr, false)
+      case Println(expr)                  => instructions ++= transPrint(expr, true)
+      case If(expr, statThen, statElse)   => // TODO: transIf needs to take in list of statements
+      case While(expr, stats)             => // TODO: transWhile needs to take in list of statements
+      case Begin(stats)                   => // TODO: transBegin needs to take in list of statements
+      case AssignLR(assignLHS, assignRHS) => instructions ++= transAssignment(assignLHS, assignRHS)
+      case TypeAssign(t, ident, rhs)      => instructions ++= translateDeclaration(t, ident, rhs)
+      case _                              => ???
     }
     ListBuffer.empty[Instr]
   }
@@ -236,5 +242,34 @@ object CodeGen {
 
   def isByte(t : Type): Boolean = {
     t == Bool || t == CharType
+  }
+
+  def getExprType(expr: Expr): Type = {
+    expr match {
+      case _: IntLiter => Int
+      case _: BoolLiter => Bool
+      case _: CharLiter => CharType
+      case StrLiter(_) => String
+      case PairLiter() => Pair(null, null)
+      case id: Ident => 
+        val (_, t) = symbTable(id)
+        t
+      case ArrayElem(id, exprs) =>  
+        var (_, t) = symbTable(id)
+        t = exprs.foldLeft(t)((x, _) => getInnerType(x))
+        t
+      // Unary Operators
+      case Not(_) => Bool
+      case Negation(_) => Int
+      case Len(_) => Int
+      case Ord(_) => Int
+      case Chr(_) => CharType
+      // Binary Operators
+      case _: MathFuncs => Int
+      case _: EqualityFuncs => Bool
+      case _: LogicFuncs => Bool
+      case _: CompareFuncs => Bool
+      case _ => ???
+    }
   }
 }
