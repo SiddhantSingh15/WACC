@@ -87,6 +87,8 @@ object Functions {
             Pop(ListBuffer(R15_PC)),
             Ltorg
         )
+
+        
         addFreeReg(register)
         instrs
     }
