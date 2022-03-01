@@ -60,7 +60,7 @@ object PairsGen {
     val Pair(typeOne, typeTwo) = tpe 
     val nextRegister = saveReg()
 
-    instrs += Ldr(resultRegister, Load_Mem(2 * PAIR_SIZE))
+    instrs += Ldr(resultRegister, Load_Mem(2 * SIZE_PAIR))
     instrs += Bl(Label("malloc"))
     instrs += Mov(register, resultRegister)
 
@@ -92,7 +92,7 @@ object PairsGen {
     )
 
     restoreReg(nextRegister)
-    instrs += Str(resultRegister, register, PAIR_SIZE)
+    instrs += Str(resultRegister, register, SIZE_PAIR)
     instrs
 
   }
@@ -103,7 +103,7 @@ object PairsGen {
 
   private def getPairTypeSize(tpe : PairElemType) : Int = {
     tpe match {
-      case PairElemPair => PAIR_SIZE
+      case PairElemPair => SIZE_PAIR
       case PairElemWithType(t) => getTypeSize(t)
       case _ => -1 //is this correct?
     }
