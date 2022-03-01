@@ -68,18 +68,14 @@ object Assignments {
 
             case Fst(id : Ident) => 
                 instrs ++= transPairElem(id, 0, freeRegister)
-                instrs ++= loadPairElem(id, freeRegister, 0)
-
             case Snd(id : Ident) => 
                 instrs ++= transPairElem(id, 1, freeRegister)
-                instrs ++= loadPairElem(id, freeRegister, 1)
-
             case Call(ident, argList) =>
-                instrs ++= translateCall(ident, argList, freeRegister)
+                // instrs ++= translateCall(ident, argList, freeRegister)
             case ArrayLiter(list) => 
-                instrs ++= translateArrayLiter(t, list, freeRegister)
-            case NewPair(exprOne, exprTwo) =>  
-                instrs ++= assignRHSPair(t, fst, snd, freeRegister)
+                // instrs ++= translateArrayLiter(t, list, freeRegister)
+            case NewPair(fst, snd) =>  
+                // instrs ++= assignRHSPair(t, fst, snd, freeRegister)
         }
         (isByte(t), instrs)
     }

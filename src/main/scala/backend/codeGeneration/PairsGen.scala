@@ -51,15 +51,5 @@ object PairsGen {
     instructions
   }
 
-  def loadPairElem(
-    id: Ident,
-    rd: Register,
-    pos : Int
-  ): Instr = {
-    null
 }
 
-
-
-
-}
