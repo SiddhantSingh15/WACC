@@ -32,6 +32,8 @@ object CodeGen {
   
   var SP_scope  = 0
   var SP_curr = 0
+  val NO_OFFSET = 0
+  
   private val ERROR = -1
 
   final val generalRegisters: ListBuffer[Register] = 
@@ -180,7 +182,7 @@ object CodeGen {
     instructions
   }
 
-  def typeConverter(expr: Expr): Type = {
+  def typeConvert(expr: Expr): Type = {
     expr match {
       case _: EqualityFuncs => Bool
       

@@ -7,6 +7,8 @@ import backend.CodeGen._
 import frontend.SymbolTable
 import backend.codeGeneration.ExpressionGen._
 import backend.codeGeneration.PairsGen._
+import backend.codeGeneration.Functions._
+import backend.codeGeneration.ArraysGen._
 
 import scala.collection.mutable.ListBuffer
 
@@ -23,7 +25,7 @@ object Assignments {
         symbTable.add(id, SP_scope, t)
         val spOffset =SP_curr - SP_scope
         val freeRegister = saveReg()
-        val (isByte, newInstrs) = translateAssignRHS(t, rhs, freeRegister)
+        val (isByte, newInstrs) = transAssignRHS(t, rhs, freeRegister)
         instrs ++= newInstrs
         instrs += Str(isByte, freeRegister, R13_SP, spOffset)
         restoreReg(freeRegister)
@@ -32,7 +34,7 @@ object Assignments {
 
 
 
-    def translateAssignment(
+    def transAssignment(
         lhs: AssignLHS,
         rhs: AssignRHS
     ): ListBuffer[Instr] = {
@@ -42,7 +44,7 @@ object Assignments {
         lhs match {
             case id : Ident =>
                 val (index, t) = symbTable(id)
-                val (isByte, newInstrs) = translateAssignRHS(t, rhs, freeRegister)
+                val (isByte, newInstrs) = transAssignRHS(t, rhs, freeRegister)
                 instrs ++= newInstrs
                 val spOffset =SP_curr - index  
                 instrs += Str(isByte, freeRegister, R13_SP, spOffset)
@@ -50,14 +52,17 @@ object Assignments {
                 instrs ++= transPairAssign(rhs, id, 0, freeRegister)
             case Snd(id : Ident) => 
                 instrs ++= transPairAssign(rhs, id, 1, freeRegister)
-            case x@ArrayElem(ident, exprList) => null //TODO
-            case _ => null  
+            case x@ArrayElem(ident, exprList) =>
+                val (_, instrs) = transAssignRHS(typeConvert(x), rhs, freeRegister)
+                val (_, newInstrs) = transAssignRHS(typeConvert(x), rhs, freeRegister)
+                instrs ++= newInstrs
+                instrs ++= storeArrayElem(ident, exprList, freeRegister) 
         }
         restoreReg(freeRegister)
         instrs
     }
 
-    def translateAssignRHS(
+    def transAssignRHS(
         t: Type,
         rhs: AssignRHS,
         freeRegister: Register
@@ -67,15 +72,16 @@ object Assignments {
             case expr : Expr => instrs ++= transExp(expr, freeRegister)
 
             case Fst(id : Ident) => 
-                instrs ++= transPairElem(id, 0, freeRegister)
-            case Snd(id : Ident) => 
                 instrs ++= transPairElem(id, 1, freeRegister)
+            case Snd(id : Ident) => 
+                instrs ++= transPairElem(id, 2, freeRegister)
             case Call(ident, argList) =>
-                // instrs ++= translateCall(ident, argList, freeRegister)
-            case ArrayLiter(list) => 
-                // instrs ++= translateArrayLiter(t, list, freeRegister)
+                instrs ++= transCall(ident, argList, freeRegister)
+        case ArrayLiter(list) => 
+                instrs ++= transArrayLiter(t, list, freeRegister)
             case NewPair(fst, snd) =>  
-                // instrs ++= assignRHSPair(t, fst, snd, freeRegister)
+                instrs ++= transAssignRHSPair(t, fst, snd, freeRegister)
+            case _ =>
         }
         (isByte(t), instrs)
     }

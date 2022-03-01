@@ -1,13 +1,17 @@
 package backend.codeGeneration
 
 import frontend.AST._
-import backend.Operand.{Register, RegAdd}
+import backend.Operand.{Register, RegAdd, Load_Mem}
 import backend.CodeGen._
 import scala.collection.mutable.ListBuffer
 import backend.Opcodes.{Instr, Mov, Ldr, Bl}
 import backend.codeGeneration.ExpressionGen.transExp
 import backend.DefinedFuncs.RuntimeErrors._
 import backend.DefinedFuncs.PreDefinedFuncs.{NPE}
+import backend.codeGeneration.ExpressionGen._
+import backend.Opcodes._
+import parsley.internal.deepembedding.StringLiteral
+import backend.codeGeneration.ExpressionGen._
 
 object PairsGen {
   def transPairElem(ident: Ident, pos: Int, rd: Register): ListBuffer[Instr] = {
@@ -42,13 +46,79 @@ object PairsGen {
       }
     }
 
-    // val (bytes, instrs) = assignRHS(pElemType, rhs, rd)
-    // instructions ++= instrs
+
+
     val nextRegister = saveReg()
     instructions ++= transPairElem(ident, pos, nextRegister)
-    // instructions += Str(bytes, rd, nextRegister, 0)
     addFreeReg(nextRegister)
     instructions
+  }
+
+
+  def transAssignRHSPair(tpe : Type, fst : Expr, snd: Expr, register : Register) : ListBuffer[Instr] = {
+    val instrs = ListBuffer.empty[Instr]
+    val Pair(typeOne, typeTwo) = tpe 
+    val nextRegister = saveReg()
+
+    instrs += Ldr(resultRegister, Load_Mem(2 * SIZE_PAIR))
+    instrs += Bl(Label("malloc"))
+    instrs += Mov(register, resultRegister)
+
+    instrs ++= transExp(fst, nextRegister)
+
+    instrs += Ldr(resultRegister ,Load_Mem(getPairTypeSize(typeOne)))
+
+    instrs += Bl(Label("malloc"))
+
+    instrs += Str(
+      isBytePair(tpe, 1),
+      nextRegister,
+      resultRegister,
+      NO_OFFSET
+    )
+
+    instrs += Str(resultRegister , RegAdd(register))
+
+    instrs ++= transExp(snd, nextRegister)
+
+    instrs += Ldr(resultRegister, Load_Mem(getPairTypeSize(typeTwo)))
+    instrs += Bl(Label("malloc"))
+
+    instrs += Str(
+      isBytePair(tpe, 2),
+      nextRegister,
+      resultRegister,
+      NO_OFFSET
+    )
+
+    restoreReg(nextRegister)
+    instrs += Str(resultRegister, register, SIZE_PAIR)
+    instrs
+
+  }
+
+
+
+
+
+  private def getPairTypeSize(tpe : PairElemType) : Int = {
+    tpe match {
+      case PairElemPair => SIZE_PAIR
+      case PairElemWithType(t) => getTypeSize(t)
+      case _ => -1 //is this correct?
+    }
+  }
+
+  private def isBytePair(tpe : Type, pos : Int) = {
+    if(!(pos == 1 || pos == 2)){
+      false
+    }
+    tpe match {
+      case Pair(PairElemWithType(a), PairElemWithType(b)) =>
+        if (pos == 0) isByte(a) else isByte(b)
+      case _ 
+        => false
+    }
   }
 
 }

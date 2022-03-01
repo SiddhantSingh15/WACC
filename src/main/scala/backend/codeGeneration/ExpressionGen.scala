@@ -25,15 +25,15 @@ object ExpressionGen {
     }
 
     def transExp(expr: Expr, rd: Register): ListBuffer[Instr] = {
-    
+        val instructions = ListBuffer.empty[Instr]    
         expr match {
             case IntLiter(number) =>
-                ListBuffer(Ldr(rd, Load_Mem(number)))
+                val (reg, instrs) = collectRegister(rd)
 
             case bool: BoolLiter =>
                 ListBuffer(Mov(rd, Imm_Int(boolToInt(bool))))
 
-            case CharLiter(character) =>
+            case CharLiter(character)=>
                 ListBuffer(Mov(rd, Imm_Char(character)))
 
             case StrLiter(string) => 
@@ -43,7 +43,11 @@ object ExpressionGen {
             case PairLiter() => 
                 ListBuffer(Ldr(rd, Load_Mem(0))) // TODO: remove magic number
 
-            case Ident(ident) => // TODO: ident, requires stackpointer
+            case ident: Ident => 
+                val (i, t) = symbTable(ident)
+                val offset = SP_curr - i
+                instructions += Ldr(isByte(t), rd, R13_SP, offset)
+
             case ArrayElem(id, exprs) => loadArrayElem(id, exprs, rd)
             case unOp: UnOp =>
                 transUnOp(unOp, rd)
@@ -78,6 +82,19 @@ object ExpressionGen {
             case _  =>
                 ListBuffer.empty[Instr]
         }
+    }
+    
+    private def collectRegister(rd: Register): (Register, ListBuffer[Instr]) = {
+      val instructions = ListBuffer.empty[Instr]
+
+      var reg = rd
+
+      if (reg == popRegister) {
+        instructions += Push(ListBuffer(R10))
+        reg = R10
+      }
+
+      (reg, instructions)
     }
 
     def transBinOp(op: BinOp, rn: Register): ListBuffer[Instr] = {
