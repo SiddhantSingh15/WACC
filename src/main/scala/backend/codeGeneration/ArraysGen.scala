@@ -11,7 +11,7 @@ import backend.DefinedFuncs.PreDefinedFuncs._
 
 object ArraysGen {
 
-    private def getInnerType(arrayT: Type): Type = 
+    def getInnerType(arrayT: Type): Type = 
         arrayT match {
             case ArrayType(innerType) => innerType
             case _                    => ???
