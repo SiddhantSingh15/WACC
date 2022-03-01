@@ -42,6 +42,9 @@ object PairsGen {
       }
     }
 
+
+
+
     // val (bytes, instrs) = assignRHS(pElemType, rhs, rd)
     // instructions ++= instrs
     val nextRegister = saveReg()
@@ -49,6 +52,53 @@ object PairsGen {
     // instructions += Str(bytes, rd, nextRegister, 0)
     addFreeReg(nextRegister)
     instructions
+  }
+
+
+  def translateAssignRHSPair(tpe : Type, fst : Expr, snd: Expr, register : Register) : ListBuffer[Instr] = {
+    val instrs = ListBuffer.empty[Instr]
+    val Pair(typeOne, typeTwo) = tpe 
+    val nextRegister = saveReg()
+
+    instrs += Ldr(resultRegister, Load_Mem(2 * PAIR_SIZE))
+    instrs += Bl(Label("malloc"))
+    instrs += Mov(register, resultRegister)
+
+    //transExp??
+    instrs += transExp(fst, nextRegister)
+
+    //getPairElemTypeSize??
+    instrs += Ldr(resultRegister ,Load_Mem())
+
+    instrs += Bl(Label("malloc"))
+
+    //NO_OFFSET??
+    instrs += Str(
+      isBytePair(p, 0),
+      nextRegister,
+      resultRegister,
+      NO_OFFSET
+    )
+
+    instrs += Str(resultRegister , RegAdd(register))
+
+    //transExp??
+    instrs ++= transExp(snd, nextRegister)
+
+    instrs += Ldr(resultRegister, Load_Mem())
+    instrs += Bl(Label("malloc"))
+
+    instrs += Str(
+      isBytePair(p, 1),
+      nextRegister,
+      resultRegister,
+      NO_OFFSET
+    )
+
+    freeRegister(nextRegister)
+    instrs += Str(resultRegister, register, PAIR_SIZE)
+    instrs
+
   }
 
 }
