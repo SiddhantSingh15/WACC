@@ -51,7 +51,7 @@ object ReadGen {
     val t = getPairElemType(pairType, pos)
     // value must be in R0 for branch
     instructions += Mov(resultRegister, freeReg)
-    addFreeReg(freeReg)
+    restoreReg(freeReg)
     instructions += readBranch(t)
     instructions
   }
@@ -68,7 +68,7 @@ object ReadGen {
     )
     // variable must be in R0 for the branch
     instructions += Mov(resultRegister, freeReg)
-    addFreeReg(freeReg)
+    restoreReg(freeReg)
     instructions += readBranch(identType)
     instructions
   }
@@ -82,7 +82,7 @@ object ReadGen {
     instructions ++= instrs
     // value must be in R0 for branch
     instructions += Mov(resultRegister, resReg)
-    addFreeReg(resReg)
+    restoreReg(resReg)
     // Gets base type of the arrayElem
     val t = typeConvert(ae)
     instructions += readBranch(t)
