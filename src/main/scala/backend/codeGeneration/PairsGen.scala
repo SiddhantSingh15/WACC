@@ -48,12 +48,8 @@ object PairsGen {
 
 
 
-
-    // val (bytes, instrs) = assignRHS(pElemType, rhs, rd)
-    // instructions ++= instrs
     val nextRegister = saveReg()
     instructions ++= transPairElem(ident, pos, nextRegister)
-    // instructions += Str(bytes, rd, nextRegister, 0)
     addFreeReg(nextRegister)
     instructions
   }
@@ -113,11 +109,6 @@ object PairsGen {
     }
   }
 
-
-    // idType match {
-  // case Pair(PairElemT(x), PairElemT(y)) =>
-    // if (isFst) isByte(x) else isByte(y)
-  // case _ => false
   private def isBytePair(tpe : Type, pos : Int) = {
     if(!(pos == 0 || pos == 1)){
       false
