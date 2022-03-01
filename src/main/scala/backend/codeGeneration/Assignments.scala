@@ -57,6 +57,7 @@ object Assignments {
                 val (_, newInstrs) = transAssignRHS(typeConvert(x), rhs, freeRegister)
                 instrs ++= newInstrs
                 instrs ++= storeArrayElem(ident, exprList, freeRegister) 
+            case _ => ???
         }
         restoreReg(freeRegister)
         instrs
