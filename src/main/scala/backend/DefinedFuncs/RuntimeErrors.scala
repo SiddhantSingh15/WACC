@@ -4,7 +4,7 @@ import backend.CodeGen.{
   dataTable,
   funcTable,
   resultRegister,
-  FALSE_INT
+  FALSE
 }
 
 import backend.DefinedFuncs.PreDefinedFuncs._
@@ -24,7 +24,7 @@ object RuntimeErrors {
 
   private val ERROR_EXIT_CODE = -1
 
-  def addRuntimeError(err: PreDefFunc): Label = {
+  def addRTE(err: PreDefFunc): Label = {
     funcTable.addFunction(RuntimeError.function)
     funcTable.addFunction(stringPrintInstrs)
     dataTable.addLabel("msg_string", "%.*s\\0")
@@ -52,7 +52,7 @@ object RuntimeErrors {
       ArrayBounds.functionLabel,
       ListBuffer[Instr](
         Push(ListBuffer(R14_LR)),
-        Cmp(resultRegister, Imm_Int(FALSE_INT)),
+        Cmp(resultRegister, Imm_Int(FALSE)),
         LdrCond(LT, resultRegister, DataLabel(Label(ArrayBounds.msgName(0)))),
         BranchLinkCond(LT, RuntimeError.functionLabel),
         Ldr(R1, RegAdd(R1)),
@@ -69,7 +69,7 @@ object RuntimeErrors {
       DivideByZero.functionLabel,
       ListBuffer[Instr](
         Push(ListBuffer(R14_LR)),
-        Cmp(R1, Imm_Int(FALSE_INT)),
+        Cmp(R1, Imm_Int(FALSE)),
         LdrCond(EQ, resultRegister, DataLabel(Label(DivideByZero.msgName(0)))),
         BranchLinkCond(EQ, RuntimeError.functionLabel),
         Pop(ListBuffer(R15_PC))
@@ -92,14 +92,14 @@ object RuntimeErrors {
       FreePair.functionLabel,
       ListBuffer[Instr](
         Push(ListBuffer(R14_LR)),
-        Cmp(resultRegister, Imm_Int(FALSE_INT)),
+        Cmp(resultRegister, Imm_Int(FALSE)),
         LdrCond(EQ, resultRegister, DataLabel(Label(FreePair.msgName(0)))),
         BranchCond(EQ, RuntimeError.functionLabel),
         Push(ListBuffer(resultRegister)),
         Ldr(resultRegister, RegAdd(resultRegister)),
         Bl(Label("free")),
         Ldr(resultRegister, RegAdd(R13_SP)),
-        Ldr(resultRegister, RegisterOffset(resultRegister, ADDRESS_SIZE)),
+        Ldr(resultRegister, RegisterOffset(resultRegister, SIZE_ADDR)),
         Bl(Label("free")),
         Pop(ListBuffer(resultRegister)),
         Bl(Label("free")),
@@ -113,7 +113,7 @@ object RuntimeErrors {
       FreeArray.functionLabel,
       ListBuffer[Instr](
         Push(ListBuffer(R14_LR)),
-        Cmp(resultRegister, Imm_Int(FALSE_INT)),
+        Cmp(resultRegister, Imm_Int(FALSE)),
         LdrCond(EQ, resultRegister, DataLabel(Label(FreeArray.msgName(0)))),
         BranchCond(EQ, RuntimeError.functionLabel),
         Bl(Label("free")),
@@ -124,11 +124,11 @@ object RuntimeErrors {
 
   def checkNullPointer: (Label, ListBuffer[Instr]) = {
     (
-      NullPointer.functionLabel,
+      NPE.functionLabel,
       ListBuffer[Instr](
         Push(ListBuffer(R14_LR)),
-        Cmp(resultRegister, Imm_Int(FALSE_INT)),
-        LdrCond(EQ, resultRegister, DataLabel(Label(NullPointer.msgName(0)))),
+        Cmp(resultRegister, Imm_Int(FALSE)),
+        LdrCond(EQ, resultRegister, DataLabel(Label(NPE.msgName(0)))),
         BranchLinkCond(EQ, RuntimeError.functionLabel),
         Pop(ListBuffer(R15_PC))
       )
