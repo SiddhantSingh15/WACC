@@ -31,7 +31,7 @@ object ExpressionGen {
             case bool: BoolLiter =>
                 ListBuffer(Mov(rd, Imm_Int(boolToInt(bool))))
 
-            case CharLiter(character) =>
+            case CharLiter(character)=>
                 ListBuffer(Mov(rd, Imm_Char(character)))
 
             case StrLiter(string) => 
