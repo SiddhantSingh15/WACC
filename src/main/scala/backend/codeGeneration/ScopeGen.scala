@@ -9,43 +9,48 @@ import backend.Operand.{Imm_Int}
 import backend.codeGeneration.ExpressionGen.transExp
 
 object ScopeGen {
-  private def transScope(stat: Stat, instrs: ListBuffer[Instr]): ListBuffer[Instr] = {
+  private def transScope(stats: List[Stat]): ListBuffer[Instr] = {
     symbTable = symbTable.nextScope
-		val instructions = transStat(stat, instrs)
-		symbTable = symbTable.prev
-		instructions
+	val instructions = ListBuffer.empty[Instr]
+    stats.foreach((s: Stat) => {
+      instructions ++= transStat(s)
+    	}
+    )
+	symbTable = symbTable.prev
+	instructions
   }
 
-	def transBegin(stat: Stat, instr: ListBuffer[Instr]): ListBuffer[Instr] = {
-		transScope(stat, instr)
+	def transBegin(stats: List[Stat]): ListBuffer[Instr] = {
+		transScope(stats)
 	}
 
-	def transIf(expr: Expr, statThen: Stat, statElse: Stat, instr: ListBuffer[Instr]): ListBuffer[Instr] = {
+	def transIf(expr: Expr, statThen: List[Stat], statElse: List[Stat]): ListBuffer[Instr] = {
 		val freeRegister = saveReg()
+		val instr = ListBuffer.empty[Instr]
 		instr ++= transExp(expr, freeRegister)
 		instr += Cmp(freeRegister, Imm_Int(0))
-		addFreeReg(freeRegister)
+		restoreReg(freeRegister)
 
 		val branch = funcTable.getNext()
 		instr += BranchCond(EQ, branch)
 
-		val instructions = transScope(statThen, instr)
+		instr ++= transScope(statThen)
 		val nextLabel = funcTable.getNext()
 
-		instructions += Branch(nextLabel)
-		userTable.add(currLabel, instructions)
+		instr += Branch(nextLabel)
+		userTable.add(currLabel, instr)
 
 		currLabel = branch
 
-		val branchInstrs = transScope(statElse, ListBuffer.empty[Instr])
+		val branchInstrs = transScope(statElse)
 		userTable.add(currLabel, branchInstrs)
 
 		currLabel = nextLabel
 		ListBuffer.empty[Instr]
 	}
 
-	def transWhile(expr: Expr, stat: Stat, instr: ListBuffer[Instr]): ListBuffer[Instr] = {
-		val instructions = ListBuffer.empty[Instr]
+	def transWhile(expr: Expr, stats: List[Stat]): ListBuffer[Instr] = {
+		val instr = ListBuffer.empty[Instr]
 		val nextLabel = funcTable.getNext()
 
 		instr += Branch(nextLabel)
@@ -54,16 +59,16 @@ object ScopeGen {
 		val body = funcTable.getNext()
 		currLabel = body
 
-		val transBody = transScope(stat, ListBuffer.empty[Instr])
+		val transBody = transScope(stats)
 		userTable.add(currLabel, transBody)
 
 		currLabel = nextLabel
 
 		val register = saveReg()
 
-		instructions ++= transExp(expr, register)
-		instructions += Cmp(register, Imm_Int(1))
-		addFreeReg(register)
-		instructions += BranchCond(EQ, body)
+		instr ++= transExp(expr, register)
+		instr += Cmp(register, Imm_Int(1))
+		restoreReg(register)
+		instr += BranchCond(EQ, body)
 	}
 }
