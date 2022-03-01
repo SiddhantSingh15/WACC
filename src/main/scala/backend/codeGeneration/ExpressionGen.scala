@@ -6,6 +6,7 @@ import backend.Opcodes._
 import backend.CodeGen._
 import frontend.SymbolTable
 import backend.Condition._
+import backend.codeGeneration.ArraysGen._
 
 import scala.collection.mutable.ListBuffer
 
@@ -41,7 +42,7 @@ object ExpressionGen {
                 ListBuffer(Ldr(rd, Load_Mem(0))) // TODO: remove magic number
 
             case Ident(ident) => // TODO: ident, requires stackpointer
-            case ArrayElem(id, exprs) => // TODO: arrays
+            case ArrayElem(id, exprs) => loadArrayElem(id, exprs, rd)
             case unOp: UnOp =>
                 transUnOp(unOp, rd)
 
