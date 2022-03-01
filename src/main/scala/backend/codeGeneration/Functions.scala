@@ -30,10 +30,10 @@ object Functions {
 
       SP_scope = SP_curr
       
-      val instructions = ListBuffer.empty[Instr]
+      val instructions = ListBuffer[Instr](Push(ListBuffer(R14_LR)))
 
       for (stat <- stats) {
-        instructions ++= transStat(stat, ListBuffer(Push(ListBuffer(R14_LR))))
+        instructions ++= transStat(stat)
       }
 
       SP_scope = prevScopeSP
@@ -90,7 +90,7 @@ object Functions {
         )
 
         
-        addFreeReg(register)
+        restoreReg(register)
         instrs
     }
 }
