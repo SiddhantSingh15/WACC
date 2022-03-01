@@ -22,6 +22,11 @@ object CodeGen {
   val SIZE_ADDR = 4
   val SIZE_PAIR = SIZE_ADDR
 
+  //rename
+  var scopeSP  = 0
+  var currSP = 0
+  private val ERROR = -1
+
   final val generalRegisters: ListBuffer[Register] = 
     ListBuffer(R0, R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R11, R12)
 
@@ -115,19 +120,6 @@ object CodeGen {
       case Pair(_, _)     => PAIR_SIZE
       case _              => ERROR
   }
-}
-
-def getFreeRegister(): Register = {
-  if (freeRegisters.isEmpty) {
-    return popRegister
-  }
-  val reg = freeRegisters(0)
-  freeRegisters.remove(0)
-  reg
-}
-
-def addBackRegister(reg : Register) : Unit = {
-  reg +=: freeRegisters
 }
 
 def isByte(t : Type): Boolean = {
