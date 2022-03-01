@@ -34,7 +34,7 @@ object Assignments {
 
 
 
-    def translateAssignment(
+    def transAssignment(
         lhs: AssignLHS,
         rhs: AssignRHS
     ): ListBuffer[Instr] = {
@@ -52,13 +52,11 @@ object Assignments {
                 instrs ++= transPairAssign(rhs, id, 0, freeRegister)
             case Snd(id : Ident) => 
                 instrs ++= transPairAssign(rhs, id, 1, freeRegister)
-            case x@ArrayElem(ident, exprList) => null //TODO
+            case x@ArrayElem(ident, exprList) =>
                 val (_, instrs) = transAssignRHS(typeConvert(x), rhs, freeRegister)
-            //val (_, instrs) = assignRHS(getExprType(ae), aRHS, free
-            //instructions ++= instrs
-            //instructions ++= storeArrayElem(id, es, freeReg)
-
-            case _ => null  
+                val (_, newInstrs) = transAssignRHS(typeConvert(x), rhs, freeRegister)
+                instrs ++= newInstrs
+                instrs ++= storeArrayElem(ident, exprList, freeRegister) 
         }
         restoreReg(freeRegister)
         instrs
@@ -74,9 +72,9 @@ object Assignments {
             case expr : Expr => instrs ++= transExp(expr, freeRegister)
 
             case Fst(id : Ident) => 
-                instrs ++= transPairElem(id, 0, freeRegister)
-            case Snd(id : Ident) => 
                 instrs ++= transPairElem(id, 1, freeRegister)
+            case Snd(id : Ident) => 
+                instrs ++= transPairElem(id, 2, freeRegister)
             case Call(ident, argList) =>
                 instrs ++= transCall(ident, argList, freeRegister)
         case ArrayLiter(list) => 
