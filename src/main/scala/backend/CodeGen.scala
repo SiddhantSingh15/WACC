@@ -57,6 +57,34 @@ object CodeGen {
     ListBuffer.empty[Instr]
   }
 
+  def incrementSP(toInc: Int): ListBuffer[Instr] = {
+    val instrs = ListBuffer.empty[Instr]
+    if (toInc == 0) {
+      return instrs
+    }
+    var curToInc = toInc
+    while (curToInc > MAX_INT_IMM) {
+      curToInc -= MAX_INT_IMM
+      instrs += backend.Opcodes.Add(R13_SP, R13_SP, Imm_Int(MAX_INT_IMM))
+    }
+    instrs += backend.Opcodes.Add(R13_SP, R13_SP, Imm_Int(curToInc))
+    instrs
+  }
+
+  def decrementSP(toDec: Int): ListBuffer[Instr] = {
+    val instrs = ListBuffer.empty[Instr]
+    if (toDec == 0) {
+      return instrs
+    }
+    var curToDec = toDec
+    while (curToDec > MAX_INT_IMM) {
+      curToDec -= MAX_INT_IMM
+      instrs += backend.Opcodes.Sub(R13_SP, R13_SP, Imm_Int(MAX_INT_IMM))
+    }
+    instrs += backend.Opcodes.Sub(R13_SP, R13_SP, Imm_Int(curToDec))
+    instrs
+  }
+
   private def transExit(expr: Expr): ListBuffer[Instr] = {
     val availReg = saveReg()
     val instructions = ListBuffer.empty[Instr]
@@ -93,13 +121,12 @@ object CodeGen {
     // TODO: functions
 
     val instructions = ListBuffer[Instr](Push(ListBuffer(R14_LR)))
-
-    // TODO: Scope
     stats.foreach((s: Stat) => {
       instructions ++= transStat(s, ListBuffer(Push(ListBuffer(R14_LR))))
     }
     )
 
+    instructions ++= incrementSP(stackPointer)
     instructions ++= ListBuffer(
       Ldr(resultRegister, Load_Mem(0)), // TODO: magic number
       Pop(ListBuffer(R15_PC)),
