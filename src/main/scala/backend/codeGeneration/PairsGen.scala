@@ -46,14 +46,11 @@ object PairsGen {
       }
     }
 
-
-
     val nextRegister = saveReg()
     instructions ++= transPairElem(ident, pos, nextRegister)
     addFreeReg(nextRegister)
     instructions
   }
-
 
   def transAssignRHSPair(tpe : Type, fst : Expr, snd: Expr, register : Register) : ListBuffer[Instr] = {
     val instrs = ListBuffer.empty[Instr]
@@ -61,14 +58,11 @@ object PairsGen {
     val nextRegister = saveReg()
 
     instrs += Ldr(resultRegister, Load_Mem(2 * SIZE_PAIR))
-    instrs += Bl(Label("malloc"))
     instrs += Mov(register, resultRegister)
 
     instrs ++= transExp(fst, nextRegister)
 
     instrs += Ldr(resultRegister ,Load_Mem(getPairTypeSize(typeOne)))
-
-    instrs += Bl(Label("malloc"))
 
     instrs += Str(
       isBytePair(tpe, 1),
@@ -91,21 +85,20 @@ object PairsGen {
       NO_OFFSET
     )
 
-    restoreReg(nextRegister)
+    addFreeReg(nextRegister)
     instrs += Str(resultRegister, register, SIZE_PAIR)
     instrs
-
   }
 
-
-
-
+  def getPairElem(ident: Ident, pos: Int, rd: Register): Instr = {
+    val (_, tpe) = symbTable(ident)
+    Ldr(isBytePair(tpe, 1), rd, rd, NO_OFFSET)
+  }
 
   private def getPairTypeSize(tpe : PairElemType) : Int = {
     tpe match {
       case PairElemPair => SIZE_PAIR
       case PairElemWithType(t) => getTypeSize(t)
-      case _ => -1 //is this correct?
     }
   }
 
@@ -115,11 +108,14 @@ object PairsGen {
     }
     tpe match {
       case Pair(PairElemWithType(a), PairElemWithType(b)) =>
-        if (pos == 0) isByte(a) else isByte(b)
+        if (pos == 0) {
+          isByte(a)
+        } else {
+          isByte(b)
+        }
       case _ 
         => false
     }
   }
-
 }
 

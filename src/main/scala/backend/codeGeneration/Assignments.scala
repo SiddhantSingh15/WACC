@@ -68,10 +68,12 @@ object Assignments {
         rhs match {
             case expr : Expr => instrs ++= transExp(expr, freeRegister)
 
-            case Fst(id : Ident) => 
-                instrs ++= transPairElem(id, 1, freeRegister)
-            case Snd(id : Ident) => 
-                instrs ++= transPairElem(id, 2, freeRegister)
+            case Fst(ident : Ident) => 
+                instrs ++= transPairElem(ident, 1, freeRegister)
+                instrs += getPairElem(ident, 1, freeRegister)
+            case Snd(ident : Ident) => 
+                instrs ++= transPairElem(ident, 2, freeRegister)
+                instrs += getPairElem(ident, 2, freeRegister)
             case Call(ident, argList) =>
                 instrs ++= transCall(ident, argList, freeRegister)
         case ArrayLiter(list) => 
