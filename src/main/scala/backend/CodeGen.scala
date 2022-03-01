@@ -18,13 +18,20 @@ object CodeGen {
   var funcTable = new functionTable
   var userTable = new functionTable
   
+  val SIZE_INT = 4
+  val SIZE_CHAR = 1
+  val SIZE_BOOL = 1
+  val SIZE_STR = 4
+
   val FALSE = 0
   val SIZE_ADDR = 4
   val SIZE_PAIR = SIZE_ADDR
+  val SIZE_ARR = SIZE_ADDR
 
-  //rename
-  var scopeSP  = 0
-  var currSP = 0
+  val MAX_IMM_INT = 1024
+  
+  var SP_scope  = 0
+  var SP_curr = 0
   private val ERROR = -1
 
   final val generalRegisters: ListBuffer[Register] = 
@@ -63,9 +70,9 @@ object CodeGen {
       return instrs
     }
     var curToInc = toInc
-    while (curToInc > MAX_INT_IMM) {
-      curToInc -= MAX_INT_IMM
-      instrs += backend.Opcodes.Add(R13_SP, R13_SP, Imm_Int(MAX_INT_IMM))
+    while (curToInc > MAX_IMM_INT) {
+      curToInc -= MAX_IMM_INT
+      instrs += backend.Opcodes.Add(R13_SP, R13_SP, Imm_Int(MAX_IMM_INT))
     }
     instrs += backend.Opcodes.Add(R13_SP, R13_SP, Imm_Int(curToInc))
     instrs
@@ -77,9 +84,9 @@ object CodeGen {
       return instrs
     }
     var curToDec = toDec
-    while (curToDec > MAX_INT_IMM) {
-      curToDec -= MAX_INT_IMM
-      instrs += backend.Opcodes.Sub(R13_SP, R13_SP, Imm_Int(MAX_INT_IMM))
+    while (curToDec > MAX_IMM_INT) {
+      curToDec -= MAX_IMM_INT
+      instrs += backend.Opcodes.Sub(R13_SP, R13_SP, Imm_Int(MAX_IMM_INT))
     }
     instrs += backend.Opcodes.Sub(R13_SP, R13_SP, Imm_Int(curToDec))
     instrs
@@ -137,33 +144,94 @@ object CodeGen {
     (dataTable.table.toList, funcTable.table.toList)
   }
 
+  def subSP(sp: Int): ListBuffer[Instr] = {
+    val instructions = ListBuffer.empty[Instr]
+
+    if (sp == 0) {
+      return instructions
+    }
+
+    var currSP = sp
+
+    while (currSP > MAX_IMM_INT) {
+      currSP -= MAX_IMM_INT
+      instructions += Opcodes.Sub(R13_SP, R13_SP, Imm_Int(MAX_IMM_INT))
+    }
+
+    instructions += Opcodes.Sub(R13_SP, R13_SP, Imm_Int(currSP))
+    instructions
+  }
+
+  def addSP(sp: Int): ListBuffer[Instr] = {
+    val instructions = ListBuffer.empty[Instr]
+
+    if (sp == 0) {
+      return instructions
+    }
+
+    var currSP = sp
+
+    while (currSP > MAX_IMM_INT) {
+      currSP -= MAX_IMM_INT
+      instructions += Opcodes.Add(R13_SP, R13_SP, Imm_Int(MAX_IMM_INT))
+    }
+
+    instructions += Opcodes.Add(R13_SP, R13_SP, Imm_Int(currSP))
+    instructions
+  }
+
+  def typeConverter(expr: Expr): Type = {
+    expr match {
+      case _: EqualityFuncs => Bool
+      
+      case _: CompareFuncs => Bool
+      case _: LogicFuncs   => Bool
+      case _: Not          => Bool
+      case _: BoolLiter    => Bool
+
+
+      case _: Negation     => Int
+      case _: MathFuncs    => Int
+      case _: Len          => Int
+      case _: Ord          => Int
+      case _: IntLiter     => Int
+      
+      case _: PairLiter    => Pair(null, null)
+
+      case _: StrLiter     => String
+
+      case _: Chr          => CharType
+      case _: CharLiter    => CharType
+
+
+      case ident: Ident    =>
+        val (_, tpe) = symbTable(ident)
+        tpe
+      
+      case ArrayElem(ident, exprList) => 
+        var (_, tpe) = symbTable(ident)
+        tpe = exprList.foldLeft(tpe)((t, _) => typeOf(t))
+        tpe
+    }
+  }
+
+  private def typeOf(tpe: Type): Type = tpe match {
+    case ArrayType(t) => t
+  }
+
   def getTypeSize(t: Type) : Int = {
     t match {
-      case Int           => INT_SIZE
-      case Bool          => BOOL_SIZE
-      case CharType          => CHAR_SIZE
-      case String        => STR_SIZE
-      case ArrayType(innerT) => ARRAY_SIZE
-      case Pair(_, _)     => PAIR_SIZE
-      case _              => ERROR
+      case Int               => SIZE_INT
+      case Bool              => SIZE_BOOL
+      case CharType          => SIZE_CHAR
+      case String            => SIZE_STR
+      case ArrayType(innerT) => SIZE_ARR
+      case Pair(_, _)        => SIZE_PAIR
+      case _                 => ERROR
+    }
   }
-}
 
-def isByte(t : Type): Boolean = {
-  t == Bool || t == CharType
-}
-
-  val TRUE_INT = 1
-  val FALSE_INT = 0
-
-  val INT_SIZE = 4
-  val CHAR_SIZE = 1
-  val BOOL_SIZE = 1
-  val STR_SIZE = 4
-  val ADDRESS_SIZE = 4
-  val ARRAY_SIZE = ADDRESS_SIZE
-  val PAIR_SIZE = ADDRESS_SIZE
-  val MAX_INT_IMM = 1024
-
-
+  def isByte(t : Type): Boolean = {
+    t == Bool || t == CharType
+  }
 }
