@@ -84,7 +84,7 @@ object ReadGen {
     instructions += Mov(resultRegister, resReg)
     addFreeReg(resReg)
     // Gets base type of the arrayElem
-    val t = typeConverter(ae)
+    val t = typeConvert(ae)
     instructions += readBranch(t)
     instructions
   }
