@@ -4,14 +4,14 @@ import Opcodes._
 import Operand._
 import scala.collection.mutable.ListBuffer
 
-object ReadInstructions {
+object ReadInstr {
 
   final val resultReg: Register = R0
 
-  def charRead(label: Label): (Label, List[Instr]) = {
+  def charRead(label: Label): (Label, ListBuffer[Instr]) = {
     (
       Label("p_read_char"),
-      List[Instr](
+      ListBuffer(
         Push(ListBuffer(R14_LR)),
         Mov(R1, resultReg),
         Ldr(resultReg, DataLabel(label)),
@@ -22,10 +22,10 @@ object ReadInstructions {
     )
   }
 
-  def intRead(label: Label): (Label, List[Instr]) = {
+  def intRead(label: Label): (Label, ListBuffer[Instr]) = {
     (
       Label("p_read_int"),
-      List[Instr](
+      ListBuffer(
         Push(ListBuffer(R14_LR)),
         Mov(R1, resultReg),
         Ldr(resultReg, DataLabel(label)),
