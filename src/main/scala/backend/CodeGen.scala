@@ -217,6 +217,7 @@ object CodeGen {
 
   private def typeOf(tpe: Type): Type = tpe match {
     case ArrayType(t) => t
+    case _ => tpe
   }
 
   def getTypeSize(t: Type) : Int = {
