@@ -27,7 +27,7 @@ object Main {
     val parsedResult = parsed match {
       case Success(x) =>
         // println(x)
-        val semRes = semChecker.checkProgram(parsed.get)._2
+        val (symbTable, semRes) = semChecker.checkProgram(parsed.get)
         for (err <- semRes) {
           if (err.isInstanceOf[FuncNoRetErr]) {
             println("[" + Console.RED + "error" + Console.RESET+ "]: " + err)
@@ -46,7 +46,7 @@ object Main {
         println(Console.GREEN + s"${args(0)} is semantically valid.")
           // System.exit(EXITCODE_SUCC)
           val programTree = parsed.get
-          val (data, instructions) = codeGen.transProgram(programTree)
+          val (data, instructions) = codeGen.transProgram(programTree, symbTable)
           prettyPrinter.prettyPrint(file.getName(), data, instructions)
 
       case Failure(err) =>

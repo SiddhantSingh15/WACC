@@ -123,7 +123,7 @@ object CodeGen {
     }
   }
 
-  def transProgram(program: WaccProgram): (List[Data], List[(Label, List[Instr])]) = {
+  def transProgram(program: WaccProgram, symbTable: SymbolTable): (List[Data], List[(Label, List[Instr])]) = {
 
     this.symbTable = symbTable
     val WaccProgram(funcs, stats) = program
