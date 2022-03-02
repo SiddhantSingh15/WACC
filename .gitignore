@@ -13,14 +13,22 @@ grun
 *.vscode
 *.bsp
 *.DS_Store
-antlr_config/.antlr
-target/global-logging
-target/streams
-target/task-temp-directory
-target/test-reports
-target/.history3
-project/project
-project/target
+target
+project
+null
+
+
+#unignore required files in ./project
+!build.properties
+!plugins.sbt
+!target/scala-2.13/coverage-report 
+!target/scala-2.13/scoverage-data
+!target/scala-2.13/scoverage-report
+
+
+#ignore wacc_examples
+wacc_examples
+
 
 #ignore other junk files
 *~
