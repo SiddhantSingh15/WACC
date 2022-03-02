@@ -31,7 +31,6 @@ object PrintGen {
                 printFunc = PrintBool
             case String | ArrayType(CharType) =>
                 printFunc = PrintString
-            case 
             case _ => 
         }
         
