@@ -97,69 +97,70 @@ object ExpressionGen {
     (reg, instructions)
   }
 
-  def transBinOp(op: BinOp, rn: Register): ListBuffer[Instr] = {
-    val instructions = ListBuffer.empty[Instr]
+   def transBinOp(op: BinOp, rn: Register): ListBuffer[Instr] = {
+        val instructions = ListBuffer.empty[Instr]
 
-    instructions ++= transExp(op.exp1, rn)
-    val rm = saveReg()
-    instructions ++= transExp(op.exp2, rm)
+        instructions ++= transExp(op.exp1, rn)
+        val rm = saveReg()
+        instructions ++= transExp(op.exp2, rm)
 
-    // Check over allocation of register
-    var rd = rn
-    if (popRegister == rm) {
-      instructions += Pop(ListBuffer(popRegister))
-      rd = R10
+        // Check over allocation of register
+        var rd = rn
+        if (popRegister == rm) {
+            instructions += Pop(ListBuffer(popRegister))
+            rd = R10
+        }
+
+        op match {
+            case mathOp: MathFuncs => 
+                instructions ++= transMathOp(mathOp, rd, rm)
+            case cmpOp: CompareFuncs => 
+                instructions ++= transCmpEqOp(cmpOp, rd, rm)
+            case eqOp: EqualityFuncs => 
+                instructions ++= transCmpEqOp(eqOp, rd, rm)
+            case lgOp: LogicFuncs => 
+                instructions += transLgOp(lgOp, rd, rm)
+        }
     }
 
-    op match {
-      case mathOp: MathFuncs => 
-        instructions ++= transMathOp(mathOp, rd, rm)
-      case cmpOp: CompareFuncs => 
-        instructions ++= transCmpEqOp(cmpOp, rd, rm)
-      case eqOp: EqualityFuncs => 
-        instructions ++= transCmpEqOp(eqOp, rd, rm)
-      case lgOp: LogicFuncs => 
-        instructions += transLgOp(lgOp, rd, rm)
-    }
-  }
+   def transMathOp(op: MathFuncs, rd: Register, rm: Register): ListBuffer[Instr] = {
 
-  def transMathOp(op: MathFuncs, rd: Register, rm: Register): ListBuffer[Instr] = {
+        op match {
+            case frontend.AST.Mul(_,_) =>
+                ListBuffer(
+                    SMul(rd, rm, rd, rm),
+                    Cmp(rm, ASR(rd, Imm_Int(31))), // TODO: Remove magic number
+                    BranchLinkCond(NE, addRTE(Overflow))
+                )
+            case frontend.AST.Div(_,_) =>
+                ListBuffer(
+                    Mov(resultRegister, rd),
+                    Mov(R1, rm), // need to be in R0 and R1 for __aeabi_idiv
+                    Bl(addRTE(DivideByZero)),
+                    Bl(Label("__aeabi_idiv")),
+                    Mov(rd, resultRegister)
+                )
+            case frontend.AST.Mod(_,_) => 
+                ListBuffer(
+                    Mov(resultRegister, rd),
+                    Mov(R1, rm),
+                    Bl(addRTE(DivideByZero)),
+                    Bl(Label("__aeabi_idivmod")),
+                    Mov(rd, R1)
+                )
+            case frontend.AST.Plus(_,_) =>
+                ListBuffer(
+                    AddS(rd, rd, rm),
+                    BranchLinkCond(OF, addRTE(Overflow))
+                )
+            case frontend.AST.Sub(_,_) =>
+                ListBuffer(
+                    SubS(rd, rd, rm),
+                    BranchLinkCond(OF, addRTE(Overflow))
+                )
 
-    op match {
-      case frontend.AST.Mul(_,_) =>
-        ListBuffer(
-            SMul(rd, rm, rd, rm),
-            Cmp(rm, ASR(rd, Imm_Int(31))), // TODO: Remove magic number
-            BranchLinkCond(NE, addRTE(Overflow))
-        )
-      case frontend.AST.Div(_,_) =>
-        ListBuffer(
-            Mov(resultRegister, rd),
-            Mov(R1, rm), // need to be in R0 and R1 for __aeabi_idiv
-            Bl(addRTE(DivideByZero)),
-            Bl(Label("__aeabi_idiv")),
-            Mov(rd, resultRegister)
-        )
-      case frontend.AST.Mod(_,_) => 
-        ListBuffer(
-            Mov(resultRegister, rd),
-            Mov(R1, rm),
-            Bl(addRTE(DivideByZero)),
-            Bl(Label("__aeabi_idivmod")),
-            Mov(rd, R1)
-        )
-      case frontend.AST.Plus(_,_) =>
-        ListBuffer(
-            AddS(rd, rd, rm),
-            BranchLinkCond(OF, addRTE(Overflow))
-        )
-      case frontend.AST.Sub(_,_) =>
-        ListBuffer(
-            SubS(rd, rd, rm),
-            BranchLinkCond(OF, addRTE(Overflow))
-        )
+        }
     }
-  }
 
   def transCmpEqOp(op: BinOp, rd: Register, rm: Register): ListBuffer[Instr] = {
     var cond: Condition = null;
