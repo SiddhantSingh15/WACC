@@ -11,9 +11,9 @@ import backend.codeGeneration.ExpressionGen.transExp
 object ScopeGen {
   private def transScope(stats: List[Stat]): ListBuffer[Instr] = {
     symbTable = symbTable.nextScope
-	val instructions = ListBuffer.empty[Instr]
-    stats.foreach((s: Stat) => {
-      instructions ++= transStat(s)
+	  val instructions = ListBuffer.empty[Instr]
+      stats.foreach((s: Stat) => {
+        instructions ++= transStat(s)
     	}
     )
 	symbTable = symbTable.prev
