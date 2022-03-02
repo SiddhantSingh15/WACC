@@ -36,19 +36,21 @@ object Main {
         }
 
         println(Console.GREEN + s"${args(0)} is synctactically valid.")
-        if (semRes.isEmpty) {
-          println(Console.GREEN + s"${args(0)} is semantically valid.")
+        if (!semRes.isEmpty) {
+            for (error <- semRes.toList) {
+            println("[" + Console.RED + "error" + Console.RESET + "]: " + error)
+            System.exit(EXITCODE_SEM_ERROR)
+          }
+        }
+
+        System.exit(EXITCODE_SEM_ERROR)
+
+        println(Console.GREEN + s"${args(0)} is semantically valid.")
           // System.exit(EXITCODE_SUCC)
           val programTree = parsed.get
           val (data, instructions) = codeGen.transProgram(programTree)
           prettyPrinter.prettyPrint(file.getName(), data, instructions)
-        }
-
-        for (error <- semRes.toList) {
-          println("[" + Console.RED + "error" + Console.RESET + "]: " + error)
-        }
-
-        System.exit(EXITCODE_SEM_ERROR)
+          
       case Failure(err) =>
         print(err.getError())
         System.exit(EXITCODE_SYNTAX_ERROR)
