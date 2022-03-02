@@ -47,7 +47,7 @@ object PrettyPrinter {
   }
 
   private def size(str: String): Int = {
-    val chars = """"\\[0btnfr"'\\]""""
+    val chars = """\\[0btnfr"'\\]"""
     str.length - chars.r.findAllIn(str).length
   }
 }
