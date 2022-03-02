@@ -43,14 +43,12 @@ object Main {
           }
         }
 
-        System.exit(EXITCODE_SEM_ERROR)
-
         println(Console.GREEN + s"${args(0)} is semantically valid.")
           // System.exit(EXITCODE_SUCC)
           val programTree = parsed.get
           val (data, instructions) = codeGen.transProgram(programTree)
           prettyPrinter.prettyPrint(file.getName(), data, instructions)
-          
+
       case Failure(err) =>
         print(err.getError())
         System.exit(EXITCODE_SYNTAX_ERROR)
