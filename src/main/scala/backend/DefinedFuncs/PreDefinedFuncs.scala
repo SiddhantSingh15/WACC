@@ -40,7 +40,7 @@ object PreDefinedFuncs {
     override val msgName = List("msg_overflow")
     override val msgs =
       List(
-        "OverflowError: the result is too large/small to be stored as a 4-byte signed-integer.\\n"
+        "OverflowError: the result is too small/large to store in a 4-byte signed-integer.\\n\\0"
       )
     override val function = throwOverflowError
   }
