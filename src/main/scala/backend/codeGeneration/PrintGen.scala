@@ -31,7 +31,8 @@ object PrintGen {
                 printFunc = PrintBool
             case String | ArrayType(CharType) =>
                 printFunc = PrintString
-            case _ => ???
+            case 
+            case _ => 
         }
         
         for (i <- 0 until printFunc.msgs.length) {
