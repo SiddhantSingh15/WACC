@@ -104,11 +104,32 @@ object ExpressionGen {
     val rm = saveReg()
     instructions ++= transExp(op.exp2, rm)
 
-    // Check over allocation of register
-    var rd = rn
-    if (popRegister == rm) {
-      instructions += Pop(ListBuffer(popRegister))
-      rd = R10
+    def transBinOp(op: BinOp, rn: Register): ListBuffer[Instr] = {
+        val instructions = ListBuffer.empty[Instr]
+
+        instructions ++= transExp(op.exp1, rn)
+        val rm = saveReg()
+        instructions ++= transExp(op.exp2, rm)
+
+        // Check over allocation of register
+        var rd = rn
+        if (popRegister == rm) {
+            instructions += Pop(ListBuffer(popRegister))
+            rd = R10
+        }
+
+        op match {
+            case mathOp: MathFuncs => 
+                instructions ++= transMathOp(mathOp, rd, rm)
+            case cmpOp: CompareFuncs => 
+                instructions ++= transCmpEqOp(cmpOp, rd, rm)
+            case eqOp: EqualityFuncs => 
+                instructions ++= transCmpEqOp(eqOp, rd, rm)
+            case lgOp: LogicFuncs => 
+                instructions += transLgOp(lgOp, rd, rm)
+        }
+        restoreReg(rm)
+        instructions
     }
 
     op match {
@@ -155,8 +176,9 @@ object ExpressionGen {
         )
       case frontend.AST.Sub(_,_) =>
         ListBuffer(
-            SubS(rd, rd, rm),
-            BranchLinkCond(OF, addRTE(Overflow))
+            Cmp(rd, rm),
+            MovCond(cond, rd, Imm_Int(INT_TRUE)),
+            MovCond(cond.oppositeCmp, rd, Imm_Int(INT_FALSE))
         )
     }
   }
