@@ -33,7 +33,7 @@ object Functions {
       val instructions = ListBuffer[Instr](Push(ListBuffer(R14_LR)))
 
       for (stat <- stats) {
-        instructions ++= transStat(stat)
+        instructions ++= transStat(stat, instructions)
       }
 
       SP_scope = prevScopeSP

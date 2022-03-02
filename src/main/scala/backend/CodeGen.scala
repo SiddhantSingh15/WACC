@@ -54,20 +54,20 @@ object CodeGen {
 
   private var instrs: ListBuffer[Instr] = ListBuffer.empty[Instr]
 
-  def transStat(stat: Stat): ListBuffer[Instr] = {
+  def transStat(stat: Stat, instrs: ListBuffer[Instr]): ListBuffer[Instr] = {
     stat match {
-      case Read(assignLHS)                => transRead(assignLHS)
-      case Free(expr)                     => transFree(expr)
-      case Return(expr)                   => transReturn(expr)
-      case Exit(expr)                     => transExit(expr)
-      case Print(expr)                    => transPrint(expr, false)
-      case Println(expr)                  => transPrint(expr, true)
-      case If(expr, statThen, statElse)   => transIf(expr, statThen, statElse)
-      case While(expr, stats)             => transWhile(expr, stats)
-      case Begin(stats)                   => transBegin(stats)
-      case AssignLR(assignLHS, assignRHS) => transAssignment(assignLHS, assignRHS)
-      case TypeAssign(t, ident, rhs)      => translateDeclaration(t, ident, rhs)
-      case _                              => ListBuffer.empty[Instr]  
+      case Read(assignLHS)                => instrs ++= transRead(assignLHS)
+      case Free(expr)                     => instrs ++= transFree(expr)
+      case Return(expr)                   => instrs ++= transReturn(expr)
+      case Exit(expr)                     => instrs ++= transExit(expr)
+      case Print(expr)                    => instrs ++= transPrint(expr, false)
+      case Println(expr)                  => instrs ++= transPrint(expr, true)
+      case If(expr, statThen, statElse)   => transIf(expr, statThen, statElse, instrs)
+      case While(expr, stats)             => transWhile(expr, stats, instrs)
+      case Begin(stats)                   => transBegin(stats, instrs)
+      case AssignLR(assignLHS, assignRHS) => instrs ++= transAssignment(assignLHS, assignRHS)
+      case TypeAssign(t, ident, rhs)      => instrs ++= translateDeclaration(t, ident, rhs)
+      case _                              => instrs  
     }
   }
 
@@ -132,9 +132,9 @@ object CodeGen {
       transFunction(funcs(i))
     }
 
-    val instructions = ListBuffer[Instr](Push(ListBuffer(R14_LR)))
+    var instructions = ListBuffer[Instr](Push(ListBuffer(R14_LR)))
     stats.foreach((s: Stat) => {
-      instructions ++= transStat(s)
+      instructions = transStat(s, instructions)
       }
     )
 

@@ -9,53 +9,56 @@ import backend.Operand.{Imm_Int}
 import backend.codeGeneration.ExpressionGen.transExp
 
 object ScopeGen {
-  private def transScope(stats: List[Stat]): ListBuffer[Instr] = {
+  private def transScope(stats: List[Stat], currInstr: ListBuffer[Instr]): ListBuffer[Instr] = {
     symbTable = symbTable.nextScope
-	  val instructions = ListBuffer.empty[Instr]
+
+	var instructions = currInstr
       stats.foreach((s: Stat) => {
-        instructions ++= transStat(s)
+        instructions = transStat(s, instructions)
     	}
     )
 	symbTable = symbTable.prev
 	instructions
   }
 
-	def transBegin(stats: List[Stat]): ListBuffer[Instr] = {
-		transScope(stats)
+	def transBegin(stats: List[Stat], currInstr: ListBuffer[Instr]): ListBuffer[Instr] = {
+		transScope(stats, currInstr)
 	}
 
-	def transIf(expr: Expr, statThen: List[Stat], statElse: List[Stat]): ListBuffer[Instr] = {
+	def transIf(expr: Expr, statThen: List[Stat], statElse: List[Stat], currInstr: ListBuffer[Instr]): ListBuffer[Instr] = {
 		val freeRegister = saveReg()
-		val instr = ListBuffer.empty[Instr]
-		instr ++= transExp(expr, freeRegister)
-		instr += Cmp(freeRegister, Imm_Int(0))
+		currInstr ++= transExp(expr, freeRegister)
+		currInstr += Cmp(freeRegister, Imm_Int(0))
 		restoreReg(freeRegister)
 
 		val elseLabel = funcTable.getNext()
-		instr += BranchCond(EQ, elseLabel)
+		currInstr += BranchCond(EQ, elseLabel)
 
-		val thenInstr = transScope(statThen)
+		val thenInstr = transScope(statThen, currInstr)
 		val thenLabel = funcTable.getNext()
 
-		instr += Branch(thenLabel)
+		thenInstr += Branch(thenLabel)
 		funcTable.add(thenLabel, thenInstr)		
 
-		val elseInstrs = transScope(statElse)
+		currLabel = elseLabel
+		val elseInstrs = transScope(statElse, ListBuffer.empty[Instr])
 		funcTable.add(elseLabel, elseInstrs)
 
-		instr
+		currLabel = thenLabel
+		ListBuffer.empty[Instr]
 	}
 
-	def transWhile(expr: Expr, stats: List[Stat]): ListBuffer[Instr] = {
+	def transWhile(expr: Expr, stats: List[Stat], currInstr: ListBuffer[Instr]): ListBuffer[Instr] = {
 		val instr = ListBuffer.empty[Instr]
 		val nextLabel = funcTable.getNext()
 
-		instr += Branch(nextLabel)
-		funcTable.add(currLabel, instr)
+		currInstr += Branch(nextLabel)
+		funcTable.add(currLabel, currInstr)
 
 		val bodyLabel = funcTable.getNext()
-		val transBody = transScope(stats)
-		funcTable.add(bodyLabel, transBody)
+		currLabel = bodyLabel
+		val transBody = transScope(stats, ListBuffer.empty[Instr])
+		funcTable.add(currLabel, transBody)
 
 		currLabel = nextLabel
 
