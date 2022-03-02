@@ -29,7 +29,9 @@ object PrintGen {
                 printFunc = PrintInt
             case Bool =>
                 printFunc = PrintBool
-            case String | ArrayType(CharType) =>
+            case String =>
+                printFunc = PrintString
+            case ArrayType(CharType) =>
                 printFunc = PrintString
             case _ => ???
         }
@@ -41,7 +43,7 @@ object PrintGen {
             )
         }
         instrs += Bl(printFunc.functionLabel)
-        if (printFunc.function == null) { //TODO: remove usage of null
+        if (printFunc.function != null) { //TODO: remove usage of null
             funcTable.addFunction(printFunc.function)
         }  
 
