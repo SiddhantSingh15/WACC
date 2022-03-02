@@ -40,15 +40,14 @@ object PrettyPrinter {
     val Data(Label(l), s) = d
     fW.write(tab + l)
     fW.write(":\n")
-    fW.write(doubleTab + ".word")
-    fW.write(size(s))
+    fW.write(doubleTab + ".word " + size(s))
     fW.write("\n")
     fW.write(doubleTab + ".ascii \"")
     fW.write(s + "\"" + "\n")
   }
 
   private def size(str: String): Int = {
-    val chars = """"\\[0btnfr"'\\]""""
-    str.length -  chars.r.findAllIn(str).length
+    val chars = """\\[0btnfr"'\\]"""
+    str.length - chars.r.findAllIn(str).length
   }
 }
