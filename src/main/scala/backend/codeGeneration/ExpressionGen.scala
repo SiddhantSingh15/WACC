@@ -32,7 +32,7 @@ object ExpressionGen {
                 instructions ++= instrs
                 instructions += Ldr(reg, Load_Mem(number))
             case bool: BoolLiter =>
-                ListBuffer(Mov(rd, Imm_Int(boolToInt(bool))))
+                instructions += Mov(rd, Imm_Int(boolToInt(bool)))
 
             case CharLiter(character)=>
                 ListBuffer(Mov(rd, Imm_Char(character)))

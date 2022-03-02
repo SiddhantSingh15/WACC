@@ -67,7 +67,7 @@ object CodeGen {
       case Begin(stats)                   => transBegin(stats)
       case AssignLR(assignLHS, assignRHS) => transAssignment(assignLHS, assignRHS)
       case TypeAssign(t, ident, rhs)      => translateDeclaration(t, ident, rhs)
-      case _                              => ???
+      case _                              => ListBuffer.empty[Instr]
     }
   }
 
@@ -123,7 +123,7 @@ object CodeGen {
     }
   }
 
-  def transProgram(program: WaccProgram): (List[Data], List[(Label, List[Instr])]) = {
+  def transProgram(program: WaccProgram, symbTable: SymbolTable): (List[Data], List[(Label, List[Instr])]) = {
 
     this.symbTable = symbTable
     val WaccProgram(funcs, stats) = program
