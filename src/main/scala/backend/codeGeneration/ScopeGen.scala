@@ -31,22 +31,19 @@ object ScopeGen {
 		instr += Cmp(freeRegister, Imm_Int(0))
 		restoreReg(freeRegister)
 
-		val branch = funcTable.getNext()
-		instr += BranchCond(EQ, branch)
+		val elseLabel = funcTable.getNext()
+		instr += BranchCond(EQ, elseLabel)
 
-		instr ++= transScope(statThen)
-		val nextLabel = funcTable.getNext()
+		val thenInstr = transScope(statThen)
+		val thenLabel = funcTable.getNext()
 
-		instr += Branch(nextLabel)
-		userTable.add(currLabel, instr)
+		instr += Branch(thenLabel)
+		funcTable.add(thenLabel, thenInstr)		
 
-		currLabel = branch
+		val elseInstrs = transScope(statElse)
+		funcTable.add(elseLabel, elseInstrs)
 
-		val branchInstrs = transScope(statElse)
-		userTable.add(currLabel, branchInstrs)
-
-		currLabel = nextLabel
-		ListBuffer.empty[Instr]
+		instr
 	}
 
 	def transWhile(expr: Expr, stats: List[Stat]): ListBuffer[Instr] = {
@@ -54,21 +51,19 @@ object ScopeGen {
 		val nextLabel = funcTable.getNext()
 
 		instr += Branch(nextLabel)
-		userTable.add(currLabel, instr)
+		funcTable.add(currLabel, instr)
 
-		val body = funcTable.getNext()
-		currLabel = body
-
+		val bodyLabel = funcTable.getNext()
 		val transBody = transScope(stats)
-		userTable.add(currLabel, transBody)
+		funcTable.add(bodyLabel, transBody)
 
 		currLabel = nextLabel
 
 		val register = saveReg()
 
 		instr ++= transExp(expr, register)
-		instr += Cmp(register, Imm_Int(1))
+		instr += Cmp(register, Imm_Int(1)) // TODO: remove magic number
 		restoreReg(register)
-		instr += BranchCond(EQ, body)
+		instr += BranchCond(EQ, bodyLabel)
 	}
 }
