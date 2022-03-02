@@ -35,10 +35,10 @@ object ExpressionGen {
                 instructions += Mov(rd, Imm_Int(boolToInt(bool)))
 
             case CharLiter(character)=>
-                ListBuffer(Mov(rd, Imm_Char(character)))
+                ListBuffer(Mov(rd, Imm_Char(character.toString().charAt(0))))
 
-            case StrLiter(string) => 
-                val label = dataTable.addData(string)
+            case str: StrLiter => 
+                val label = dataTable.addStrLiter(str)
                 ListBuffer(Ldr(rd, DataLabel(label)))
 
             case PairLiter() => 
