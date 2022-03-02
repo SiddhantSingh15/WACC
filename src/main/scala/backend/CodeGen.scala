@@ -67,9 +67,8 @@ object CodeGen {
       case Begin(stats)                   => transBegin(stats)
       case AssignLR(assignLHS, assignRHS) => transAssignment(assignLHS, assignRHS)
       case TypeAssign(t, ident, rhs)      => translateDeclaration(t, ident, rhs)
-      case _                              => ???
+      case _                              => ListBuffer.empty[Instr]
     }
-    ListBuffer.empty[Instr]
   }
 
   def incrementSP(toInc: Int): ListBuffer[Instr] = {
@@ -124,17 +123,19 @@ object CodeGen {
     }
   }
 
-  def transProgram(program: WaccProgram): (List[Data], List[(Label, List[Instr])]) = {
+  def transProgram(program: WaccProgram, symbTable: SymbolTable): (List[Data], List[(Label, List[Instr])]) = {
 
     this.symbTable = symbTable
     val WaccProgram(funcs, stats) = program
 
-    // TODO: functions
+    for (i <- funcs.indices) {
+      transFunction(funcs(i))
+    }
 
     val instructions = ListBuffer[Instr](Push(ListBuffer(R14_LR)))
     stats.foreach((s: Stat) => {
       instructions ++= transStat(s)
-    }
+      }
     )
 
     instructions ++= incrementSP(stackPointer)

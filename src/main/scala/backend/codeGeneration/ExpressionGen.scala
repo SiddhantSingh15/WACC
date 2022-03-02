@@ -29,9 +29,10 @@ object ExpressionGen {
         expr match {
             case IntLiter(number) =>
                 val (reg, instrs) = collectRegister(rd)
-
+                instructions ++= instrs
+                instructions += Ldr(reg, Load_Mem(number))
             case bool: BoolLiter =>
-                ListBuffer(Mov(rd, Imm_Int(boolToInt(bool))))
+                instructions += Mov(rd, Imm_Int(boolToInt(bool)))
 
             case CharLiter(character)=>
                 ListBuffer(Mov(rd, Imm_Char(character)))
@@ -57,7 +58,6 @@ object ExpressionGen {
 
             case _ => ListBuffer.empty[Instr]
         }
-        ListBuffer.empty[Instr]
     }
 
     def transUnOp(op: UnOp, rd: Register): ListBuffer[Instr] = {
