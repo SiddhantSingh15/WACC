@@ -67,7 +67,7 @@ object CodeGen {
       case Begin(stats)                   => transBegin(stats)
       case AssignLR(assignLHS, assignRHS) => transAssignment(assignLHS, assignRHS)
       case TypeAssign(t, ident, rhs)      => translateDeclaration(t, ident, rhs)
-      case _                              => ListBuffer.empty[Instr]
+      case _                              => ListBuffer.empty[Instr]  
     }
   }
 
