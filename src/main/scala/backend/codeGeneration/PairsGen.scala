@@ -109,7 +109,7 @@ object PairsGen {
     }
     tpe match {
       case Pair(PairElemWithType(a), PairElemWithType(b)) =>
-        if (pos == 0) {
+        if (pos == 1) {
           isByte(a)
         } else {
           isByte(b)
