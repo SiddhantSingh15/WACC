@@ -69,7 +69,6 @@ object CodeGen {
       case TypeAssign(t, ident, rhs)      => translateDeclaration(t, ident, rhs)
       case _                              => ???
     }
-    ListBuffer.empty[Instr]
   }
 
   def incrementSP(toInc: Int): ListBuffer[Instr] = {
@@ -129,12 +128,14 @@ object CodeGen {
     this.symbTable = symbTable
     val WaccProgram(funcs, stats) = program
 
-    // TODO: functions
+    for (i <- funcs.indices) {
+      transFunction(funcs(i))
+    }
 
     val instructions = ListBuffer[Instr](Push(ListBuffer(R14_LR)))
     stats.foreach((s: Stat) => {
       instructions ++= transStat(s)
-    }
+      }
     )
 
     instructions ++= incrementSP(stackPointer)
