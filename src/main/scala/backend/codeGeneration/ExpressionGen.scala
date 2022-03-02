@@ -121,6 +121,8 @@ object ExpressionGen {
             case lgOp: LogicFuncs => 
                 instructions += transLgOp(lgOp, rd, rm)
         }
+        restoreReg(rm)
+        instructions
     }
 
     def transMathOp(op: MathFuncs, rd: Register, rm: Register): ListBuffer[Instr] = {
@@ -176,7 +178,7 @@ object ExpressionGen {
 
         ListBuffer(
             Cmp(rd, rm),
-            MovCond(cond, rd, Imm_Int(INT_FALSE)),
+            MovCond(cond, rd, Imm_Int(INT_TRUE)),
             MovCond(cond.oppositeCmp, rd, Imm_Int(INT_FALSE))
         )
     }
