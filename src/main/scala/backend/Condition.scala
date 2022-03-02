@@ -29,7 +29,9 @@ object Condition {
     override val oppositeCmp: Condition = LT
   }
 // Overflow
-  case object OF extends Condition
+  case object OF extends Condition {
+    override def toString: String = "VS"
+  }
 // Carry Set
   case object CS extends Condition
 
