@@ -15,7 +15,7 @@ class dataTable {
   }
 
   private def getNext(): String ={
-    val label = "data:" + size.toString
+    val label = "msg_" + size.toString
     size += 1
     label
   }
