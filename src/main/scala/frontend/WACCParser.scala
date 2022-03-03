@@ -164,7 +164,7 @@ object Parser {
           ("!=".label("operator") #> NotEqual)
       ) :+
 
-      Ops(InfixR)(
+      Ops(InfixL)(
           ("&&".label("operator") #> And),
           ("||".label("operator") #> Or)
       )
