@@ -44,7 +44,7 @@ object Functions {
     SP_scope = stackPointer
     stackPointer += maxSpDepth
     var instructions = ListBuffer[Instr](Push(ListBuffer(R14_LR)))
-    instructions ++= subSP(maxSpDepth)
+    instructions ++= decrementSP(maxSpDepth)
 
     for (stat <- stats) {
       instructions = transStat(stat, instructions)
@@ -111,7 +111,7 @@ object Functions {
     val instrs = transExp(expr, register)
     instrs += Mov(resultRegister, register)
     if(stackPointer > 0) { 
-        instrs ++= addSP(stackPointer)
+        instrs ++= incrementSP(stackPointer)
     }
 
     instrs ++= ListBuffer(

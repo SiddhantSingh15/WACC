@@ -41,10 +41,10 @@ object CodeGen {
   val NO_OFFSET = 0
   
   private val ERROR = -1
-
+  //list of general registers
   final val generalRegisters: ListBuffer[Register] = 
     ListBuffer(R0, R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R11, R12)
-
+  //list of free registers
   private var freeRegisters: ListBuffer[Register] =
     ListBuffer(R4, R5, R6, R7, R8, R9, R10)
 
@@ -52,7 +52,7 @@ object CodeGen {
   final val popRegister: Register = R11
 
   private var instrs: ListBuffer[Instr] = ListBuffer.empty[Instr]
-
+  //translates statements into internal representation
   def transStat(stat: Stat, instrs: ListBuffer[Instr]): ListBuffer[Instr] = {
     stat match {
       case Read(assignLHS)                => instrs ++= transRead(assignLHS)
@@ -97,7 +97,7 @@ object CodeGen {
     instrs += backend.Opcodes.Sub(R13_SP, R13_SP, Imm_Int(curToDec))
     instrs
   }
-
+  //translates Exit statement, first translate E into a free register, freeRegister, then Mov contents of freeRegister to resultRegister.
   private def transExit(expr: Expr): ListBuffer[Instr] = {
     val availReg = saveReg()
     val instructions = ListBuffer.empty[Instr]
@@ -106,7 +106,7 @@ object CodeGen {
     restoreReg(availReg)
     instructions
   }
-
+  // Get a free register from freeRegisters list. If none available the popRegister is used.
   def saveReg(): Register = {
     if (freeRegisters.isEmpty) {
       return popRegister
@@ -115,13 +115,13 @@ object CodeGen {
     freeRegisters.remove(0)
     register
   }
-
+  ///* Add register back to freeRegisters list once finished with. */
   def restoreReg(reg: Register): Unit = {
     if (reg != popRegister) {
       reg +=: freeRegisters
     }
   }
-
+  ///* Translates program into our internal representation. Output is used to generate .s file*/
   def transProgram(program: WaccProgram, symbTable: SymbolTable): (List[Data], List[(Label, List[Instr])]) = {
 
     this.symbTable = symbTable
@@ -154,47 +154,11 @@ object CodeGen {
     (dataTable.table.toList, (funcTable.table ++ preDefFuncTable.table).toList)
   }
 
-  def subSP(sp: Int): ListBuffer[Instr] = {
-    val instructions = ListBuffer.empty[Instr]
-
-    if (sp == 0) {
-      return instructions
-    }
-
-    var currSP = sp
-
-    while (currSP > MAX_IMM_INT) {
-      currSP -= MAX_IMM_INT
-      instructions += Opcodes.Sub(R13_SP, R13_SP, Imm_Int(MAX_IMM_INT))
-    }
-
-    instructions += Opcodes.Sub(R13_SP, R13_SP, Imm_Int(currSP))
-    instructions
-  }
-
-  def addSP(sp: Int): ListBuffer[Instr] = {
-    val instructions = ListBuffer.empty[Instr]
-
-    if (sp == 0) {
-      return instructions
-    }
-
-    var currSP = sp
-
-    while (currSP > MAX_IMM_INT) {
-      currSP -= MAX_IMM_INT
-      instructions += Opcodes.Add(R13_SP, R13_SP, Imm_Int(MAX_IMM_INT))
-    }
-
-    instructions += Opcodes.Add(R13_SP, R13_SP, Imm_Int(currSP))
-    instructions
-  }
-
   private def typeOf(tpe: Type): Type = tpe match {
     case ArrayType(t) => t
     case _ => tpe
   }
-
+  // returns size for a particular type
   def getTypeSize(t: Type) : Int = {
     t match {
       case Int               => SIZE_INT
@@ -210,7 +174,7 @@ object CodeGen {
   def isByte(t : Type): Boolean = {
     t == Bool || t == CharType
   }
-
+  // gets type for a particular expr
   def getExprType(expr: Expr): Type = {
     expr match {
       case _: IntLiter         => Int

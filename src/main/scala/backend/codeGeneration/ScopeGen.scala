@@ -81,7 +81,7 @@ object ScopeGen {
     symbTable = symbTable.getNextScope
     val oldScopeSp = SP_scope
     val scopeMaxSpDepth = symbTable.spMaxDepth
-    currInstr ++= subSP(scopeMaxSpDepth)
+    currInstr ++= decrementSP(scopeMaxSpDepth)
     SP_scope = stackPointer
     stackPointer += scopeMaxSpDepth
     var instructions = currInstr
@@ -90,7 +90,7 @@ object ScopeGen {
         }
       )
     if (scopeMaxSpDepth > 0) {
-      instructions ++= addSP(scopeMaxSpDepth)
+      instructions ++= incrementSP(scopeMaxSpDepth)
       stackPointer -= scopeMaxSpDepth
     }
     SP_scope = oldScopeSp
