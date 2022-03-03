@@ -13,8 +13,8 @@ object ScopeGen {
   /* 
    * Translates the BEGIN function and returns a list of instructions.
    */
-	def transBegin(stats: List[Stat], currInstr: ListBuffer[Instr]): ListBuffer[Instr] = {
-		transScope(stats, currInstr)
+	def transBegin(stats: List[Stat]): Unit = {
+		transScope(stats)
 	}
 
   /*
@@ -23,27 +23,28 @@ object ScopeGen {
    * currInstr is the list of instructions that has been generated till the IF branch.
    * The function will append that list based on which branch to traverse.
    */
-	def transIf(expr: Expr, statThen: List[Stat], statElse: List[Stat], currInstr: ListBuffer[Instr]): ListBuffer[Instr] = {
+	def transIf(expr: Expr, statThen: List[Stat], statElse: List[Stat]): Unit = {
 		val freeRegister = saveReg()
-		currInstr ++= transExp(expr, freeRegister)
-		currInstr += Cmp(freeRegister, Imm_Int(0))
+		transExp(expr, freeRegister)
+		currInstructions += Cmp(freeRegister, Imm_Int(0))
 		restoreReg(freeRegister)
 
 		val elseLabel = funcTable.getNext()
-		currInstr += BranchCond(EQ, elseLabel)
+		currInstructions += BranchCond(EQ, elseLabel)
 
-		val thenInstr = transScope(statThen, currInstr)
+		transScope(statThen)
 		val thenLabel = funcTable.getNext()
 
-		thenInstr += Branch(thenLabel)
-		funcTable.add(currLabel, thenInstr)		
+		currInstructions += Branch(thenLabel)
+		funcTable.add(currLabel, currInstructions)		
 
 		currLabel = elseLabel
-		val elseInstrs = transScope(statElse, ListBuffer.empty[Instr])
-		funcTable.add(currLabel, elseInstrs)
+    currInstructions = ListBuffer.empty[Instr]
+		transScope(statElse)
+		funcTable.add(currLabel, currInstructions)
 
 		currLabel = thenLabel
-		ListBuffer.empty[Instr]
+		currInstructions = ListBuffer.empty[Instr]
 	}
 
   /*
@@ -52,49 +53,49 @@ object ScopeGen {
    * currInstr is the list of instructions that has been generated till the While branch.
    * The function will append that list based on which branch to traverse.
    */
-	def transWhile(expr: Expr, stats: List[Stat], currInstr: ListBuffer[Instr]): ListBuffer[Instr] = {
-		val instr = ListBuffer.empty[Instr]
+	def transWhile(expr: Expr, stats: List[Stat]): Unit = {
+		
 		val nextLabel = funcTable.getNext()
 
-		currInstr += Branch(nextLabel)
-		funcTable.add(currLabel, currInstr)
+		currInstructions += Branch(nextLabel)
+		funcTable.add(currLabel, currInstructions)
 
 		val bodyLabel = funcTable.getNext()
 		currLabel = bodyLabel
-		val transBody = transScope(stats, ListBuffer.empty[Instr])
-		funcTable.add(currLabel, transBody)
+    currInstructions = ListBuffer.empty[Instr]
+		transScope(stats)
+		funcTable.add(currLabel, currInstructions)
 
 		currLabel = nextLabel
+    currInstructions = ListBuffer.empty[Instr]
 
 		val register = saveReg()
 
-		instr ++= transExp(expr, register)
-		instr += Cmp(register, Imm_Int(1)) // TODO: remove magic number
+		transExp(expr, register)
+		currInstructions += Cmp(register, Imm_Int(1)) // TODO: remove magic number
 		restoreReg(register)
-		instr += BranchCond(EQ, bodyLabel)
+		currInstructions += BranchCond(EQ, bodyLabel)
 	}
 
   /*
    * Translates only the stats in the current scope.
    */
-  private def transScope(stats: List[Stat], currInstr: ListBuffer[Instr]): ListBuffer[Instr] = {
+  private def transScope(stats: List[Stat]): Unit = {
     symbTable = symbTable.getNextScope
     val oldScopeSp = SP_scope
     val scopeMaxSpDepth = symbTable.spMaxDepth
-    currInstr ++= decrementSP(scopeMaxSpDepth)
+    currInstructions ++= decrementSP(scopeMaxSpDepth)
     SP_scope = stackPointer
     stackPointer += scopeMaxSpDepth
-    var instructions = currInstr
-        stats.foreach((s: Stat) => {
-          instructions = transStat(s, instructions)
+    stats.foreach((s: Stat) => {
+          transStat(s)
         }
       )
     if (scopeMaxSpDepth > 0) {
-      instructions ++= incrementSP(scopeMaxSpDepth)
+      currInstructions ++= incrementSP(scopeMaxSpDepth)
       stackPointer -= scopeMaxSpDepth
     }
     SP_scope = oldScopeSp
     symbTable = symbTable.prev
-    instructions
   }
 }

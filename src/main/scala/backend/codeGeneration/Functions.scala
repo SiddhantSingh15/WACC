@@ -17,12 +17,11 @@ object Functions {
    * Returns a list of instructions:
    *   Bl(label) + label returned by incrementing stack pointer + Mov(freeReg, resReg)
    */
-  def transCall(ident : Ident, arguments : ArgList, freeRegister : Register): ListBuffer[Instr] = {
-    val (instrs, toInc) = storeArguments(arguments, freeRegister)
-    instrs += Bl(Label("f_" + ident))
-    instrs ++= incrementSP(toInc)
-    instrs += Mov(freeRegister, resultRegister)
-    instrs
+  def transCall(ident : Ident, arguments : ArgList, freeRegister : Register): Unit = {
+    val toInc = storeArguments(arguments, freeRegister)
+    currInstructions += Bl(Label("f_" + ident))
+    currInstructions ++= incrementSP(toInc)
+    currInstructions += Mov(freeRegister, resultRegister)
   }
 
 
@@ -43,11 +42,11 @@ object Functions {
 
     SP_scope = stackPointer
     stackPointer += maxSpDepth
-    var instructions = ListBuffer[Instr](Push(ListBuffer(R14_LR)))
-    instructions ++= decrementSP(maxSpDepth)
+    currInstructions += Push(ListBuffer(R14_LR))
+    currInstructions ++= decrementSP(maxSpDepth)
 
     for (stat <- stats) {
-      instructions = transStat(stat, instructions)
+      transStat(stat)
     }
 
     if (maxSpDepth > 0) {
@@ -56,11 +55,12 @@ object Functions {
 
     SP_scope = prevScopeSP
     symbTable = symbTable.prev
-    instructions ++= ListBuffer(
+    currInstructions ++= ListBuffer(
       Pop(ListBuffer(R15_PC)),
       Ltorg
     )
-    funcTable.add(currLabel, instructions)
+    funcTable.add(currLabel, currInstructions)
+    currInstructions = ListBuffer.empty[Instr]
   }
 
   /*
@@ -68,21 +68,20 @@ object Functions {
    * Increments the stack pointer and offset.
    * Returns the list of instructions along with the total offset.
    */
-  private def storeArguments(arguments : ArgList, register : Register): (ListBuffer[Instr], Int) = {
-    var instructions = ListBuffer.empty[Instr]
+  private def storeArguments(arguments : ArgList, register : Register): Int = {
     var offset = 0
     val ArgList(args) = arguments
       
     for (a <- args.reverse) {
       val tpe = getExprType(a)
-      instructions ++= transExp(a, register)
-      instructions += StrOffsetIndex(isByte(tpe), register, R13_SP, -getTypeSize(tpe))
+      transExp(a, register)
+      currInstructions += StrOffsetIndex(isByte(tpe), register, R13_SP, -getTypeSize(tpe))
       stackPointer += getTypeSize(tpe)
       offset += getTypeSize(tpe)
     }
         
     stackPointer -= offset
-    (instructions, offset)
+    offset
   }
   
   /*
@@ -106,18 +105,17 @@ object Functions {
    * Takes in an Expr.
    * Returns the translated instructions list.
    */
-  def transReturn(expr : Expr): ListBuffer[Instr] = {
+  def transReturn(expr : Expr): Unit = {
     val register = saveReg()
-    val instrs = transExp(expr, register)
-    instrs += Mov(resultRegister, register)
+    transExp(expr, register)
+    currInstructions += Mov(resultRegister, register)
     if(stackPointer > 0) { 
-        instrs ++= incrementSP(stackPointer)
+        currInstructions ++= incrementSP(stackPointer)
     }
 
-    instrs ++= ListBuffer(
+    currInstructions ++= ListBuffer(
       Pop(ListBuffer(R15_PC))
     )        
     restoreReg(register)
-    instrs
   }
 }

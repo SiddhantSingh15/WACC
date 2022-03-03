@@ -15,11 +15,11 @@ object PrintGen {
    * Takes an expression and a boolean flag representing isLine.
    * Returns a list of instructions matching the type of expression and restores registers.
    */
-  def transPrint(expr: Expr, isLine: Boolean): ListBuffer[Instr] = {
+  def transPrint(expr: Expr, isLine: Boolean): Unit = {
     val t = getExprType(expr)
     val freeReg = saveReg()
-    val instrs = transExp(expr, freeReg)
-    instrs += Mov(resultRegister, freeReg)
+    transExp(expr, freeReg)
+    currInstructions += Mov(resultRegister, freeReg)
 
     // Chooses the print functions based on the expression type.
     var printFunc: PreDefFunc = null
@@ -44,13 +44,13 @@ object PrintGen {
           printFunc.msgs(i)
       )
     }
-    instrs += Bl(printFunc.functionLabel)
+    currInstructions += Bl(printFunc.functionLabel)
     if (printFunc.function != null) { //TODO: remove usage of null
       preDefFuncTable.addFunction(printFunc.function)
     }  
 
     if (isLine) {
-      instrs += Bl(PrintLn.functionLabel)
+      currInstructions += Bl(PrintLn.functionLabel)
       dataTable.addLabel(
         PrintLn.msgName(0),
         PrintLn.msgs(0)
@@ -58,6 +58,5 @@ object PrintGen {
       preDefFuncTable.addFunction(PrintLn.function)
     }
     restoreReg(freeReg)
-    instrs
   }
 }

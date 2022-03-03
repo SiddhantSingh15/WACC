@@ -15,7 +15,7 @@ object ReadGen {
   /* 
    * Translates the READ function and returns a list of instructions.
    */
-  def transRead(lhs: AssignLHS): ListBuffer[Instr] = {
+  def transRead(lhs: AssignLHS): Unit = {
     lhs match {
       case ident: Ident  => transReadIdent(ident)
       case ae: ArrayElem => transReadArrayElem(ae)
@@ -45,55 +45,46 @@ object ReadGen {
   /* 
    * Translates the Pair Element.
    */
-  def transReadPairElem(pe: PairElem, pos: Int): ListBuffer[Instr] = {
+  def transReadPairElem(pe: PairElem, pos: Int): Unit = {
     val freeReg = saveReg()
     val ident: Ident = pe.expr match {
       case id: Ident => id
       case _         => null
     }
-    val instructions = transPairElem(ident, pos, freeReg)
+    transPairElem(ident, pos, freeReg)
     val (_, pairType) = symbTable(ident)
     val t = getPairElemType(pairType, pos)
     // value must be in R0 for branch
-    instructions += Mov(resultRegister, freeReg)
+    currInstructions += Mov(resultRegister, freeReg)
     restoreReg(freeReg)
-    instructions += readBranch(t)
-    instructions
+    currInstructions += readBranch(t)
   }
 
   /* 
    * Translates the READ function identifier for Char and IntType only.
    */
-  private def transReadIdent(ident: Ident): ListBuffer[Instr] = {
-    val instructions = ListBuffer.empty[Instr]
+  private def transReadIdent(ident: Ident): Unit = {
+
     val freeReg = saveReg()
     val (spIndex, identType) = symbTable(ident)
     val spOffset = stackPointer - spIndex
-    instructions += Add(
-      freeReg,
-      R13_SP,
-      Imm_Int(spOffset)
-    )
-    instructions += Mov(resultRegister, freeReg)
+    currInstructions += Add(freeReg, R13_SP, Imm_Int(spOffset))
+    currInstructions += Mov(resultRegister, freeReg)
     restoreReg(freeReg)
-    instructions += readBranch(identType)
-    instructions
+    currInstructions += readBranch(identType)
   }
 
   /*
    * Translates the array element and returns the list of instructions.
    */
-  def transReadArrayElem(ae: ArrayElem): ListBuffer[Instr] = {
+  def transReadArrayElem(ae: ArrayElem): Unit = {
     val ArrayElem(ident, exprs) = ae
-    val instructions = ListBuffer.empty[Instr]
     val resReg = saveReg()
-    val (instrs, _) = transArrayElem(ident, exprs, resReg)
-    instructions ++= instrs
-    instructions += Mov(resultRegister, resReg)
+    transArrayElem(ident, exprs, resReg)
+    currInstructions += Mov(resultRegister, resReg)
     restoreReg(resReg)
     val t = getExprType(ae)
-    instructions += readBranch(t)
-    instructions
+    currInstructions += readBranch(t)
   }
 
   /*
