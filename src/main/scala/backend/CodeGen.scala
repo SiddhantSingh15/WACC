@@ -19,11 +19,10 @@ object CodeGen {
 
   // Values for code generation 
   var stackPointer = 0
-  var currLabel = Label("main")
+  var currLabel: Label = _
   var symbTable: SymbolTable = _
   var dataTable = new dataTable
   var funcTable = new functionTable
-  var userTable = new functionTable
   
   val SIZE_INT = 4
   val SIZE_CHAR = 1
@@ -38,7 +37,6 @@ object CodeGen {
   val MAX_IMM_INT = 1024
   
   var SP_scope  = 0
-  var SP_curr = 0
   val NO_OFFSET = 0
   
   private val ERROR = -1
@@ -131,6 +129,8 @@ object CodeGen {
     for (i <- funcs.indices) {
       transFunction(funcs(i))
     }
+
+    currLabel = Label("main")
 
     var instructions = ListBuffer[Instr](Push(ListBuffer(R14_LR)))
     stats.foreach((s: Stat) => {
