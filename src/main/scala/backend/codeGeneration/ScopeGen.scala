@@ -11,23 +11,23 @@ import backend.codeGeneration.ExpressionGen.transExp
 object ScopeGen {
   private def transScope(stats: List[Stat], currInstr: ListBuffer[Instr]): ListBuffer[Instr] = {
     symbTable = symbTable.getNextScope
-	val oldScopeSp = SP_scope
-	val scopeMaxSpDepth = symbTable.spMaxDepth
-	currInstr ++= subSP(scopeMaxSpDepth)
-	SP_scope = stackPointer
-	stackPointer += scopeMaxSpDepth
-	var instructions = currInstr
-      stats.foreach((s: Stat) => {
-        instructions = transStat(s, instructions)
-    	}
-    )
-	if (scopeMaxSpDepth > 0) {
-		instructions ++= addSP(scopeMaxSpDepth)
-		stackPointer -= scopeMaxSpDepth
-	}
-	SP_scope = oldScopeSp
-	symbTable = symbTable.prev
-	instructions
+    val oldScopeSp = SP_scope
+    val scopeMaxSpDepth = symbTable.spMaxDepth
+    currInstr ++= subSP(scopeMaxSpDepth)
+    SP_scope = stackPointer
+    stackPointer += scopeMaxSpDepth
+    var instructions = currInstr
+        stats.foreach((s: Stat) => {
+          instructions = transStat(s, instructions)
+        }
+      )
+    if (scopeMaxSpDepth > 0) {
+      instructions ++= addSP(scopeMaxSpDepth)
+      stackPointer -= scopeMaxSpDepth
+    }
+    SP_scope = oldScopeSp
+    symbTable = symbTable.prev
+    instructions
   }
 
 	def transBegin(stats: List[Stat], currInstr: ListBuffer[Instr]): ListBuffer[Instr] = {

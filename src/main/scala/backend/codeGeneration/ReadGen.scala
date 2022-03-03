@@ -37,10 +37,7 @@ object ReadGen {
     case _ => null
   }
 
-  def transReadPairElem(
-      pe: PairElem,
-      pos: Int
-  ): ListBuffer[Instr] = {
+  def transReadPairElem(pe: PairElem, pos: Int): ListBuffer[Instr] = {
     val freeReg = saveReg()
     val ident: Ident = pe.expr match {
       case id: Ident => id

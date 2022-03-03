@@ -83,17 +83,17 @@ object Functions {
     
 
     def transReturn(expr : Expr): ListBuffer[Instr] = {
-        val register = saveReg()
-        val instrs = transExp(expr, register)
-        instrs += Mov(resultRegister, register)
-        if(stackPointer > 0) { 
-            instrs ++= addSP(stackPointer)
-        }
+      val register = saveReg()
+      val instrs = transExp(expr, register)
+      instrs += Mov(resultRegister, register)
+      if(stackPointer > 0) { 
+          instrs ++= addSP(stackPointer)
+      }
 
-        instrs ++= ListBuffer(
-            Pop(ListBuffer(R15_PC))
-        )        
-        restoreReg(register)
-        instrs
+      instrs ++= ListBuffer(
+        Pop(ListBuffer(R15_PC))
+      )        
+      restoreReg(register)
+      instrs
     }
 }

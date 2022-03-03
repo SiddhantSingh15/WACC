@@ -11,95 +11,79 @@ import backend.DefinedFuncs.PreDefinedFuncs._
 
 object ArraysGen {
 
-    def getInnerType(arrayT: Type): Type = 
-        arrayT match {
-            case ArrayType(innerType) => innerType
-            case _                    => ???
-        }
+  def getInnerType(arrayT: Type): Type 
+    = arrayT match {
+        case ArrayType(innerType) => innerType
+        case _                    => ???
+  }
 
-    def loadArrayElem(
-        ident: Ident,
-        exprs: List[Expr],
-        rd: Register
-    ): ListBuffer[Instr] = {
-        val (instructions, isByte) = transArrayElem(ident, exprs, rd)
-        instructions += Ldr(isByte, rd, rd, 0)
-    }
+  def loadArrayElem(ident: Ident, exprs: List[Expr], rd: Register): ListBuffer[Instr] = {
+    val (instructions, isByte) = transArrayElem(ident, exprs, rd)
+    instructions += Ldr(isByte, rd, rd, 0)
+  }
 
-    def storeArrayElem(
-        ident: Ident,
-        exprs: List[Expr],
-        rd: Register
-    ): ListBuffer[Instr] = {
-        val freeReg = saveReg()
-        val (instructions, isByte) = transArrayElem(ident, exprs, freeReg)
-        instructions += Str(isByte, rd, freeReg, 0)
-        restoreReg(freeReg)
-        instructions
-    }
+  def storeArrayElem(ident: Ident, exprs: List[Expr], rd: Register): ListBuffer[Instr] = {
+    val freeReg = saveReg()
+    val (instructions, isByte) = transArrayElem(ident, exprs, freeReg)
+    instructions += Str(isByte, rd, freeReg, 0)
+    restoreReg(freeReg)
+    instructions
+  }
   
-    def transArrayElem(
-        ident: Ident,
-        exprs: List[Expr],
-        rd: Register
-    ): (ListBuffer[Instr], Boolean) = {
-        val instructions = ListBuffer.empty[Instr]
-        var (i, t) = symbTable(ident)
-        val typeSize = getTypeSize(t)
-        val spOffset = stackPointer - i
-        instructions += Add(rd, R13_SP, Imm_Int(spOffset))
-        val nextReg = saveReg()
+  def transArrayElem(ident: Ident, exprs: List[Expr], rd: Register): (ListBuffer[Instr], Boolean) = {
+    val instructions = ListBuffer.empty[Instr]
+    var (i, t) = symbTable(ident)
+    val typeSize = getTypeSize(t)
+    val spOffset = stackPointer - i
+    instructions += Add(rd, R13_SP, Imm_Int(spOffset))
+    val nextReg = saveReg()
 
-        for (expr <- exprs) {
-            t = getInnerType(t)
-            instructions ++= transExp(expr, nextReg)
-            instructions += Ldr(rd, RegAdd(rd))
-            instructions += Mov(resultRegister, nextReg)
-            instructions += Mov(R1, rd)
-            instructions += Bl(addRTE(ArrayBounds))
-            instructions += Add(rd, rd, Imm_Int(SIZE_INT))
-            
-            if (isByte(t)) {
-                instructions += Add(rd, rd, nextReg)
-            } else {
-                instructions += Add(rd, rd, LSL(nextReg, Imm_Int(2)))
-            }
-        }
-        restoreReg(nextReg)
-        (instructions, isByte(t))
+    for (expr <- exprs) {
+      t = getInnerType(t)
+      instructions ++= transExp(expr, nextReg)
+      instructions += Ldr(rd, RegAdd(rd))
+      instructions += Mov(resultRegister, nextReg)
+      instructions += Mov(R1, rd)
+      instructions += Bl(addRTE(ArrayBounds))
+      instructions += Add(rd, rd, Imm_Int(SIZE_INT))
+      
+      if (isByte(t)) {
+        instructions += Add(rd, rd, nextReg)
+      } else {
+        instructions += Add(rd, rd, LSL(nextReg, Imm_Int(2)))
+      }
+    }
+    restoreReg(nextReg)
+    (instructions, isByte(t))
+  }
+
+  def transArrayLiter(t: Type, arr: List[Expr], freeReg: Register): ListBuffer[Instr] = {
+    val instructions = ListBuffer.empty[Instr]
+    val ArrayType(innerT) = t
+    val size = arr.size
+
+    instructions += Ldr(
+      resultRegister,
+      Load_Mem(SIZE_INT + size * getTypeSize(innerT))
+    )
+    instructions += Bl(Label("malloc"))
+    instructions += Mov(freeReg, resultRegister)
+
+    val nextFreeReg = saveReg()
+    val isbyte = isByte(innerT)
+
+    for (i <- 0 until size) {
+      instructions ++= transExp(arr(i), nextFreeReg)
+      if (isbyte) {
+        instructions += Str(isbyte, nextFreeReg, freeReg, i + SIZE_INT)
+      } else {
+        instructions += Str(isbyte, nextFreeReg, freeReg, (i + 1) * SIZE_ADDR)
+      }
     }
 
-    def transArrayLiter(
-        t: Type,
-        arr: List[Expr],
-        freeReg: Register
-    ): ListBuffer[Instr] = {
-        val instructions = ListBuffer.empty[Instr]
-        val ArrayType(innerT) = t
-        val size = arr.size
-
-        instructions += Ldr(
-            resultRegister,
-            Load_Mem(SIZE_INT + size * getTypeSize(innerT))
-        )
-        instructions += Bl(Label("malloc"))
-        instructions += Mov(freeReg, resultRegister)
-
-        val nextFreeReg = saveReg()
-        val isbyte = isByte(innerT)
-
-        for (i <- 0 until size) {
-            instructions ++= transExp(arr(i), nextFreeReg)
-            if (isbyte) {
-                instructions += Str(isbyte, nextFreeReg, freeReg, i + SIZE_INT)
-            } else {
-                instructions += Str(isbyte, nextFreeReg, freeReg, (i + 1) * SIZE_ADDR)
-            }
-        }
-
-        instructions += Ldr(nextFreeReg, Load_Mem(size))
-        instructions += Str(nextFreeReg, RegAdd(freeReg))
-        restoreReg(nextFreeReg)
-        instructions
-    }
+    instructions += Ldr(nextFreeReg, Load_Mem(size))
+    instructions += Str(nextFreeReg, RegAdd(freeReg))
+    restoreReg(nextFreeReg)
+    instructions
+  }
 }

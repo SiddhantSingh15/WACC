@@ -7,11 +7,7 @@ object PrettyPrinter {
   private val tab = "\t"
   private val doubleTab = tab * 2
 
-  def prettyPrint(
-      waccFilename: String,
-      data: List[Data],
-      instrs: List[(Label, List[Instr])]
-  ): Unit = {
+  def prettyPrint(waccFilename: String, data: List[Data], instrs: List[(Label, List[Instr])]): Unit = {
     val assemblyFilename = waccFilename.replaceFirst(".wacc", ".s")
     var file = new File(assemblyFilename)
 
