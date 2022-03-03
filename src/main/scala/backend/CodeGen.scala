@@ -132,12 +132,16 @@ object CodeGen {
 
     currLabel = Label("main")
 
+    SP_scope = stackPointer
+    val maxSpDepth = symbTable.spMaxDepth
+    stackPointer += maxSpDepth
     var instructions = ListBuffer[Instr](Push(ListBuffer(R14_LR)))
+    instructions ++= decrementSP(maxSpDepth)
     stats.foreach((s: Stat) => {
       instructions = transStat(s, instructions)
       }
     )
-
+    
     instructions ++= incrementSP(stackPointer)
     instructions ++= ListBuffer(
       Ldr(resultRegister, Load_Mem(0)), // TODO: magic number

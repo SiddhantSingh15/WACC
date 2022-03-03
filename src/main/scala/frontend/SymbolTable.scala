@@ -2,6 +2,7 @@ package frontend
 
 import scala.collection.mutable.HashMap
 import scala.collection.mutable
+import backend.CodeGen._
 import AST._
 
 case class Info(t: Type, pList: Option[List[Type]])
@@ -148,6 +149,10 @@ case class SymbolTable(
       }
     }
     result
+  }
+
+  def spMaxDepth: Int = {
+    varMap.toList.map(x => getTypeSize(x._2._2)).sum
   }
 
 }
