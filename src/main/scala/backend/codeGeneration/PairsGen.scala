@@ -94,9 +94,9 @@ object PairsGen {
   /*
    * Loads pair of name "ident" into passed in rd.
    */
-  def getPairElem(ident: Ident, pos: Int, rd: Register): Instr = {
+  def getPairElem(ident: Ident, pos: Int, rd: Register): Unit = {
     val (_, tpe) = symbTable(ident)
-    Ldr(isBytePair(tpe, pos), rd, rd, NO_OFFSET)
+    currInstructions += Ldr(isBytePair(tpe, pos), rd, rd, NO_OFFSET)
   }
 
   /*
