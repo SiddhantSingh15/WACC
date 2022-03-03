@@ -33,6 +33,8 @@ object PrintGen {
                 printFunc = PrintString
             case ArrayType(CharType) =>
                 printFunc = PrintString
+            case ArrayType(_) =>
+                printFunc = PrintReference
             case _ => ???
         }
         
