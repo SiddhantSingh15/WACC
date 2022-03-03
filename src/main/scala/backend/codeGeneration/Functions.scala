@@ -24,16 +24,21 @@ object Functions {
       val Func(tpe, id, paramList, stats) = f 
       currLabel = Label("f_" + id)
       val prevScopeSP = SP_scope
-      symbTable = symbTable.nextScope
-
+      symbTable = symbTable.getNextScope
+      val maxSpDepth = symbTable.spMaxDepth(id)
       translateFuncParams(paramList)
 
       SP_scope = stackPointer
-      
+      stackPointer += maxSpDepth
       var instructions = ListBuffer[Instr](Push(ListBuffer(R14_LR)))
+      instructions ++= subSP(maxSpDepth)
 
       for (stat <- stats) {
         instructions = transStat(stat, instructions)
+      }
+
+      if (maxSpDepth > 0) {
+        stackPointer -= maxSpDepth
       }
 
       SP_scope = prevScopeSP
