@@ -14,6 +14,7 @@ import backend.DefinedFuncs.PreDefinedFuncs.{FreeArray, FreePair}
 
 object FreeGen {
 
+  /*Translating a Free statement into ARM language*/
   def transFree(expr: Expr): ListBuffer[Instr] = {
     val instructions = ListBuffer.empty[Instr]
     expr match {
@@ -22,6 +23,8 @@ object FreeGen {
         val (i, t) = symbTable(id)
 
         instructions += Ldr(freeRegister, R13_SP, stackPointer - i)
+
+        /*Have to move to R0 to call free function*/
         instructions += Mov(resultRegister, freeRegister)
 
         restoreReg(freeRegister)
