@@ -34,8 +34,8 @@ object ExpressionGen {
             case bool: BoolLiter =>
                 instructions += Mov(rd, Imm_Int(boolToInt(bool)))
 
-            case CharLiter(character)=>
-                ListBuffer(Mov(rd, Imm_Char(character.toString().charAt(0))))
+            case character: CharLiter =>
+                ListBuffer(Mov(rd, Imm_Char(character.toString.charAt(1))))
 
             case str: StrLiter => 
                 val label = dataTable.addStrLiter(str)
