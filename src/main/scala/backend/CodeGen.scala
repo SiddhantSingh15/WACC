@@ -24,6 +24,7 @@ object CodeGen {
   var dataTable = new dataTable
   var funcTable = new functionTable
   var preDefFuncTable = new functionTable
+  var currInstructions = ListBuffer.empty[Instr]
   
   val SIZE_INT = 4
   val SIZE_CHAR = 1
@@ -41,9 +42,7 @@ object CodeGen {
   val NO_OFFSET = 0
   
   private val ERROR = -1
-  //list of general registers
-  final val generalRegisters: ListBuffer[Register] = 
-    ListBuffer(R0, R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R11, R12)
+  
   //list of free registers
   private var freeRegisters: ListBuffer[Register] =
     ListBuffer(R4, R5, R6, R7, R8, R9, R10)
@@ -51,22 +50,21 @@ object CodeGen {
   final val resultRegister: Register = R0
   final val popRegister: Register = R11
 
-  private var instrs: ListBuffer[Instr] = ListBuffer.empty[Instr]
   //translates statements into internal representation
-  def transStat(stat: Stat, instrs: ListBuffer[Instr]): ListBuffer[Instr] = {
+  def transStat(stat: Stat): Unit = {
     stat match {
-      case Read(assignLHS)                => instrs ++= transRead(assignLHS)
-      case Free(expr)                     => instrs ++= transFree(expr)
-      case Return(expr)                   => instrs ++= transReturn(expr)
-      case Exit(expr)                     => instrs ++= transExit(expr)
-      case Print(expr)                    => instrs ++= transPrint(expr, false)
-      case Println(expr)                  => instrs ++= transPrint(expr, true)
-      case If(expr, statThen, statElse)   => transIf(expr, statThen, statElse, instrs)
-      case While(expr, stats)             => transWhile(expr, stats, instrs)
-      case Begin(stats)                   => transBegin(stats, instrs)
-      case AssignLR(assignLHS, assignRHS) => instrs ++= transAssignment(assignLHS, assignRHS)
-      case TypeAssign(t, ident, rhs)      => instrs ++= translateDeclaration(t, ident, rhs)
-      case _                              => instrs  
+      case Read(assignLHS)                => transRead(assignLHS)
+      case Free(expr)                     => transFree(expr)
+      case Return(expr)                   => transReturn(expr)
+      case Exit(expr)                     => transExit(expr)
+      case Print(expr)                    => transPrint(expr, false) // TODO: remove magic boolean
+      case Println(expr)                  => transPrint(expr, true)
+      case If(expr, statThen, statElse)   => transIf(expr, statThen, statElse)
+      case While(expr, stats)             => transWhile(expr, stats)
+      case Begin(stats)                   => transBegin(stats)
+      case AssignLR(assignLHS, assignRHS) => transAssignment(assignLHS, assignRHS)
+      case TypeAssign(t, ident, rhs)      => translateDeclaration(t, ident, rhs)
+      case _                              => 
     }
   }
 
@@ -98,13 +96,11 @@ object CodeGen {
     instrs
   }
   //translates Exit statement, first translate E into a free register, freeRegister, then Mov contents of freeRegister to resultRegister.
-  private def transExit(expr: Expr): ListBuffer[Instr] = {
+  private def transExit(expr: Expr): Unit = {
     val availReg = saveReg()
-    val instructions = ListBuffer.empty[Instr]
-    instructions ++= transExp(expr, availReg)
-    instructions ++= ListBuffer[Instr](Mov(resultRegister, availReg), Bl(Label("exit"))) 
+    transExp(expr, availReg)
+    currInstructions ++= ListBuffer[Instr](Mov(resultRegister, availReg), Bl(Label("exit"))) 
     restoreReg(availReg)
-    instructions
   }
   // Get a free register from freeRegisters list. If none available the popRegister is used.
   def saveReg(): Register = {
@@ -136,21 +132,21 @@ object CodeGen {
     SP_scope = stackPointer
     val maxSpDepth = symbTable.spMaxDepth
     stackPointer += maxSpDepth
-    var instructions = ListBuffer[Instr](Push(ListBuffer(R14_LR)))
-    instructions ++= decrementSP(maxSpDepth)
+    currInstructions += Push(ListBuffer(R14_LR))
+    currInstructions ++= decrementSP(maxSpDepth)
     stats.foreach((s: Stat) => {
-      instructions = transStat(s, instructions)
+      transStat(s)
       }
     )
     
-    instructions ++= incrementSP(stackPointer)
-    instructions ++= ListBuffer(
+    currInstructions ++= incrementSP(stackPointer)
+    currInstructions ++= ListBuffer(
       Ldr(resultRegister, Load_Mem(0)), // TODO: magic number
       Pop(ListBuffer(R15_PC)),
       Ltorg
     )
 
-    funcTable.add(currLabel, instructions)
+    funcTable.add(currLabel, currInstructions)
     (dataTable.table.toList, (funcTable.table ++ preDefFuncTable.table).toList)
   }
 

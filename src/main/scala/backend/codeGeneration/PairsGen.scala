@@ -21,25 +21,23 @@ object PairsGen {
    * Takes an Ident, pair position and a register.
    * Returns a list of instructions.
    */
-  def transPairElem(ident: Ident, pos: Int, rd: Register): ListBuffer[Instr] = {
-    val instructions = ListBuffer.empty[Instr]
-    instructions ++= transExp(ident, rd)
-    instructions += Mov(resultRegister, rd)
-    instructions += Bl(addRTE(NPE))
+  def transPairElem(ident: Ident, pos: Int, rd: Register): Unit = {
+    transExp(ident, rd)
+    currInstructions += Mov(resultRegister, rd)
+    currInstructions += Bl(addRTE(NPE))
     
     if (pos == 1) {
-      instructions += Ldr(rd, RegAdd(rd))
+      currInstructions += Ldr(rd, RegAdd(rd))
     } else {
-      instructions += Ldr(rd, rd, SIZE_PAIR)
+      currInstructions += Ldr(rd, rd, SIZE_PAIR)
     }
-    instructions
   }
 
   /* 
    * Loads the pair into RD
    */
-  def transPairAssign(rhs: AssignRHS, ident: Ident, pos: Int, rd: Register): ListBuffer[Instr] = {
-    val instructions = ListBuffer.empty[Instr]
+  def transPairAssign(rhs: AssignRHS, ident: Ident, pos: Int, rd: Register): Unit = {
+    
     val (i, t) = symbTable(ident)
     val pElemType = 
     if (pos == 1) {
@@ -55,13 +53,11 @@ object PairsGen {
         case _                                => ???
       }
     }
-    val (isByte, instrs) = transAssignRHS(pElemType, rhs, rd)
-    instructions ++= instrs
+    val isByte = transAssignRHS(pElemType, rhs, rd)
     val nextRegister = saveReg()
-    instructions ++= transPairElem(ident, pos, nextRegister)
-    instructions += Str(isByte, rd, nextRegister, NO_OFFSET)
+    transPairElem(ident, pos, nextRegister)
+    currInstructions += Str(isByte, rd, nextRegister, NO_OFFSET)
     restoreReg(nextRegister)
-    instructions
   }
 
   /* 
@@ -69,41 +65,30 @@ object PairsGen {
    * Takes the type of the fst and snd, and a register
    * Returns the instructions list for the assignment.
    */
-  def transAssignRHSPair(tpe : Type, fst : Expr, snd: Expr, register : Register) : ListBuffer[Instr] = {
-    val instrs = ListBuffer.empty[Instr]
+  def transAssignRHSPair(tpe : Type, fst : Expr, snd: Expr, register : Register) : Unit = {
+
     val Pair(typeOne, typeTwo) = tpe 
     val nextRegister = saveReg()
 
-    instrs += Ldr(resultRegister, Load_Mem(2 * SIZE_PAIR))
-    instrs += Bl(Label("malloc"))
-    instrs += Mov(register, resultRegister)
+    currInstructions += Ldr(resultRegister, Load_Mem(2 * SIZE_PAIR))
+    currInstructions += Bl(Label("malloc"))
+    currInstructions += Mov(register, resultRegister)
 
-    instrs ++= transExp(fst, nextRegister)
+    transExp(fst, nextRegister)
 
-    instrs += Ldr(resultRegister ,Load_Mem(getPairTypeSize(typeOne)))
-    instrs += Bl(Label("malloc"))
-    instrs += Str(
-      isBytePair(tpe, 1),
-      nextRegister,
-      resultRegister,
-      NO_OFFSET
-    )
+    currInstructions += Ldr(resultRegister, Load_Mem(getPairTypeSize(typeOne)))
+    currInstructions += Bl(Label("malloc"))
+    currInstructions += Str(isBytePair(tpe, 1), nextRegister, resultRegister, NO_OFFSET)
 
-    instrs += Str(resultRegister , RegAdd(register))
-    instrs ++= transExp(snd, nextRegister)
-    instrs += Ldr(resultRegister, Load_Mem(getPairTypeSize(typeTwo)))
-    instrs += Bl(Label("malloc"))
+    currInstructions += Str(resultRegister , RegAdd(register))
+    transExp(snd, nextRegister)
+    currInstructions += Ldr(resultRegister, Load_Mem(getPairTypeSize(typeTwo)))
+    currInstructions += Bl(Label("malloc"))
 
-    instrs += Str(
-      isBytePair(tpe, 2),
-      nextRegister,
-      resultRegister,
-      NO_OFFSET
-    )
+    currInstructions += Str(isBytePair(tpe, 2), nextRegister, resultRegister, NO_OFFSET)
 
     restoreReg(nextRegister)
-    instrs += Str(resultRegister, register, SIZE_PAIR)
-    instrs
+    currInstructions += Str(resultRegister, register, SIZE_PAIR)
   }
 
   /*

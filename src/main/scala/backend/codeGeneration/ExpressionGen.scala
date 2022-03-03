@@ -26,121 +26,117 @@ object ExpressionGen {
   }
 
   /* Translating an Expr to the ARM language */
-  def transExp(expr: Expr, rd: Register): ListBuffer[Instr] = {
-    val instructions = ListBuffer.empty[Instr]    
+  def transExp(expr: Expr, rd: Register): Unit = {   
     expr match {
       case IntLiter(number) =>
-        val (reg, instrs) = collectRegister(rd)
-        instructions ++= instrs
-        instructions += Ldr(reg, Load_Mem(number))
+        val reg = collectRegister(rd)
+        currInstructions += Ldr(reg, Load_Mem(number))
       case bool: BoolLiter =>
-        instructions += Mov(rd, Imm_Int(boolToInt(bool)))
+        currInstructions += Mov(rd, Imm_Int(boolToInt(bool)))
 
       case character: CharLiter =>
-        ListBuffer(Mov(rd, Imm_Char(character.toString.charAt(1))))
+        currInstructions += Mov(rd, Imm_Char(character.toString.charAt(1)))
 
       case str: StrLiter => 
         val label = dataTable.addStrLiter(str)
-        ListBuffer(Ldr(rd, DataLabel(label)))
+        currInstructions += Ldr(rd, DataLabel(label))
 
       case PairLiter() => 
-        ListBuffer(Ldr(rd, Load_Mem(0))) // TODO: remove magic number
+        currInstructions += Ldr(rd, Load_Mem(0)) // TODO: remove magic number
 
       case ident: Ident => 
         val (i, t) = symbTable(ident)
         val offset = stackPointer - i
-        instructions += Ldr(isByte(t), rd, R13_SP, offset)
+        currInstructions += Ldr(isByte(t), rd, R13_SP, offset)
 
-      case ArrayElem(id, exprs) => loadArrayElem(id, exprs, rd)
+      case ArrayElem(id, exprs) => 
+        loadArrayElem(id, exprs, rd)
       case unOp: UnOp =>
         transUnOp(unOp, rd)
 
       case binOp: BinOp =>
         transBinOp(binOp, rd)
 
-      case _ => ListBuffer.empty[Instr]
+      case _ =>
     }
   }
 
   /* Translating a unary operator to the ARM language */
-  def transUnOp(op: UnOp, rd: Register): ListBuffer[Instr] = {
+  def transUnOp(op: UnOp, rd: Register): Unit = {
     op match {
       case Not(expr) =>
-        transExp(expr, rd) += Eor(rd, rd, Imm_Int(INT_TRUE))
+        transExp(expr, rd)
+        currInstructions += Eor(rd, rd, Imm_Int(INT_TRUE))
       case Negation(expr) =>
-        transExp(expr, rd) ++= ListBuffer(
+        transExp(expr, rd) 
+        currInstructions ++= ListBuffer(
           RsbS(rd, rd, Imm_Int(0)),
           BranchLinkCond(OF, addRTE(Overflow))
         )
       case Len(ident: Ident) =>
         val (i, t) = symbTable(ident)
-        ListBuffer(
-          Ldr(rd, RegisterOffset(R13_SP, stackPointer - i)), // TODO: stack pointer
-          Ldr(rd, RegAdd(rd))
-        )
+        currInstructions += Ldr(rd, RegisterOffset(R13_SP, stackPointer - i))
+        currInstructions += Ldr(rd, RegAdd(rd))
+  
       case Ord(expr) =>
         transExp(expr, rd)
       case Chr(expr) =>
         transExp(expr, rd)
       case _  =>
-        ListBuffer.empty[Instr]
     }
   }
     
   /* Check if registers are full, if so pushes contents of R10 to stack */
-  private def collectRegister(rd: Register): (Register, ListBuffer[Instr]) = {
-    val instructions = ListBuffer.empty[Instr]
+  private def collectRegister(rd: Register): Register = {
 
     var reg = rd
 
     if (rd == popRegister) {
-      instructions += Push(ListBuffer(R10))
+      currInstructions += Push(ListBuffer(R10))
       reg = R10
     }
 
-    (reg, instructions)
+    reg
   }
 
-  def transBinOp(op: BinOp, rn: Register): ListBuffer[Instr] = {
-    val instructions = ListBuffer.empty[Instr]
+  def transBinOp(op: BinOp, rn: Register): Unit = {
 
-    instructions ++= transExp(op.exp1, rn)
+    transExp(op.exp1, rn)
     val rm = saveReg()
-    instructions ++= transExp(op.exp2, rm)
+    transExp(op.exp2, rm)
 
     // Check over allocation of register
     var rd = rn
     if (popRegister == rm) {
-      instructions += Pop(ListBuffer(popRegister))
+      currInstructions += Pop(ListBuffer(popRegister))
       rd = R10
     }
 
     op match {
       case mathOp: MathFuncs => 
-        instructions ++= transMathOp(mathOp, rd, rm)
+        transMathOp(mathOp, rd, rm)
       case cmpOp: CompareFuncs => 
-        instructions ++= transCmpEqOp(cmpOp, rd, rm)
+        transCmpEqOp(cmpOp, rd, rm)
       case eqOp: EqualityFuncs => 
-        instructions ++= transCmpEqOp(eqOp, rd, rm)
+        transCmpEqOp(eqOp, rd, rm)
       case lgOp: LogicFuncs => 
-        instructions += transLgOp(lgOp, rd, rm)
+        transLgOp(lgOp, rd, rm)
     }
     restoreReg(rm)
-    instructions
   }
 
   /* Translating a math op to the ARM language */
-  def transMathOp(op: MathFuncs, rd: Register, rm: Register): ListBuffer[Instr] = {
+  def transMathOp(op: MathFuncs, rd: Register, rm: Register): Unit = {
 
     op match {
       case frontend.AST.Mul(_,_) =>
-        ListBuffer(
+        currInstructions ++= ListBuffer(
           SMul(rd, rm, rd, rm),
           Cmp(rm, ASR(rd, Imm_Int(31))), // TODO: Remove magic number
           BranchLinkCond(NE, addRTE(Overflow))
         )
       case frontend.AST.Div(_,_) =>
-        ListBuffer(
+        currInstructions ++= ListBuffer(
           Mov(resultRegister, rd),
           Mov(R1, rm), // need to be in R0 and R1 for __aeabi_idiv
           Bl(addRTE(DivideByZero)),
@@ -148,7 +144,7 @@ object ExpressionGen {
           Mov(rd, resultRegister)
         )
       case frontend.AST.Mod(_,_) => 
-        ListBuffer(
+        currInstructions ++= ListBuffer(
           Mov(resultRegister, rd),
           Mov(R1, rm),
           Bl(addRTE(DivideByZero)),
@@ -156,12 +152,12 @@ object ExpressionGen {
           Mov(rd, R1)
         )
       case frontend.AST.Plus(_,_) =>
-        ListBuffer(
+        currInstructions ++= ListBuffer(
           AddS(rd, rd, rm),
           BranchLinkCond(OF, addRTE(Overflow))
         )
       case frontend.AST.Sub(_,_) =>
-        ListBuffer(
+        currInstructions ++= ListBuffer(
           SubS(rd, rd, rm),
           BranchLinkCond(OF, addRTE(Overflow))
         )
@@ -169,7 +165,7 @@ object ExpressionGen {
   }
 
   /* Translating a comparison operator to the ARM language */
-  def transCmpEqOp(op: BinOp, rd: Register, rm: Register): ListBuffer[Instr] = {
+  def transCmpEqOp(op: BinOp, rd: Register, rm: Register): Unit = {
     var cond: Condition = null;
     op match {
       case frontend.AST.GT(_,_) => cond = backend.Condition.GT
@@ -181,7 +177,7 @@ object ExpressionGen {
       case _ =>
     }
 
-    ListBuffer(
+    currInstructions ++= ListBuffer(
       Cmp(rd, rm),
       MovCond(cond, rd, Imm_Int(INT_TRUE)),
       MovCond(cond.oppositeCmp, rd, Imm_Int(INT_FALSE))
@@ -189,10 +185,10 @@ object ExpressionGen {
   }
 
   /* Translating a logic operator to the ARM language  */
-  def transLgOp(op: LogicFuncs, rd: Register, rm: Register): Instr = {
+  def transLgOp(op: LogicFuncs, rd: Register, rm: Register): Unit = {
     op match {
-      case frontend.AST.And(_,_) => backend.Opcodes.And(rd, rd, rm)
-      case frontend.AST.Or(_,_) => backend.Opcodes.Or(rd, rd, rm)
+      case frontend.AST.And(_,_) => currInstructions += backend.Opcodes.And(rd, rd, rm)
+      case frontend.AST.Or(_,_) => currInstructions += backend.Opcodes.Or(rd, rd, rm)
     }
   }
 }
