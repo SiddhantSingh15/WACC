@@ -46,7 +46,7 @@ object ExpressionGen {
 
             case ident: Ident => 
                 val (i, t) = symbTable(ident)
-                val offset = SP_curr - i
+                val offset = stackPointer - i
                 instructions += Ldr(isByte(t), rd, R13_SP, offset)
 
             case ArrayElem(id, exprs) => loadArrayElem(id, exprs, rd)

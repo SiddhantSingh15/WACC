@@ -60,7 +60,7 @@ object ReadGen {
     val instructions = ListBuffer.empty[Instr]
     val freeReg = saveReg()
     val (spIndex, identType) = symbTable(ident)
-    val spOffset = SP_curr - spIndex
+    val spOffset = stackPointer - spIndex
     instructions += Add(
       freeReg,
       R13_SP,

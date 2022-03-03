@@ -28,49 +28,51 @@ object Functions {
 
       translateFuncParams(paramList)
 
-      SP_scope = SP_curr
+      SP_scope = stackPointer
       
-      val instructions = ListBuffer[Instr](Push(ListBuffer(R14_LR)))
+      var instructions = ListBuffer[Instr](Push(ListBuffer(R14_LR)))
 
       for (stat <- stats) {
-        instructions ++= transStat(stat, instructions)
+        instructions = transStat(stat, instructions)
       }
 
       SP_scope = prevScopeSP
       symbTable = symbTable.prev
-      userTable.add(currLabel, instructions)
+      instructions ++= ListBuffer(
+        Pop(ListBuffer(R15_PC)),
+        Ltorg
+      )
+      funcTable.add(currLabel, instructions)
     }
 
     private def storeArguments(arguments : ArgList, register : Register): (ListBuffer[Instr], Int) = {
       var instructions = ListBuffer.empty[Instr]
       var offset = 0
-      arguments match {
-        case ArgList(args) => 
-          for (a <- args.reverse) {
-            val tpe = getExprType(a)
-            instructions ++= transExp(a, register)
-            instructions += StrOffsetIndex(isByte(tpe), register, R13_SP, -getTypeSize(tpe))
-           SP_curr += getTypeSize(tpe)
-            offset += getTypeSize(tpe)
-          }
-          
-        case _ =>
+      val ArgList(args) = arguments
+        
+      for (a <- args.reverse) {
+        val tpe = getExprType(a)
+        instructions ++= transExp(a, register)
+        instructions += StrOffsetIndex(isByte(tpe), register, R13_SP, -getTypeSize(tpe))
+        stackPointer += getTypeSize(tpe)
+        offset += getTypeSize(tpe)
       }
-     SP_curr -= offset
+          
+      stackPointer -= offset
       (instructions, offset)
     }
     
     private def translateFuncParams(params : ParamList) : Unit = {
-      params match {
-        case ParamList(pList) =>
-          var curr = SIZE_ADDR
-          var prev = 0
-          for(param <- pList) {
-              val Param(tpe, id) = param 
-            SP_curr += prev
-              prev = getTypeSize(tpe)
-              symbTable.add(id, -curr, tpe)
-          }
+    
+      val ParamList(pList) = params
+      var curr = SIZE_ADDR
+      var prev = 0
+      for(param <- pList) {
+          val Param(tpe, id) = param 
+          curr += prev
+          prev = getTypeSize(tpe)
+          symbTable.add(id, -curr, tpe)
+        
       }
     }
     
@@ -79,17 +81,13 @@ object Functions {
         val register = saveReg()
         val instrs = transExp(expr, register)
         instrs += Mov(resultRegister, register)
-        if(SP_scope > 0) { 
-            instrs ++= addSP(SP_scope)
+        if(stackPointer > 0) { 
+            instrs ++= addSP(stackPointer)
         }
 
         instrs ++= ListBuffer(
-            Pop(ListBuffer(R15_PC)),
-            Pop(ListBuffer(R15_PC)),
-            Ltorg
-        )
-
-        
+            Pop(ListBuffer(R15_PC))
+        )        
         restoreReg(register)
         instrs
     }

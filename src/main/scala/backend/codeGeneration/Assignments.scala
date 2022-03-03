@@ -23,7 +23,7 @@ object Assignments {
         val instrs = ListBuffer.empty[Instr]
         SP_scope += getTypeSize(t)
         symbTable.add(id, SP_scope, t)
-        val spOffset = SP_curr - SP_scope
+        val spOffset = stackPointer - SP_scope
         val freeRegister = saveReg()
         val (isByte, newInstrs) = transAssignRHS(t, rhs, freeRegister)
         instrs ++= newInstrs
@@ -44,7 +44,7 @@ object Assignments {
                 val (index, t) = symbTable(id)
                 val (isByte, newInstrs) = transAssignRHS(t, rhs, freeRegister)
                 instructions ++= newInstrs
-                val spOffset =SP_curr - index  
+                val spOffset = stackPointer - index  
                 instructions += Str(isByte, freeRegister, R13_SP, spOffset)
             case Fst(id : Ident) => 
                 instructions ++= transPairAssign(rhs, id, 1, freeRegister)
