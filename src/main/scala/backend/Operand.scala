@@ -45,12 +45,15 @@ object Operand {
   case object R12 extends Register {
     override def toString: String = "r12"
   }
+  //Stack pointer
   case object R13_SP extends Register {
     override def toString: String = "sp"
   }
+  //Link register
   case object R14_LR extends Register {
     override def toString: String = "lr"
   }
+  //Program counter
   case object R15_PC extends Register {
     override def toString: String = "pc"
   }
