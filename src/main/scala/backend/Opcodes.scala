@@ -5,8 +5,8 @@ import backend.Condition._
 import scala.collection.mutable.ListBuffer
 
 object Opcodes {
-sealed trait Instr
-
+  sealed trait Instr
+  //Arithematic ops
   case class Add(rd: Register, rn: Register, op2: Operand) extends Instr {
     override def toString: String = "ADD " + rd + ", " + rn + ", " + op2
   }
@@ -75,7 +75,7 @@ sealed trait Instr
   extends Instr {
     override def toString: String = "MOV" + cond + " " + rd + ", " + op2
   }
-
+  // Loading operations
   case class Ldr(rd: Register, op2: Operand) extends Instr {
     override def toString: String = "LDR " + rd + ", " + op2
   }
@@ -93,7 +93,7 @@ sealed trait Instr
       Ldr(src, RegisterOffset(dst, offset))
     }
   }
-
+  // Load Byte Signed
   case class LdrSB(rd: Register, op2: Operand) extends Instr {
     override def toString: String = "LDRSB " + rd + ", " + op2
   }
@@ -110,7 +110,7 @@ sealed trait Instr
     extends Instr {
     override def toString: String = "LDR" + cond + " " + rd + ", " + op2
   }
-
+  //Storing operations
   case class Str(rd: Register, add: Address) extends Instr {
     override def toString: String = "STR " + rd + ", " + add
   }
@@ -128,7 +128,7 @@ sealed trait Instr
       Str(src, RegisterOffset(dst, offset))
     }
   }
-
+  //Storing byte
   case class StrB(rd: Register, add: Address) extends Instr {
     override def toString: String = "STRB " + rd + ", " + add
   }
@@ -161,7 +161,7 @@ sealed trait Instr
   case object Ltorg extends Instr {
     override def toString: String = ".ltorg"
   }
-
+  //Labels
   case class Label(s: String) {
     override def toString: String = s
   }
