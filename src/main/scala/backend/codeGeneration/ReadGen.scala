@@ -13,13 +13,14 @@ import scala.collection.mutable.ListBuffer
 object ReadGen {
   private def getPairElemType(t: Type, pos: Int): Type = t match {
     case Pair(PairElemPair, PairElemPair) => null
-    case Pair(PairElemPair, PairElemWithType(baseType)) =>
+    case Pair(PairElemPair, PairElemWithType(baseType))                     =>
       if (pos == 1) null else baseType
-    case Pair(PairElemWithType(baseType), PairElemPair) =>
+    case Pair(PairElemWithType(baseType), PairElemPair)                     =>
       if (pos == 1) baseType else null
     case Pair(PairElemWithType(baseTypeFst), PairElemWithType(baseTypeSnd)) =>
       if (pos == 1) baseTypeFst else baseTypeSnd
-    case _ => null
+    case _                                                                  => 
+      null
   }
 
   private def readBranch(t: Type): Instr = t match {
@@ -28,13 +29,14 @@ object ReadGen {
         charRead(dataTable.addData(ReadChar.msgs(0)))
       )
       Bl(ReadChar.functionLabel)
-    case Int =>
+    case Int      =>
       preDefFuncTable.addFunction(
         intRead(dataTable.addData(ReadInt.msgs(0)))
       )
       Bl(ReadInt.functionLabel)
     // Semantically incorrect
-    case _ => null
+    case _        => 
+      null
   }
 
   def transReadPairElem(pe: PairElem, pos: Int): ListBuffer[Instr] = {

@@ -101,9 +101,9 @@ object PairsGen {
 
   private def getPairTypeSize(tpe : PairElemType) : Int = {
     tpe match {
-      case PairElemPair => SIZE_PAIR
+      case PairElemPair        => SIZE_PAIR
       case PairElemWithType(t) => getTypeSize(t)
-      case _ => ???
+      case _                   => ???
     }
   }
 
@@ -115,8 +115,8 @@ object PairsGen {
         } else {
           isByte(b)
         }
-      case _ 
-        => false
+      case _                                              => 
+        false
     }
   }
 }

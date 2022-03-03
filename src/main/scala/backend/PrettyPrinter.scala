@@ -27,8 +27,7 @@ object PrettyPrinter {
     instrs.foreach((x: (Label, List[Instr])) => {
         fileWriter.write(tab + x._1 + ":\n")
         x._2.foreach((i: Instr) => fileWriter.write(doubleTab + i + "\n"))
-    }
-    )
+    })
     fileWriter.close()
   }
 

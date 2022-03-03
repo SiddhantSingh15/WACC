@@ -20,17 +20,18 @@ object PrintGen {
 
     var printFunc: PreDefFunc = null
     t match {
-      case CharType => 
-          printFunc = PutChar
-      case Int => 
-          printFunc = PrintInt
-      case Bool =>
-          printFunc = PrintBool
-      case String | ArrayType(CharType)=>
-          printFunc = PrintString
-      case ArrayType(_) | Pair(_, _) =>
-          printFunc = PrintReference
-      case _ => ???
+      case CharType                     => 
+        printFunc = PutChar
+      case Int                          => 
+        printFunc = PrintInt
+      case Bool                         =>
+        printFunc = PrintBool
+      case String | ArrayType(CharType) =>
+        printFunc = PrintString
+      case ArrayType(_) | Pair(_, _)    =>
+        printFunc = PrintReference
+      case _                            => 
+        ???
     }
       
     for (i <- 0 until printFunc.msgs.length) {

@@ -25,7 +25,7 @@ class functionTable {
   }
 
   private def contains(label: Label): Boolean = {
-    return !table.filter({case (l, _) => l==label}).isEmpty
+    return !table.filter({case (l, _) => l == label}).isEmpty 
   }
 
   def getNext() : Label = {

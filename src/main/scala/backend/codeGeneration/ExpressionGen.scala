@@ -27,33 +27,34 @@ object ExpressionGen {
   def transExp(expr: Expr, rd: Register): ListBuffer[Instr] = {
     val instructions = ListBuffer.empty[Instr]    
     expr match {
-      case IntLiter(number) =>
+      case IntLiter(number)     =>
         val (reg, instrs) = collectRegister(rd)
         instructions ++= instrs
         instructions += Ldr(reg, Load_Mem(number))
-      case bool: BoolLiter =>
+      case bool: BoolLiter      =>
         instructions += Mov(rd, Imm_Int(boolToInt(bool)))
 
       case character: CharLiter =>
         ListBuffer(Mov(rd, Imm_Char(character.toString.charAt(1))))
 
-      case str: StrLiter => 
+      case str: StrLiter        => 
         val label = dataTable.addStrLiter(str)
         ListBuffer(Ldr(rd, DataLabel(label)))
 
-      case PairLiter() => 
+      case PairLiter()          => 
         ListBuffer(Ldr(rd, Load_Mem(0))) // TODO: remove magic number
 
-      case ident: Ident => 
+      case ident: Ident         => 
         val (i, t) = symbTable(ident)
         val offset = stackPointer - i
         instructions += Ldr(isByte(t), rd, R13_SP, offset)
 
-      case ArrayElem(id, exprs) => loadArrayElem(id, exprs, rd)
-      case unOp: UnOp =>
+      case ArrayElem(id, exprs) => 
+        loadArrayElem(id, exprs, rd)
+      case unOp: UnOp           =>
         transUnOp(unOp, rd)
 
-      case binOp: BinOp =>
+      case binOp: BinOp         =>
         transBinOp(binOp, rd)
 
       case _ => ListBuffer.empty[Instr]
@@ -62,9 +63,9 @@ object ExpressionGen {
 
   def transUnOp(op: UnOp, rd: Register): ListBuffer[Instr] = {
     op match {
-      case Not(expr) =>
+      case Not(expr)         =>
         transExp(expr, rd) += Eor(rd, rd, Imm_Int(INT_TRUE))
-      case Negation(expr) =>
+      case Negation(expr)    =>
         transExp(expr, rd) ++= ListBuffer(
           RsbS(rd, rd, Imm_Int(0)),
           BranchLinkCond(OF, addRTE(Overflow))
@@ -75,11 +76,11 @@ object ExpressionGen {
           Ldr(rd, RegisterOffset(R13_SP, stackPointer - i)), // TODO: stack pointer
           Ldr(rd, RegAdd(rd))
         )
-      case Ord(expr) =>
+      case Ord(expr)         =>
         transExp(expr, rd)
-      case Chr(expr) =>
+      case Chr(expr)         =>
         transExp(expr, rd)
-      case _  =>
+      case _                 =>
         ListBuffer.empty[Instr]
     }
   }
@@ -112,13 +113,13 @@ object ExpressionGen {
     }
 
     op match {
-      case mathOp: MathFuncs => 
+      case mathOp: MathFuncs   => 
         instructions ++= transMathOp(mathOp, rd, rm)
       case cmpOp: CompareFuncs => 
         instructions ++= transCmpEqOp(cmpOp, rd, rm)
       case eqOp: EqualityFuncs => 
         instructions ++= transCmpEqOp(eqOp, rd, rm)
-      case lgOp: LogicFuncs => 
+      case lgOp: LogicFuncs    => 
         instructions += transLgOp(lgOp, rd, rm)
     }
     restoreReg(rm)
@@ -128,13 +129,13 @@ object ExpressionGen {
   def transMathOp(op: MathFuncs, rd: Register, rm: Register): ListBuffer[Instr] = {
 
     op match {
-      case frontend.AST.Mul(_,_) =>
+      case frontend.AST.Mul(_,_)  =>
         ListBuffer(
           SMul(rd, rm, rd, rm),
           Cmp(rm, ASR(rd, Imm_Int(31))), // TODO: Remove magic number
           BranchLinkCond(NE, addRTE(Overflow))
         )
-      case frontend.AST.Div(_,_) =>
+      case frontend.AST.Div(_,_)  =>
         ListBuffer(
           Mov(resultRegister, rd),
           Mov(R1, rm), // need to be in R0 and R1 for __aeabi_idiv
@@ -142,7 +143,7 @@ object ExpressionGen {
           Bl(Label("__aeabi_idiv")),
           Mov(rd, resultRegister)
         )
-      case frontend.AST.Mod(_,_) => 
+      case frontend.AST.Mod(_,_)  => 
         ListBuffer(
           Mov(resultRegister, rd),
           Mov(R1, rm),
@@ -155,7 +156,7 @@ object ExpressionGen {
           AddS(rd, rd, rm),
           BranchLinkCond(OF, addRTE(Overflow))
         )
-      case frontend.AST.Sub(_,_) =>
+      case frontend.AST.Sub(_,_)  =>
         ListBuffer(
           SubS(rd, rd, rm),
           BranchLinkCond(OF, addRTE(Overflow))
@@ -166,11 +167,11 @@ object ExpressionGen {
   def transCmpEqOp(op: BinOp, rd: Register, rm: Register): ListBuffer[Instr] = {
     var cond: Condition = null;
     op match {
-      case frontend.AST.GT(_,_) => cond = backend.Condition.GT
-      case frontend.AST.GTE(_,_) => cond = backend.Condition.GE
-      case frontend.AST.LT(_,_) => cond = backend.Condition.LT
-      case frontend.AST.LTE(_,_) => cond = backend.Condition.LE
-      case frontend.AST.Equal(_,_) => cond = backend.Condition.EQ
+      case frontend.AST.GT(_,_)       => cond = backend.Condition.GT
+      case frontend.AST.GTE(_,_)      => cond = backend.Condition.GE
+      case frontend.AST.LT(_,_)       => cond = backend.Condition.LT
+      case frontend.AST.LTE(_,_)      => cond = backend.Condition.LE
+      case frontend.AST.Equal(_,_)    => cond = backend.Condition.EQ
       case frontend.AST.NotEqual(_,_) => cond = backend.Condition.NE
       case _ =>
     }
@@ -185,7 +186,7 @@ object ExpressionGen {
   def transLgOp(op: LogicFuncs, rd: Register, rm: Register): Instr = {
     op match {
       case frontend.AST.And(_,_) => backend.Opcodes.And(rd, rd, rm)
-      case frontend.AST.Or(_,_) => backend.Opcodes.Or(rd, rd, rm)
+      case frontend.AST.Or(_,_)  => backend.Opcodes.Or(rd, rd, rm)
     }
   }
 }

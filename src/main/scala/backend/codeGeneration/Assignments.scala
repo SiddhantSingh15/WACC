@@ -33,21 +33,21 @@ object Assignments {
     val freeRegister = saveReg()
 
     lhs match {
-      case id : Ident =>
+      case id : Ident                   =>
         val (index, t) = symbTable(id)
         val (isByte, newInstrs) = transAssignRHS(t, rhs, freeRegister)
         instructions ++= newInstrs
         val spOffset = stackPointer - index  
         instructions += Str(isByte, freeRegister, R13_SP, spOffset)
-      case Fst(id : Ident) => 
+      case Fst(id : Ident)              => 
         instructions ++= transPairAssign(rhs, id, 1, freeRegister)
-      case Snd(id : Ident) => 
+      case Snd(id : Ident)              => 
         instructions ++= transPairAssign(rhs, id, 2, freeRegister)
       case x@ArrayElem(ident, exprList) =>
         val (_, newInstrs) = transAssignRHS(getExprType(x), rhs, freeRegister)
         instructions ++= newInstrs
         instructions ++= storeArrayElem(ident, exprList, freeRegister) 
-      case _ => ???
+      case _                            => ???
     }
     restoreReg(freeRegister)
     instructions
@@ -56,21 +56,21 @@ object Assignments {
   def transAssignRHS(t: Type, rhs: AssignRHS, freeRegister: Register): (Boolean, ListBuffer[Instr]) = {
     val instrs = ListBuffer.empty[Instr]
     rhs match {
-      case expr : Expr => 
+      case expr : Expr          => 
         instrs ++= transExp(expr, freeRegister)
-      case Fst(ident : Ident) => 
+      case Fst(ident : Ident)   => 
         instrs ++= transPairElem(ident, 1, freeRegister)
         instrs += getPairElem(ident, 1, freeRegister)
-      case Snd(ident : Ident) => 
+      case Snd(ident : Ident)   => 
         instrs ++= transPairElem(ident, 2, freeRegister)
         instrs += getPairElem(ident, 2, freeRegister)
       case Call(ident, argList) =>
         instrs ++= transCall(ident, argList, freeRegister)
-      case ArrayLiter(list) => 
+      case ArrayLiter(list)     => 
         instrs ++= transArrayLiter(t, list, freeRegister)
-      case NewPair(fst, snd) =>  
+      case NewPair(fst, snd)    =>  
         instrs ++= transAssignRHSPair(t, fst, snd, freeRegister)
-      case _ =>
+      case _                    =>
     }
     (isByte(t), instrs)
   }

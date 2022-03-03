@@ -32,7 +32,7 @@ object FreeGen {
           case _            => 
         }
 
-      case _ =>
+      case _         =>
     }
     instructions
   }
