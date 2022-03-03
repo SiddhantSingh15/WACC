@@ -55,32 +55,30 @@ object PrintInstrs {
     )
   )
 
-  def referencePrintInstrs: (Label, ListBuffer[Instr]) =
-    (
-      PrintReference.functionLabel,
-      ListBuffer[Instr](
-        Push(ListBuffer(R14_LR)),
-        Mov(R1, resultRegister),
-        Ldr(resultRegister, DataLabel(Label(PrintReference.msgName(0)))),
-        Add(resultRegister, resultRegister, Imm_Int(SIZE_ADDR)),
-        Bl(Label("printf")),
-        Mov(resultRegister, Imm_Int(RESET_INT)),
-        Bl(Label("fflush")),
-        Pop(ListBuffer(R15_PC))
-      )
+  def referencePrintInstrs: (Label, ListBuffer[Instr]) = (
+    PrintReference.functionLabel,
+    ListBuffer[Instr](
+      Push(ListBuffer(R14_LR)),
+      Mov(R1, resultRegister),
+      Ldr(resultRegister, DataLabel(Label(PrintReference.msgName(0)))),
+      Add(resultRegister, resultRegister, Imm_Int(SIZE_ADDR)),
+      Bl(Label("printf")),
+      Mov(resultRegister, Imm_Int(RESET_INT)),
+      Bl(Label("fflush")),
+      Pop(ListBuffer(R15_PC))
     )
+  )
 
-  def newLinePrintInstrs: (Label, ListBuffer[Instr]) =
-    (
-      PrintLn.functionLabel,
-      ListBuffer[Instr](
-        Push(ListBuffer(R14_LR)),
-        Ldr(resultRegister, DataLabel(Label(PrintLn.msgName(0)))),
-        Add(resultRegister, resultRegister, Imm_Int(SIZE_ADDR)),
-        Bl(Label("puts")),
-        Mov(resultRegister, Imm_Int(RESET_INT)),
-        Bl(Label("fflush")),
-        Pop(ListBuffer(R15_PC))
-      )
+  def newLinePrintInstrs: (Label, ListBuffer[Instr]) = (
+    PrintLn.functionLabel,
+    ListBuffer[Instr](
+      Push(ListBuffer(R14_LR)),
+      Ldr(resultRegister, DataLabel(Label(PrintLn.msgName(0)))),
+      Add(resultRegister, resultRegister, Imm_Int(SIZE_ADDR)),
+      Bl(Label("puts")),
+      Mov(resultRegister, Imm_Int(RESET_INT)),
+      Bl(Label("fflush")),
+      Pop(ListBuffer(R15_PC))
     )
+  )
 }

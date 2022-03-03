@@ -213,30 +213,32 @@ object CodeGen {
 
   def getExprType(expr: Expr): Type = {
     expr match {
-      case _: IntLiter => Int
-      case _: BoolLiter => Bool
-      case _: CharLiter => CharType
-      case StrLiter(_) => String
-      case PairLiter() => Pair(null, null)
-      case id: Ident => 
+      case _: IntLiter         => Int
+      case _: BoolLiter        => Bool
+      case _: CharLiter        => CharType
+      case StrLiter(_)         => String
+      case PairLiter()         => Pair(null, null)
+      case id: Ident           => 
         val (_, t) = symbTable(id)
         t
       case ArrayElem(id, exprs) =>  
         var (_, t) = symbTable(id)
         t = exprs.foldLeft(t)((x, _) => getInnerType(x))
         t
+
       // Unary Operators
-      case Not(_) => Bool
+      case Not(_)      => Bool
       case Negation(_) => Int
-      case Len(_) => Int
-      case Ord(_) => Int
-      case Chr(_) => CharType
+      case Len(_)      => Int
+      case Ord(_)      => Int
+      case Chr(_)      => CharType
+
       // Binary Operators
-      case _: MathFuncs => Int
+      case _: MathFuncs     => Int
       case _: EqualityFuncs => Bool
-      case _: LogicFuncs => Bool
-      case _: CompareFuncs => Bool
-      case _ => ???
+      case _: LogicFuncs    => Bool
+      case _: CompareFuncs  => Bool
+      case _                => ???
     }
   }
 }

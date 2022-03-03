@@ -41,26 +41,26 @@ object Assignments {
         val instructions = ListBuffer.empty[Instr]
         val freeRegister = saveReg()
 
-        lhs match {
-            case id : Ident =>
-                val (index, t) = symbTable(id)
-                val (isByte, newInstrs) = transAssignRHS(t, rhs, freeRegister)
-                instructions ++= newInstrs
-                val spOffset = stackPointer - index  
-                instructions += Str(isByte, freeRegister, R13_SP, spOffset)
-            case Fst(id : Ident) => 
-                instructions ++= transPairAssign(rhs, id, 1, freeRegister)
-            case Snd(id : Ident) => 
-                instructions ++= transPairAssign(rhs, id, 2, freeRegister)
-            case x@ArrayElem(ident, exprList) =>
-                val (_, newInstrs) = transAssignRHS(getExprType(x), rhs, freeRegister)
-                instructions ++= newInstrs
-                instructions ++= storeArrayElem(ident, exprList, freeRegister) 
-            case _ => ???
-        }
-        restoreReg(freeRegister)
-        instructions
+    lhs match {
+      case id : Ident                   =>
+        val (index, t) = symbTable(id)
+        val (isByte, newInstrs) = transAssignRHS(t, rhs, freeRegister)
+        instructions ++= newInstrs
+        val spOffset = stackPointer - index  
+        instructions += Str(isByte, freeRegister, R13_SP, spOffset)
+      case Fst(id : Ident)              => 
+        instructions ++= transPairAssign(rhs, id, 1, freeRegister)
+      case Snd(id : Ident)              => 
+        instructions ++= transPairAssign(rhs, id, 2, freeRegister)
+      case x@ArrayElem(ident, exprList) =>
+        val (_, newInstrs) = transAssignRHS(getExprType(x), rhs, freeRegister)
+        instructions ++= newInstrs
+        instructions ++= storeArrayElem(ident, exprList, freeRegister) 
+      case _                            => ???
     }
+    restoreReg(freeRegister)
+    instructions
+  }
 
     /*
     Translating an AssignRHS to ARM Language
@@ -93,6 +93,8 @@ object Assignments {
         }
         (isByte(t), instrs)
     }
+    (isByte(t), instrs)
+  }
 }
 
 

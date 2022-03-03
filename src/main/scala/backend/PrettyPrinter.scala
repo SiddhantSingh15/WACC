@@ -7,11 +7,7 @@ object PrettyPrinter {
   private val tab = "\t"
   private val doubleTab = tab * 2
 
-  def prettyPrint(
-      waccFilename: String,
-      data: List[Data],
-      instrs: List[(Label, List[Instr])]
-  ): Unit = {
+  def prettyPrint(waccFilename: String, data: List[Data], instrs: List[(Label, List[Instr])]): Unit = {
     val assemblyFilename = waccFilename.replaceFirst(".wacc", ".s")
     var file = new File(assemblyFilename)
 
@@ -31,8 +27,7 @@ object PrettyPrinter {
     instrs.foreach((x: (Label, List[Instr])) => {
         fileWriter.write(tab + x._1 + ":\n")
         x._2.foreach((i: Instr) => fileWriter.write(doubleTab + i + "\n"))
-    }
-    )
+    })
     fileWriter.close()
   }
 

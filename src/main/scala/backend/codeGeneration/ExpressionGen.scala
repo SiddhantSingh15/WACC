@@ -56,11 +56,10 @@ object ExpressionGen {
             case unOp: UnOp =>
                 transUnOp(unOp, rd)
 
-            case binOp: BinOp =>
-                transBinOp(binOp, rd)
-
-            case _ => ListBuffer.empty[Instr]
-        }
+  def boolToInt(bool: BoolLiter): Int = {
+    bool match {
+      case True => INT_TRUE
+      case False => INT_FALSE
     }
 
     /*Translating a unary operator to the ARM language*/
@@ -87,20 +86,18 @@ object ExpressionGen {
                 ListBuffer.empty[Instr]
         }
     }
+  }
     
 
     /*Check if registers are full, if so pushes contents of R10 to stack*/
     private def collectRegister(rd: Register): (Register, ListBuffer[Instr]) = {
       val instructions = ListBuffer.empty[Instr]
 
-      var reg = rd
+    var reg = rd
 
-      if (rd == popRegister) {
-        instructions += Push(ListBuffer(R10))
-        reg = R10
-      }
-
-      (reg, instructions)
+    if (rd == popRegister) {
+      instructions += Push(ListBuffer(R10))
+      reg = R10
     }
 
     /*Translating a bianry operator to the ARM language*/
@@ -171,6 +168,9 @@ object ExpressionGen {
 
         }
     }
+    restoreReg(rm)
+    instructions
+  }
 
     /*Translating a comparison operator to the ARM language*/
     def transCmpEqOp(op: BinOp, rd: Register, rm: Register): ListBuffer[Instr] = {
@@ -185,11 +185,52 @@ object ExpressionGen {
             case _ =>
         }
 
+    op match {
+      case frontend.AST.Mul(_,_)  =>
         ListBuffer(
-            Cmp(rd, rm),
-            MovCond(cond, rd, Imm_Int(INT_TRUE)),
-            MovCond(cond.oppositeCmp, rd, Imm_Int(INT_FALSE))
+          SMul(rd, rm, rd, rm),
+          Cmp(rm, ASR(rd, Imm_Int(31))), // TODO: Remove magic number
+          BranchLinkCond(NE, addRTE(Overflow))
         )
+      case frontend.AST.Div(_,_)  =>
+        ListBuffer(
+          Mov(resultRegister, rd),
+          Mov(R1, rm), // need to be in R0 and R1 for __aeabi_idiv
+          Bl(addRTE(DivideByZero)),
+          Bl(Label("__aeabi_idiv")),
+          Mov(rd, resultRegister)
+        )
+      case frontend.AST.Mod(_,_)  => 
+        ListBuffer(
+          Mov(resultRegister, rd),
+          Mov(R1, rm),
+          Bl(addRTE(DivideByZero)),
+          Bl(Label("__aeabi_idivmod")),
+          Mov(rd, R1)
+        )
+      case frontend.AST.Plus(_,_) =>
+        ListBuffer(
+          AddS(rd, rd, rm),
+          BranchLinkCond(OF, addRTE(Overflow))
+        )
+      case frontend.AST.Sub(_,_)  =>
+        ListBuffer(
+          SubS(rd, rd, rm),
+          BranchLinkCond(OF, addRTE(Overflow))
+        )
+    }
+  }
+
+  def transCmpEqOp(op: BinOp, rd: Register, rm: Register): ListBuffer[Instr] = {
+    var cond: Condition = null;
+    op match {
+      case frontend.AST.GT(_,_)       => cond = backend.Condition.GT
+      case frontend.AST.GTE(_,_)      => cond = backend.Condition.GE
+      case frontend.AST.LT(_,_)       => cond = backend.Condition.LT
+      case frontend.AST.LTE(_,_)      => cond = backend.Condition.LE
+      case frontend.AST.Equal(_,_)    => cond = backend.Condition.EQ
+      case frontend.AST.NotEqual(_,_) => cond = backend.Condition.NE
+      case _ =>
     }
 
     /*Translating a logic operator to the ARM language*/
@@ -199,5 +240,6 @@ object ExpressionGen {
             case frontend.AST.Or(_,_) => backend.Opcodes.Or(rd, rd, rm)
         }
     }
+  }
 }
 

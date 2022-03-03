@@ -75,6 +75,9 @@ object ArraysGen {
         restoreReg(nextReg)
         (instructions, isByte(t))
     }
+    restoreReg(nextReg)
+    (instructions, isByte(t))
+  }
 
     /*Translating an ArrayLiter into the ARM language*/
     def transArrayLiter(
@@ -94,8 +97,8 @@ object ArraysGen {
         instructions += Bl(Label("malloc"))
         instructions += Mov(freeReg, resultRegister)
 
-        val nextFreeReg = saveReg()
-        val isbyte = isByte(innerT)
+    val nextFreeReg = saveReg()
+    val isbyte = isByte(innerT)
 
         /*Strogin all elements in memory*/
         for (i <- 0 until size) {
@@ -113,4 +116,10 @@ object ArraysGen {
         restoreReg(nextFreeReg)
         instructions
     }
+
+    instructions += Ldr(nextFreeReg, Load_Mem(size))
+    instructions += Str(nextFreeReg, RegAdd(freeReg))
+    restoreReg(nextFreeReg)
+    instructions
+  }
 }
