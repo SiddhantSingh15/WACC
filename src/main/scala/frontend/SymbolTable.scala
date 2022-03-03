@@ -13,14 +13,26 @@ case class SymbolTable(
     funcMap: HashMap[Ident, Info]) 
   {
 
+  val children = mutable.ListBuffer.empty[SymbolTable]
+
   val varMap = new HashMap[Ident, (Int, Type)]
 
   def nextScope(nextFunc: Ident): SymbolTable = {
-    SymbolTable(this, nextFunc, funcMap)
+    val next = SymbolTable(this, nextFunc, funcMap)
+    children += next
+    next
   }
 
   def nextScope: SymbolTable = {
-    SymbolTable(this, funcId, funcMap)
+    val next = SymbolTable(this, funcId, funcMap)
+    children += next
+    next
+  }
+
+  def getNextScope: SymbolTable = {
+    val next = children.head
+    children -= next
+    next
   }
 
   def lookupAll(ident: Ident): Type = {
@@ -153,6 +165,15 @@ case class SymbolTable(
 
   def spMaxDepth: Int = {
     varMap.toList.map(x => getTypeSize(x._2._2)).sum
+  }
+
+  def spMaxDepth(id: Ident): Int = {
+    val Info(_, pList) = funcMap(id)
+    pList match {
+      case Some(p) =>
+        spMaxDepth - p.map(x => getTypeSize(x)).sum
+      case None => spMaxDepth
+    }
   }
 
 }
