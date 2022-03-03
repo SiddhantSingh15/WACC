@@ -29,11 +29,9 @@ object PrintGen {
                 printFunc = PrintInt
             case Bool =>
                 printFunc = PrintBool
-            case String =>
+            case String | ArrayType(CharType)=>
                 printFunc = PrintString
-            case ArrayType(CharType) =>
-                printFunc = PrintString
-            case ArrayType(_) =>
+            case ArrayType(_) | Pair(_, _) =>
                 printFunc = PrintReference
             case _ => ???
         }

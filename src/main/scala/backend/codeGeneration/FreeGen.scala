@@ -21,7 +21,7 @@ object FreeGen {
         val freeRegister = saveReg()
         val (i, t) = symbTable(id)
 
-        instructions += Ldr(freeRegister, R13_SP)
+        instructions += Ldr(freeRegister, R13_SP, stackPointer - i)
         instructions += Mov(resultRegister, freeRegister)
 
         restoreReg(freeRegister)
