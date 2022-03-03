@@ -11,112 +11,88 @@ import backend.DefinedFuncs.PreDefinedFuncs._
 
 object ArraysGen {
 
-    /*Getting type of entires in Array */
-    def getInnerType(arrayT: Type): Type = 
-        arrayT match {
-            case ArrayType(innerType) => innerType
-            case _                    => ???
-        }
-
-    /*Loading an ArrayElem into a given Register*/
-    def loadArrayElem(
-        ident: Ident,
-        exprs: List[Expr],
-        rd: Register
-    ): ListBuffer[Instr] = {
-        val (instructions, isByte) = transArrayElem(ident, exprs, rd)
-        instructions += Ldr(isByte, rd, rd, 0)
+  /*Getting type of entires in Array */
+  def getInnerType(arrayT: Type): Type = 
+    arrayT match {
+      case ArrayType(innerType) => innerType
+      case _                    => ???
     }
 
-    /*Storing an Expr from a Register into the ArrayElem*/
-    def storeArrayElem(
-        ident: Ident,
-        exprs: List[Expr],
-        rd: Register
-    ): ListBuffer[Instr] = {
-        val freeReg = saveReg()
-        val (instructions, isByte) = transArrayElem(ident, exprs, freeReg)
-        instructions += Str(isByte, rd, freeReg, 0)
-        restoreReg(freeReg)
-        instructions
-    }
+  /*Loading an ArrayElem into a given Register*/
+  def loadArrayElem(ident: Ident, exprs: List[Expr], rd: Register): ListBuffer[Instr] = {
+    val (instructions, isByte) = transArrayElem(ident, exprs, rd)
+    instructions += Ldr(isByte, rd, rd, 0)
+  }
 
-    /*Translating an ArrayElem to the ARM language*/
-    def transArrayElem(
-        ident: Ident,
-        exprs: List[Expr],
-        rd: Register
-    ): (ListBuffer[Instr], Boolean) = {
-        val instructions = ListBuffer.empty[Instr]
-        var (i, t) = symbTable(ident)
-        val typeSize = getTypeSize(t)
-        val spOffset = stackPointer - i
+  /*Storing an Expr from a Register into the ArrayElem*/
+  def storeArrayElem(ident: Ident, exprs: List[Expr], rd: Register): ListBuffer[Instr] = {
+    val freeReg = saveReg()
+    val (instructions, isByte) = transArrayElem(ident, exprs, freeReg)
+    instructions += Str(isByte, rd, freeReg, 0)
+    restoreReg(freeReg)
+    instructions
+  }
 
-        instructions += Add(rd, R13_SP, Imm_Int(spOffset))
-        val nextReg = saveReg()
+  /*Translating an ArrayElem to the ARM language*/
+  def transArrayElem(ident: Ident, exprs: List[Expr], rd: Register): (ListBuffer[Instr], Boolean) = {
+    val instructions = ListBuffer.empty[Instr]
+    var (i, t) = symbTable(ident)
+    val typeSize = getTypeSize(t)
+    val spOffset = stackPointer - i
 
-        for (expr <- exprs) {
-            t = getInnerType(t)
-            instructions ++= transExp(expr, nextReg)
-            instructions += Ldr(rd, RegAdd(rd))
-            instructions += Mov(resultRegister, nextReg)
-            instructions += Mov(R1, rd)
-            instructions += Bl(addRTE(ArrayBounds))
-            /*accounting for array size*/
-            instructions += Add(rd, rd, Imm_Int(SIZE_INT))
-            
-            if (isByte(t)) {
-                instructions += Add(rd, rd, nextReg)
-            } else {
-                /*there is a 4 byte difference between elements*/
-                instructions += Add(rd, rd, LSL(nextReg, Imm_Int(2)))
-            }
-        }
-        restoreReg(nextReg)
-        (instructions, isByte(t))
+    instructions += Add(rd, R13_SP, Imm_Int(spOffset))
+    val nextReg = saveReg()
+
+    for (expr <- exprs) {
+      t = getInnerType(t)
+      instructions ++= transExp(expr, nextReg)
+      instructions += Ldr(rd, RegAdd(rd))
+      instructions += Mov(resultRegister, nextReg)
+      instructions += Mov(R1, rd)
+      instructions += Bl(addRTE(ArrayBounds))
+      /*accounting for array size*/
+      instructions += Add(rd, rd, Imm_Int(SIZE_INT))
+      
+      if (isByte(t)) {
+        instructions += Add(rd, rd, nextReg)
+      } else {
+        /*there is a 4 byte difference between elements*/
+        instructions += Add(rd, rd, LSL(nextReg, Imm_Int(2)))
+      }
     }
     restoreReg(nextReg)
     (instructions, isByte(t))
   }
 
-    /*Translating an ArrayLiter into the ARM language*/
-    def transArrayLiter(
-        t: Type,
-        arr: List[Expr],
-        freeReg: Register
-    ): ListBuffer[Instr] = {
-        val instructions = ListBuffer.empty[Instr]
-        val ArrayType(innerT) = t
-        val size = arr.size
 
-        /*Array size + (size of each indvidual elem) * (# of elems)*/
-        instructions += Ldr(
-            resultRegister,
-            Load_Mem(SIZE_INT + size * getTypeSize(innerT))
-        )
-        instructions += Bl(Label("malloc"))
-        instructions += Mov(freeReg, resultRegister)
+  /*Translating an ArrayLiter into the ARM language*/
+  def transArrayLiter(t: Type, arr: List[Expr], freeReg: Register): ListBuffer[Instr] = {
+    val instructions = ListBuffer.empty[Instr]
+    val ArrayType(innerT) = t
+    val size = arr.size
+
+    /*Array size + (size of each indvidual elem) * (# of elems)*/
+    instructions += Ldr(
+      resultRegister,
+      Load_Mem(SIZE_INT + size * getTypeSize(innerT))
+    )
+    instructions += Bl(Label("malloc"))
+    instructions += Mov(freeReg, resultRegister)
 
     val nextFreeReg = saveReg()
     val isbyte = isByte(innerT)
 
-        /*Strogin all elements in memory*/
-        for (i <- 0 until size) {
-            instructions ++= transExp(arr(i), nextFreeReg)
-            if (isbyte) {
-                instructions += Str(isbyte, nextFreeReg, freeReg, i + SIZE_INT)
-            } else {
-                instructions += Str(isbyte, nextFreeReg, freeReg, (i + 1) * SIZE_ADDR)
-            }
-        }
-
-        /*Storing size of array in memory*/
-        instructions += Ldr(nextFreeReg, Load_Mem(size))
-        instructions += Str(nextFreeReg, RegAdd(freeReg))
-        restoreReg(nextFreeReg)
-        instructions
+    /*Strogin all elements in memory*/
+    for (i <- 0 until size) {
+      instructions ++= transExp(arr(i), nextFreeReg)
+      if (isbyte) {
+        instructions += Str(isbyte, nextFreeReg, freeReg, i + SIZE_INT)
+      } else {
+        instructions += Str(isbyte, nextFreeReg, freeReg, (i + 1) * SIZE_ADDR)
+      }
     }
 
+    /*Storing size of array in memory*/
     instructions += Ldr(nextFreeReg, Load_Mem(size))
     instructions += Str(nextFreeReg, RegAdd(freeReg))
     restoreReg(nextFreeReg)
