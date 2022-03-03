@@ -185,40 +185,40 @@ object CodeGen {
     instructions
   }
 
-  def typeConvert(expr: Expr): Type = {
-    expr match {
-      case _: EqualityFuncs => Bool
+  // def typeConvert(expr: Expr): Type = {
+  //   expr match {
+  //     case _: EqualityFuncs => Bool
       
-      case _: CompareFuncs => Bool
-      case _: LogicFuncs   => Bool
-      case _: Not          => Bool
-      case _: BoolLiter    => Bool
+  //     case _: CompareFuncs => Bool
+  //     case _: LogicFuncs   => Bool
+  //     case _: Not          => Bool
+  //     case _: BoolLiter    => Bool
 
 
-      case _: Negation     => Int
-      case _: MathFuncs    => Int
-      case _: Len          => Int
-      case _: Ord          => Int
-      case _: IntLiter     => Int
+  //     case _: Negation     => Int
+  //     case _: MathFuncs    => Int
+  //     case _: Len          => Int
+  //     case _: Ord          => Int
+  //     case _: IntLiter     => Int
       
-      case _: PairLiter    => Pair(null, null)
+  //     case _: PairLiter    => Pair(null, null)
 
-      case _: StrLiter     => String
+  //     case _: StrLiter     => String
 
-      case _: Chr          => CharType
-      case _: CharLiter    => CharType
+  //     case _: Chr          => CharType
+  //     case _: CharLiter    => CharType
 
 
-      case ident: Ident    =>
-        val (_, tpe) = symbTable(ident)
-        tpe
+  //     case ident: Ident    =>
+  //       val (_, tpe) = symbTable(ident)
+  //       tpe
       
-      case ArrayElem(ident, exprList) => 
-        var (_, tpe) = symbTable(ident)
-        tpe = exprList.foldLeft(tpe)((t, _) => typeOf(t))
-        tpe
-    }
-  }
+  //     case ArrayElem(ident, exprList) => 
+  //       var (_, tpe) = symbTable(ident)
+  //       tpe = exprList.foldLeft(tpe)((t, _) => typeOf(t))
+  //       tpe
+  //   }
+  // }
 
   private def typeOf(tpe: Type): Type = tpe match {
     case ArrayType(t) => t
