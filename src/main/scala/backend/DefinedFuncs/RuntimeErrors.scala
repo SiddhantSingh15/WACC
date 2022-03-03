@@ -24,6 +24,9 @@ object RuntimeErrors {
 
   private val ERROR_EXIT_CODE = -1
 
+  /*
+   * Add RunTimeError to dataTable and funcTable.
+   */
   def addRTE(err: PreDefFunc): Label = {
     preDefFuncTable.addFunction(RuntimeError.function)
     preDefFuncTable.addFunction(stringPrintInstrs)
@@ -36,6 +39,9 @@ object RuntimeErrors {
 
   }
 
+  /*
+   * Raises RTE and adds the ARM machine code to the list of instructions.
+   */
   def throwRuntimeError: (Label, ListBuffer[Instr]) = {
     (
       RuntimeError.functionLabel,
@@ -47,6 +53,9 @@ object RuntimeErrors {
     )
   }
 
+  /* 
+   * Checks for illegal array accesses. 
+   */
   def checkArrayBounds: (Label, ListBuffer[Instr]) = {
     (
       ArrayBounds.functionLabel,
@@ -64,6 +73,9 @@ object RuntimeErrors {
     )
   }
 
+  /* 
+   * Adds illegal division by zero error instructions.
+   */
   def checkDivideByZero: (Label, ListBuffer[Instr]) = {
     (
       DivideByZero.functionLabel,
@@ -77,6 +89,9 @@ object RuntimeErrors {
     )
   }
 
+  /*
+   * Adds integer overflow to instructions list.
+   */
   def throwOverflowError: (Label, ListBuffer[Instr]) = {
     (
       Overflow.functionLabel,
@@ -87,6 +102,9 @@ object RuntimeErrors {
     )
   }
 
+  /*
+   * Adds instruction to free a pair.
+   */
   def freePair: (Label, ListBuffer[Instr]) = {
     (
       FreePair.functionLabel,
@@ -108,6 +126,9 @@ object RuntimeErrors {
     )
   }
 
+  /*
+   * Adds instruction to free an array.
+   */
   def freeArray: (Label, ListBuffer[Instr]) = {
     (
       FreeArray.functionLabel,
@@ -122,6 +143,9 @@ object RuntimeErrors {
     )
   }
 
+  /*
+   * Add NPE instructions to list of instructions.
+   */
   def checkNullPointer: (Label, ListBuffer[Instr]) = {
     (
       NPE.functionLabel,
