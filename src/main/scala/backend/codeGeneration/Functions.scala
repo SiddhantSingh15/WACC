@@ -47,7 +47,7 @@ object Functions {
       arguments match {
         case ArgList(args) => 
           for (a <- args.reverse) {
-            val tpe = typeConvert(a)
+            val tpe = getExprType(a)
             instructions ++= transExp(a, register)
             instructions += StrOffsetIndex(isByte(tpe), register, R13_SP, -getTypeSize(tpe))
            SP_curr += getTypeSize(tpe)

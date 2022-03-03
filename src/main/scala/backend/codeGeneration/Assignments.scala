@@ -51,7 +51,7 @@ object Assignments {
             case Snd(id : Ident) => 
                 instructions ++= transPairAssign(rhs, id, 2, freeRegister)
             case x@ArrayElem(ident, exprList) =>
-                val (_, newInstrs) = transAssignRHS(typeConvert(x), rhs, freeRegister)
+                val (_, newInstrs) = transAssignRHS(getExprType(x), rhs, freeRegister)
                 instructions ++= newInstrs
                 instructions ++= storeArrayElem(ident, exprList, freeRegister) 
             case _ => ???

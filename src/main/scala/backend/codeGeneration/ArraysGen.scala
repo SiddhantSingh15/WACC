@@ -32,7 +32,7 @@ object ArraysGen {
         rd: Register
     ): ListBuffer[Instr] = {
         val freeReg = saveReg()
-        val (instructions, isByte) = transArrayElem(ident, exprs, rd)
+        val (instructions, isByte) = transArrayElem(ident, exprs, freeReg)
         instructions += Str(isByte, rd, freeReg, 0)
         restoreReg(freeReg)
         instructions
@@ -49,9 +49,9 @@ object ArraysGen {
         val spOffset = stackPointer - i
         instructions += Add(rd, R13_SP, Imm_Int(spOffset))
         val nextReg = saveReg()
-        val innerT = getInnerType(t)
 
         for (expr <- exprs) {
+            t = getInnerType(t)
             instructions ++= transExp(expr, nextReg)
             instructions += Ldr(rd, RegAdd(rd))
             instructions += Mov(resultRegister, nextReg)
@@ -59,14 +59,14 @@ object ArraysGen {
             instructions += Bl(addRTE(ArrayBounds))
             instructions += Add(rd, rd, Imm_Int(SIZE_INT))
             
-            if (isByte(innerT)) {
+            if (isByte(t)) {
                 instructions += Add(rd, rd, nextReg)
             } else {
                 instructions += Add(rd, rd, LSL(nextReg, Imm_Int(2)))
             }
         }
-        restoreReg(rd)
-        (instructions, isByte(innerT))
+        restoreReg(nextReg)
+        (instructions, isByte(t))
     }
 
     def transArrayLiter(
@@ -80,7 +80,7 @@ object ArraysGen {
 
         instructions += Ldr(
             resultRegister,
-            Imm_Int(SIZE_INT + size * getTypeSize(innerT))
+            Load_Mem(SIZE_INT + size * getTypeSize(innerT))
         )
         instructions += Bl(Label("malloc"))
         instructions += Mov(freeReg, resultRegister)
