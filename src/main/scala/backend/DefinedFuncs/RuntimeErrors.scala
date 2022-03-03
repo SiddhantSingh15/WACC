@@ -25,13 +25,13 @@ object RuntimeErrors {
   private val ERROR_EXIT_CODE = -1
 
   def addRTE(err: PreDefFunc): Label = {
-    funcTable.addFunction(RuntimeError.function)
-    funcTable.addFunction(stringPrintInstrs)
+    preDefFuncTable.addFunction(RuntimeError.function)
+    preDefFuncTable.addFunction(stringPrintInstrs)
     dataTable.addLabel("msg_string", "%.*s\\0")
     for(n <- 0 until err.msgs.length){
       dataTable.addLabel(err.msgName(n), err.msgs(n))
     }
-    funcTable.addFunction(err.function)
+    preDefFuncTable.addFunction(err.function)
     err.functionLabel
 
   }

@@ -89,7 +89,7 @@ object ExpressionGen {
 
       var reg = rd
 
-      if (reg == popRegister) {
+      if (rd == popRegister) {
         instructions += Push(ListBuffer(R10))
         reg = R10
       }

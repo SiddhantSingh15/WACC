@@ -40,10 +40,10 @@ object Operand {
         override def toString: String = "r10"
     }
     case object R11 extends Register {
-        override def toString: String = "sp"
+        override def toString: String = "r11"
     }
     case object R12 extends Register {
-        override def toString: String = "sp"
+        override def toString: String = "r12"
     }
     case object R13_SP extends Register {
         override def toString: String = "sp"

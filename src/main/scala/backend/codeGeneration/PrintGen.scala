@@ -44,7 +44,7 @@ object PrintGen {
         }
         instrs += Bl(printFunc.functionLabel)
         if (printFunc.function != null) { //TODO: remove usage of null
-            funcTable.addFunction(printFunc.function)
+            preDefFuncTable.addFunction(printFunc.function)
         }  
 
         if (isLine) {
@@ -53,7 +53,7 @@ object PrintGen {
                 PrintLn.msgName(0),
                 PrintLn.msgs(0)
             )
-            funcTable.addFunction(PrintLn.function)
+            preDefFuncTable.addFunction(PrintLn.function)
         }
         restoreReg(freeReg)
         instrs
