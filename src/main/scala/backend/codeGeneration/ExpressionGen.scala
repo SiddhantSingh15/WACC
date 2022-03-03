@@ -17,6 +17,8 @@ object ExpressionGen {
     val INT_TRUE = 1
     val INT_FALSE = 0
 
+
+    /*Mapping True -> 1, False -> 0*/
     def boolToInt(bool: BoolLiter): Int = {
         bool match {
             case True => INT_TRUE
@@ -24,6 +26,7 @@ object ExpressionGen {
         }
     }
 
+    /*Translating an Expr to the ARM language*/
     def transExp(expr: Expr, rd: Register): ListBuffer[Instr] = {
         val instructions = ListBuffer.empty[Instr]    
         expr match {
@@ -60,6 +63,7 @@ object ExpressionGen {
         }
     }
 
+    /*Translating a unary operator to the ARM language*/
     def transUnOp(op: UnOp, rd: Register): ListBuffer[Instr] = {
         op match {
             case Not(expr) =>
@@ -84,6 +88,8 @@ object ExpressionGen {
         }
     }
     
+
+    /*Check if registers are full, if so pushes contents of R10 to stack*/
     private def collectRegister(rd: Register): (Register, ListBuffer[Instr]) = {
       val instructions = ListBuffer.empty[Instr]
 
@@ -97,6 +103,7 @@ object ExpressionGen {
       (reg, instructions)
     }
 
+    /*Translating a bianry operator to the ARM language*/
     def transBinOp(op: BinOp, rn: Register): ListBuffer[Instr] = {
         val instructions = ListBuffer.empty[Instr]
 
@@ -125,6 +132,7 @@ object ExpressionGen {
         instructions
     }
 
+    /*Translating a math operator to the ARM language*/
     def transMathOp(op: MathFuncs, rd: Register, rm: Register): ListBuffer[Instr] = {
 
         op match {
@@ -164,6 +172,7 @@ object ExpressionGen {
         }
     }
 
+    /*Translating a comparison operator to the ARM language*/
     def transCmpEqOp(op: BinOp, rd: Register, rm: Register): ListBuffer[Instr] = {
         var cond: Condition = null;
         op match {
@@ -183,6 +192,7 @@ object ExpressionGen {
         )
     }
 
+    /*Translating a logic operator to the ARM language*/
     def transLgOp(op: LogicFuncs, rd: Register, rm: Register): Instr = {
         op match {
             case frontend.AST.And(_,_) => backend.Opcodes.And(rd, rd, rm)
