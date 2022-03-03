@@ -58,6 +58,6 @@ object Operand {
       override def toString: String = s"$r, ASR $value"
   }
   case class LSL(r: Register, op: Operand) extends Operand {
-      override def toString: String = s"r, LSL $op"
+      override def toString: String = s"$r, LSL $op"
   }
 }
