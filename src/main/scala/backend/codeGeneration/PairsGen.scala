@@ -15,6 +15,12 @@ import backend.codeGeneration.ExpressionGen._
 import backend.codeGeneration.Assignments._
 
 object PairsGen {
+
+  /*
+   * Translates the PairElem type.
+   * Takes an Ident, pair position and a register.
+   * Returns a list of instructions.
+   */
   def transPairElem(ident: Ident, pos: Int, rd: Register): ListBuffer[Instr] = {
     val instructions = ListBuffer.empty[Instr]
     instructions ++= transExp(ident, rd)
@@ -29,6 +35,9 @@ object PairsGen {
     instructions
   }
 
+  /* 
+   * Loads the pair into RD
+   */
   def transPairAssign(rhs: AssignRHS, ident: Ident, pos: Int, rd: Register): ListBuffer[Instr] = {
     val instructions = ListBuffer.empty[Instr]
     val (i, t) = symbTable(ident)
@@ -55,6 +64,11 @@ object PairsGen {
     instructions
   }
 
+  /* 
+   * Translates Pair assignment.
+   * Takes the type of the fst and snd, and a register
+   * Returns the instructions list for the assignment.
+   */
   def transAssignRHSPair(tpe : Type, fst : Expr, snd: Expr, register : Register) : ListBuffer[Instr] = {
     val instrs = ListBuffer.empty[Instr]
     val Pair(typeOne, typeTwo) = tpe 
@@ -76,9 +90,7 @@ object PairsGen {
     )
 
     instrs += Str(resultRegister , RegAdd(register))
-
     instrs ++= transExp(snd, nextRegister)
-
     instrs += Ldr(resultRegister, Load_Mem(getPairTypeSize(typeTwo)))
     instrs += Bl(Label("malloc"))
 
@@ -94,11 +106,17 @@ object PairsGen {
     instrs
   }
 
+  /*
+   * Loads pair of name "ident" into passed in rd.
+   */
   def getPairElem(ident: Ident, pos: Int, rd: Register): Instr = {
     val (_, tpe) = symbTable(ident)
     Ldr(isBytePair(tpe, pos), rd, rd, NO_OFFSET)
   }
 
+  /*
+   * Returns the size of the pair type.
+   */
   private def getPairTypeSize(tpe : PairElemType) : Int = {
     tpe match {
       case PairElemPair        => SIZE_PAIR
@@ -107,6 +125,10 @@ object PairsGen {
     }
   }
 
+  /* 
+   * Helper function for getPairElem().
+   * Returns true if the passed in type is byte sized.
+   */
   private def isBytePair(tpe : Type, pos : Int) = {
     tpe match {
       case Pair(PairElemWithType(a), PairElemWithType(b)) =>

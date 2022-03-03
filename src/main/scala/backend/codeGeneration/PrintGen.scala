@@ -11,13 +11,17 @@ import backend.tableDataTypes.functionTable
 
 object PrintGen {
   
-
+  /* Translates the PRINT functions.
+   * Takes an expression and a boolean flag representing isLine.
+   * Returns a list of instructions matching the type of expression and restores registers.
+   */
   def transPrint(expr: Expr, isLine: Boolean): ListBuffer[Instr] = {
     val t = getExprType(expr)
     val freeReg = saveReg()
     val instrs = transExp(expr, freeReg)
     instrs += Mov(resultRegister, freeReg)
 
+    // Chooses the print functions based on the expression type.
     var printFunc: PreDefFunc = null
     t match {
       case CharType                     => 
