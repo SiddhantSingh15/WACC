@@ -11,12 +11,14 @@ import backend.DefinedFuncs.PreDefinedFuncs._
 
 object ArraysGen {
 
+    /*Getting type of entires in Array */
     def getInnerType(arrayT: Type): Type = 
         arrayT match {
             case ArrayType(innerType) => innerType
             case _                    => ???
         }
 
+    /*Loading an ArrayElem into a given Register*/
     def loadArrayElem(
         ident: Ident,
         exprs: List[Expr],
@@ -26,6 +28,7 @@ object ArraysGen {
         instructions += Ldr(isByte, rd, rd, 0)
     }
 
+    /*Storing an Expr from a Register into the ArrayElem*/
     def storeArrayElem(
         ident: Ident,
         exprs: List[Expr],
@@ -37,7 +40,8 @@ object ArraysGen {
         restoreReg(freeReg)
         instructions
     }
-  
+
+    /*Translating an ArrayElem to the ARM language*/
     def transArrayElem(
         ident: Ident,
         exprs: List[Expr],
@@ -47,6 +51,7 @@ object ArraysGen {
         var (i, t) = symbTable(ident)
         val typeSize = getTypeSize(t)
         val spOffset = stackPointer - i
+
         instructions += Add(rd, R13_SP, Imm_Int(spOffset))
         val nextReg = saveReg()
 
@@ -57,11 +62,13 @@ object ArraysGen {
             instructions += Mov(resultRegister, nextReg)
             instructions += Mov(R1, rd)
             instructions += Bl(addRTE(ArrayBounds))
+            /*accounting for array size*/
             instructions += Add(rd, rd, Imm_Int(SIZE_INT))
             
             if (isByte(t)) {
                 instructions += Add(rd, rd, nextReg)
             } else {
+                /*there is a 4 byte difference between elements*/
                 instructions += Add(rd, rd, LSL(nextReg, Imm_Int(2)))
             }
         }
@@ -69,6 +76,7 @@ object ArraysGen {
         (instructions, isByte(t))
     }
 
+    /*Translating an ArrayLiter into the ARM language*/
     def transArrayLiter(
         t: Type,
         arr: List[Expr],
@@ -78,6 +86,7 @@ object ArraysGen {
         val ArrayType(innerT) = t
         val size = arr.size
 
+        /*Array size + (size of each indvidual elem) * (# of elems)*/
         instructions += Ldr(
             resultRegister,
             Load_Mem(SIZE_INT + size * getTypeSize(innerT))
@@ -88,6 +97,7 @@ object ArraysGen {
         val nextFreeReg = saveReg()
         val isbyte = isByte(innerT)
 
+        /*Strogin all elements in memory*/
         for (i <- 0 until size) {
             instructions ++= transExp(arr(i), nextFreeReg)
             if (isbyte) {
@@ -97,6 +107,7 @@ object ArraysGen {
             }
         }
 
+        /*Storing size of array in memory*/
         instructions += Ldr(nextFreeReg, Load_Mem(size))
         instructions += Str(nextFreeReg, RegAdd(freeReg))
         restoreReg(nextFreeReg)
