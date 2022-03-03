@@ -38,7 +38,7 @@ object ScopeGen {
 		val thenLabel = funcTable.getNext()
 
 		thenInstr += Branch(thenLabel)
-		funcTable.add(thenLabel, thenInstr)		
+		funcTable.add(currLabel, thenInstr)		
 
 		currLabel = elseLabel
 		val elseInstrs = transScope(statElse, ListBuffer.empty[Instr])
