@@ -42,7 +42,7 @@ object ScopeGen {
 
 		currLabel = elseLabel
 		val elseInstrs = transScope(statElse, ListBuffer.empty[Instr])
-		funcTable.add(elseLabel, elseInstrs)
+		funcTable.add(currLabel, elseInstrs)
 
 		currLabel = thenLabel
 		ListBuffer.empty[Instr]

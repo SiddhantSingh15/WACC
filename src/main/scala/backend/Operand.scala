@@ -6,19 +6,45 @@ object Operand {
     sealed trait Operand
 
     sealed trait Register extends Operand
-    case object R0 extends Register
-    case object R1 extends Register
-    case object R2 extends Register
-    case object R3 extends Register
-    case object R4 extends Register
-    case object R5 extends Register
-    case object R6 extends Register
-    case object R7 extends Register
-    case object R8 extends Register
-    case object R9 extends Register
-    case object R10 extends Register
-    case object R11 extends Register
-    case object R12 extends Register
+    case object R0 extends Register {
+        override def toString: String = "r0"
+    }
+    case object R1 extends Register {
+        override def toString: String = "r1"
+    }
+    case object R2 extends Register {
+        override def toString: String = "r2"
+    }
+    case object R3 extends Register {
+        override def toString: String = "r3"
+    }
+    case object R4 extends Register {
+        override def toString: String = "r4"
+    }
+    case object R5 extends Register {
+        override def toString: String = "r5"
+    }
+    case object R6 extends Register {
+        override def toString: String = "r6"
+    }
+    case object R7 extends Register {
+        override def toString: String = "r7"
+    }
+    case object R8 extends Register {
+        override def toString: String = "r8"
+    }
+    case object R9 extends Register {
+        override def toString: String = "r9"
+    }
+    case object R10 extends Register {
+        override def toString: String = "r10"
+    }
+    case object R11 extends Register {
+        override def toString: String = "sp"
+    }
+    case object R12 extends Register {
+        override def toString: String = "sp"
+    }
     case object R13_SP extends Register {
         override def toString: String = "sp"
     }

@@ -27,8 +27,8 @@ object FreeGen {
         restoreReg(freeRegister)
 
         t match {
-          case _: Pair      => Bl(addRTE(FreePair))
-          case _: ArrayType => Bl(addRTE(FreeArray))
+          case _: Pair      => instructions += Bl(addRTE(FreePair))
+          case _: ArrayType => instructions += Bl(addRTE(FreeArray))
           case _            => 
         }
 

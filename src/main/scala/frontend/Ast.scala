@@ -412,7 +412,10 @@ sealed case class ArrayElem(ident: Ident, exprList : List[Expr]) extends AssignL
 		override def toString: String = s"\\$char"
 	}
 	case class CharLiter(character: Character) extends Expr{
-    override def toString: String = "\'" + character.toString() + "\'"
+    override def toString: String = character match {
+		case NormalCharacter(_) => "\'" + character.toString() + "\'"
+		case EscapeCharacter(_) => "\'" + character.toString()(1) + "\'"
+	}
 		override def getType(symbTable: SymbolTable): Type = CharType
 	}
 	case class StrLiter(string: List[Character]) extends Expr{

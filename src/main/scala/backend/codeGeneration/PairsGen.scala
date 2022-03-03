@@ -12,6 +12,7 @@ import backend.codeGeneration.ExpressionGen._
 import backend.Opcodes._
 import parsley.internal.deepembedding.StringLiteral
 import backend.codeGeneration.ExpressionGen._
+import backend.codeGeneration.Assignments._
 
 object PairsGen {
   def transPairElem(ident: Ident, pos: Int, rd: Register): ListBuffer[Instr] = {
@@ -36,18 +37,20 @@ object PairsGen {
       t match {
         case Pair(PairElemWithType(fType), _) => fType
         case Pair(PairElemPair, _)            => Pair(null, null)
-        case _                                => 
+        case _                                => ???
       }
     } else {
       t match {
         case Pair(_, PairElemWithType(sType)) => sType
         case Pair(PairElemPair, _)            => Pair(null, null)
-        case _                                => 
+        case _                                => ???
       }
     }
-
+    val (isByte, instrs) = transAssignRHS(pElemType, rhs, rd)
+    instructions ++= instrs
     val nextRegister = saveReg()
     instructions ++= transPairElem(ident, pos, nextRegister)
+    instructions += Str(isByte, rd, nextRegister, NO_OFFSET)
     restoreReg(nextRegister)
     instructions
   }
