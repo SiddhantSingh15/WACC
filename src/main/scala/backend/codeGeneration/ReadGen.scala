@@ -24,12 +24,12 @@ object ReadGen {
 
   private def readBranch(t: Type): Instr = t match {
     case CharType =>
-      funcTable.addFunction(
+      preDefFuncTable.addFunction(
         charRead(dataTable.addData(ReadChar.msgs(0)))
       )
       Bl(ReadChar.functionLabel)
     case Int =>
-      funcTable.addFunction(
+      preDefFuncTable.addFunction(
         intRead(dataTable.addData(ReadInt.msgs(0)))
       )
       Bl(ReadInt.functionLabel)

@@ -23,6 +23,7 @@ object CodeGen {
   var symbTable: SymbolTable = _
   var dataTable = new dataTable
   var funcTable = new functionTable
+  var preDefFuncTable = new functionTable
   
   val SIZE_INT = 4
   val SIZE_CHAR = 1
@@ -150,7 +151,7 @@ object CodeGen {
     )
 
     funcTable.add(currLabel, instructions)
-    (dataTable.table.toList, funcTable.table.toList)
+    (dataTable.table.toList, (funcTable.table ++ preDefFuncTable.table).toList)
   }
 
   def subSP(sp: Int): ListBuffer[Instr] = {
@@ -188,41 +189,6 @@ object CodeGen {
     instructions += Opcodes.Add(R13_SP, R13_SP, Imm_Int(currSP))
     instructions
   }
-
-  // def typeConvert(expr: Expr): Type = {
-  //   expr match {
-  //     case _: EqualityFuncs => Bool
-      
-  //     case _: CompareFuncs => Bool
-  //     case _: LogicFuncs   => Bool
-  //     case _: Not          => Bool
-  //     case _: BoolLiter    => Bool
-
-
-  //     case _: Negation     => Int
-  //     case _: MathFuncs    => Int
-  //     case _: Len          => Int
-  //     case _: Ord          => Int
-  //     case _: IntLiter     => Int
-      
-  //     case _: PairLiter    => Pair(null, null)
-
-  //     case _: StrLiter     => String
-
-  //     case _: Chr          => CharType
-  //     case _: CharLiter    => CharType
-
-
-  //     case ident: Ident    =>
-  //       val (_, tpe) = symbTable(ident)
-  //       tpe
-      
-  //     case ArrayElem(ident, exprList) => 
-  //       var (_, tpe) = symbTable(ident)
-  //       tpe = exprList.foldLeft(tpe)((t, _) => typeOf(t))
-  //       tpe
-  //   }
-  // }
 
   private def typeOf(tpe: Type): Type = tpe match {
     case ArrayType(t) => t
