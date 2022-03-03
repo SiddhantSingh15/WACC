@@ -15,6 +15,7 @@ import scala.collection.mutable.ListBuffer
 
 object Assignments {
 
+    /*Translating declaration of new variable to ARM language*/
     def translateDeclaration(
         t: Type,
         id : Ident,
@@ -32,6 +33,7 @@ object Assignments {
         instrs
     }
 
+    /*Translating assignment of a variable to ARM language*/
     def transAssignment(
         lhs: AssignLHS,
         rhs: AssignRHS
@@ -60,6 +62,12 @@ object Assignments {
         instructions
     }
 
+    /*
+    Translating an AssignRHS to ARM Language
+    Returns a pair consisting of: 
+        - Boolean (True if the size of RHS is a byte)
+        - ListBuffer[Instr] (Translated instructions)
+    */
     def transAssignRHS(
         t: Type,
         rhs: AssignRHS,
