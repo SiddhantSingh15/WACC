@@ -5,7 +5,7 @@
 image: hseeberger/scala-sbt:eclipse-temurin-17.0.1_1.6.1_2.13.8
 stages:
   - compilation
-  - test
+  - frontend-tests
   - code-coverage
 
 build:
@@ -17,7 +17,8 @@ test:
   stage: test
   script:
     # Execute your project's tests
-    - sbt clean test
+    - sbt "testOnly ParserTests"
+    - sbt "testOnly SemanticTests"
   needs:
     ["build"]
 
