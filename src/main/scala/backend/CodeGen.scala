@@ -3,17 +3,17 @@ package backend
 import scala.collection.mutable.ListBuffer
 import backend.Opcodes._
 import backend.Operand._
-import backend.codeGeneration.ExpressionGen._
+import backend.CodeGeneration.ExpressionGen._
 import backend.tableDataTypes._
 import frontend.AST._
 import frontend.SymbolTable
-import backend.codeGeneration.ArraysGen._
-import backend.codeGeneration.ReadGen._
-import backend.codeGeneration.FreeGen._
-import backend.codeGeneration.Functions._
-import backend.codeGeneration.PrintGen._
-import backend.codeGeneration.ScopeGen._
-import backend.codeGeneration.Assignments._
+import backend.CodeGeneration.ArraysGen._
+import backend.CodeGeneration.ReadGen._
+import backend.CodeGeneration.FreeGen._
+import backend.CodeGeneration.Functions._
+import backend.CodeGeneration.PrintGen._
+import backend.CodeGeneration.ScopeGen._
+import backend.CodeGeneration.Assignments._
 
 object CodeGen {
 
@@ -22,8 +22,8 @@ object CodeGen {
   var currLabel: Label = _
   var symbTable: SymbolTable = _
   var dataTable = new dataTable
-  var funcTable = new functionTable
-  var preDefFuncTable = new functionTable
+  var funcTable = new FunctionTable
+  var preDefFuncTable = new FunctionTable
   var currInstructions = ListBuffer.empty[Instr]
   
   val SIZE_INT = 4

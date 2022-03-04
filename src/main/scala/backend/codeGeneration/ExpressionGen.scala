@@ -1,4 +1,4 @@
-package backend.codeGeneration
+package backend.CodeGeneration
 
 import backend.Operand._
 import frontend.AST._
@@ -6,7 +6,7 @@ import backend.Opcodes._
 import backend.CodeGen._
 import frontend.SymbolTable
 import backend.Condition._
-import backend.codeGeneration.ArraysGen._
+import backend.CodeGeneration.ArraysGen._
 import backend.DefinedFuncs.RuntimeErrors._
 import backend.DefinedFuncs.PreDefinedFuncs._
 

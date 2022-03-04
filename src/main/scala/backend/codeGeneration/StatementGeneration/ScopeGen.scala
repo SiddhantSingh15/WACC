@@ -1,4 +1,4 @@
-package backend.codeGeneration
+package backend.CodeGeneration
 
 import frontend.AST.{Stat, Expr}
 import scala.collection.mutable.ListBuffer
@@ -6,7 +6,7 @@ import backend.Opcodes.{Instr, Cmp, Branch, BranchCond}
 import backend.Condition.{EQ}
 import backend.CodeGen._
 import backend.Operand.{Imm_Int}
-import backend.codeGeneration.ExpressionGen.transExp
+import backend.CodeGeneration.ExpressionGen.transExp
 
 object ScopeGen {
 

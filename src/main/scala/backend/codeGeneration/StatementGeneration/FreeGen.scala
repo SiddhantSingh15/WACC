@@ -1,4 +1,4 @@
-package backend.codeGeneration
+package backend.CodeGeneration
 
 import scala.collection.mutable.ListBuffer
 import frontend.AST

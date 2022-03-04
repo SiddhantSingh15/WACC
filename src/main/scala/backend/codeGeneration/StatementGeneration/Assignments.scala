@@ -1,14 +1,14 @@
-package backend.codeGeneration
+package backend.CodeGeneration
 
 import backend.Operand._
 import frontend.AST._
 import backend.Opcodes._
 import backend.CodeGen._
 import frontend.SymbolTable
-import backend.codeGeneration.ExpressionGen._
-import backend.codeGeneration.PairsGen._
-import backend.codeGeneration.Functions._
-import backend.codeGeneration.ArraysGen._
+import backend.CodeGeneration.ExpressionGen._
+import backend.CodeGeneration.PairsGen._
+import backend.CodeGeneration.Functions._
+import backend.CodeGeneration.ArraysGen._
 
 import scala.collection.mutable.ListBuffer
 

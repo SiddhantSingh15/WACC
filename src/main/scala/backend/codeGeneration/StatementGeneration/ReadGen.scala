@@ -1,7 +1,7 @@
-package backend.codeGeneration
+package backend.CodeGeneration
 
-import backend.codeGeneration.ArraysGen.transArrayElem
-import backend.codeGeneration.PairsGen.transPairElem
+import backend.CodeGeneration.ArraysGen.transArrayElem
+import backend.CodeGeneration.PairsGen.transPairElem
 import backend.CodeGen._
 import backend.DefinedFuncs.PreDefinedFuncs.{ReadInt, ReadChar}
 import backend.Opcodes._

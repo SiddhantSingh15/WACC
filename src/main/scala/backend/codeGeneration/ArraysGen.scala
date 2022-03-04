@@ -1,11 +1,11 @@
-package backend.codeGeneration
+package backend.CodeGeneration
 
 import frontend.AST._
 import backend.Operand._
 import backend.Opcodes._
 import scala.collection.mutable.ListBuffer
 import backend.CodeGen._
-import backend.codeGeneration.ExpressionGen._
+import backend.CodeGeneration.ExpressionGen._
 import backend.DefinedFuncs.RuntimeErrors._
 import backend.DefinedFuncs.PreDefinedFuncs._
 

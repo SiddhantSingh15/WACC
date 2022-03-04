@@ -1,18 +1,18 @@
-package backend.codeGeneration
+package backend.CodeGeneration
 
 import frontend.AST._
 import backend.Operand.{Register, RegAdd, Load_Mem}
 import backend.CodeGen._
 import scala.collection.mutable.ListBuffer
 import backend.Opcodes.{Instr, Mov, Ldr, Bl}
-import backend.codeGeneration.ExpressionGen.transExp
+import backend.CodeGeneration.ExpressionGen.transExp
 import backend.DefinedFuncs.RuntimeErrors._
 import backend.DefinedFuncs.PreDefinedFuncs.{NPE}
-import backend.codeGeneration.ExpressionGen._
+import backend.CodeGeneration.ExpressionGen._
 import backend.Opcodes._
 import parsley.internal.deepembedding.StringLiteral
-import backend.codeGeneration.ExpressionGen._
-import backend.codeGeneration.Assignments._
+import backend.CodeGeneration.ExpressionGen._
+import backend.CodeGeneration.Assignments._
 
 object PairsGen {
 

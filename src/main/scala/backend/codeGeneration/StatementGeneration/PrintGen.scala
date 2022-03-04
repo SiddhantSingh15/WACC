@@ -1,13 +1,12 @@
-package backend.codeGeneration
+package backend.CodeGeneration
 
 import backend.CodeGen._
 import frontend.AST._
-import backend.codeGeneration.ExpressionGen._
+import backend.CodeGeneration.ExpressionGen._
 import backend.DefinedFuncs.PreDefinedFuncs._
 import backend.DefinedFuncs.PrintInstrs._
 import scala.collection.mutable.ListBuffer
 import backend.Opcodes._
-import backend.tableDataTypes.functionTable
 
 object PrintGen {
   
