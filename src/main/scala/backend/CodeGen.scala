@@ -18,10 +18,11 @@ import backend.CodeGeneration.Assignments._
 object CodeGen {
 
   // Values for code generation 
-  var stackPointer = 0
+  var currSP = 0
+  var scopeSP  = 0
   var currLabel: Label = _
   var symbTable: SymbolTable = _
-  var dataTable = new dataTable
+  var dataTable = new DataTable
   var funcTable = new FunctionTable
   var preDefFuncTable = new FunctionTable
   var currInstructions = ListBuffer.empty[Instr]
@@ -31,15 +32,17 @@ object CodeGen {
   val SIZE_BOOL = 1
   val SIZE_STR = 4
 
-  val FALSE = 0
+  val TRUE_INT = 1
+  val FALSE_INT = 0
   val SIZE_ADDR = 4
   val SIZE_PAIR = SIZE_ADDR
   val SIZE_ARR = SIZE_ADDR
 
   val MAX_IMM_INT = 1024
-  
-  var SP_scope  = 0
   val NO_OFFSET = 0
+
+  val isPrintLn = true
+  val isPrint = false
   
   private val ERROR = -1
   
@@ -57,8 +60,8 @@ object CodeGen {
       case Free(expr)                     => transFree(expr)
       case Return(expr)                   => transReturn(expr)
       case Exit(expr)                     => transExit(expr)
-      case Print(expr)                    => transPrint(expr, false) // TODO: remove magic boolean
-      case Println(expr)                  => transPrint(expr, true)
+      case Print(expr)                    => transPrint(expr, isPrint)
+      case Println(expr)                  => transPrint(expr, isPrintLn)
       case If(expr, statThen, statElse)   => transIf(expr, statThen, statElse)
       case While(expr, stats)             => transWhile(expr, stats)
       case Begin(stats)                   => transBegin(stats)
@@ -129,9 +132,9 @@ object CodeGen {
 
     currLabel = Label("main")
 
-    SP_scope = stackPointer
+    scopeSP = currSP
     val maxSpDepth = symbTable.spMaxDepth
-    stackPointer += maxSpDepth
+    currSP += maxSpDepth
     currInstructions += Push(ListBuffer(R14_LR))
     currInstructions ++= decrementSP(maxSpDepth)
     stats.foreach((s: Stat) => {
@@ -139,7 +142,7 @@ object CodeGen {
       }
     )
     
-    currInstructions ++= incrementSP(stackPointer)
+    currInstructions ++= incrementSP(currSP)
     currInstructions ++= ListBuffer(
       Ldr(resultRegister, Load_Mem(0)), // TODO: magic number
       Pop(ListBuffer(R15_PC)),

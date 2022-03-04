@@ -35,13 +35,13 @@ object Functions {
   def transFunction (f : Func) : Unit = {
     val Func(tpe, id, paramList, stats) = f 
     currLabel = Label("f_" + id)
-    val prevScopeSP = SP_scope
+    val prevScopeSP = scopeSP
     symbTable = symbTable.getNextScope
     val maxSpDepth = symbTable.spMaxDepth(id)
     translateFuncParams(paramList)
 
-    SP_scope = stackPointer
-    stackPointer += maxSpDepth
+    scopeSP = currSP
+    currSP += maxSpDepth
     currInstructions += Push(ListBuffer(R14_LR))
     currInstructions ++= decrementSP(maxSpDepth)
 
@@ -50,10 +50,10 @@ object Functions {
     }
 
     if (maxSpDepth > 0) {
-      stackPointer -= maxSpDepth
+      currSP -= maxSpDepth
     }
 
-    SP_scope = prevScopeSP
+    scopeSP = prevScopeSP
     symbTable = symbTable.prev
     currInstructions ++= ListBuffer(
       Pop(ListBuffer(R15_PC)),
@@ -76,11 +76,11 @@ object Functions {
       val tpe = getExprType(a)
       transExp(a, register)
       currInstructions += StrOffsetIndex(isByte(tpe), register, R13_SP, -getTypeSize(tpe))
-      stackPointer += getTypeSize(tpe)
+      currSP += getTypeSize(tpe)
       offset += getTypeSize(tpe)
     }
         
-    stackPointer -= offset
+    currSP -= offset
     offset
   }
   
@@ -109,8 +109,8 @@ object Functions {
     val register = saveReg()
     transExp(expr, register)
     currInstructions += Mov(resultRegister, register)
-    if(stackPointer > 0) { 
-        currInstructions ++= incrementSP(stackPointer)
+    if(currSP > 0) { 
+        currInstructions ++= incrementSP(currSP)
     }
 
     currInstructions ++= ListBuffer(

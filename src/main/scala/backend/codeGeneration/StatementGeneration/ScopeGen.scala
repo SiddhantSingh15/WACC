@@ -82,20 +82,20 @@ object ScopeGen {
    */
   private def transScope(stats: List[Stat]): Unit = {
     symbTable = symbTable.getNextScope
-    val oldScopeSp = SP_scope
+    val oldScopeSp = scopeSP
     val scopeMaxSpDepth = symbTable.spMaxDepth
     currInstructions ++= decrementSP(scopeMaxSpDepth)
-    SP_scope = stackPointer
-    stackPointer += scopeMaxSpDepth
+    scopeSP = currSP
+    currSP += scopeMaxSpDepth
     stats.foreach((s: Stat) => {
           transStat(s)
         }
       )
     if (scopeMaxSpDepth > 0) {
       currInstructions ++= incrementSP(scopeMaxSpDepth)
-      stackPointer -= scopeMaxSpDepth
+      currSP -= scopeMaxSpDepth
     }
-    SP_scope = oldScopeSp
+    scopeSP = oldScopeSp
     symbTable = symbTable.prev
   }
 }

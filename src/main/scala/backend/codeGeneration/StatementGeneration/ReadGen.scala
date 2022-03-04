@@ -67,7 +67,7 @@ object ReadGen {
 
     val freeReg = saveReg()
     val (spIndex, identType) = symbTable(ident)
-    val spOffset = stackPointer - spIndex
+    val spOffset = currSP - spIndex
     currInstructions += Add(freeReg, R13_SP, Imm_Int(spOffset))
     currInstructions += Mov(resultRegister, freeReg)
     restoreReg(freeReg)

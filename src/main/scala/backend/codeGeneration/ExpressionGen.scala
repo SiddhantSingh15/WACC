@@ -14,14 +14,11 @@ import scala.collection.mutable.ListBuffer
 
 object ExpressionGen {
 
-  val INT_TRUE = 1
-  val INT_FALSE = 0
-
  /* Mapping True -> 1, False -> 0 */
   def boolToInt(bool: BoolLiter): Int = {
     bool match {
-      case True => INT_TRUE
-      case False => INT_FALSE
+      case True => TRUE_INT
+      case False => FALSE_INT
     }
   }
 
@@ -46,7 +43,7 @@ object ExpressionGen {
 
       case ident: Ident => 
         val (i, t) = symbTable(ident)
-        val offset = stackPointer - i
+        val offset = currSP - i
         currInstructions += Ldr(isByte(t), rd, R13_SP, offset)
 
       case ArrayElem(id, exprs) => 
@@ -66,7 +63,7 @@ object ExpressionGen {
     op match {
       case Not(expr) =>
         transExp(expr, rd)
-        currInstructions += Eor(rd, rd, Imm_Int(INT_TRUE))
+        currInstructions += Eor(rd, rd, Imm_Int(TRUE_INT))
       case Negation(expr) =>
         transExp(expr, rd) 
         currInstructions ++= ListBuffer(
@@ -75,7 +72,7 @@ object ExpressionGen {
         )
       case Len(ident: Ident) =>
         val (i, t) = symbTable(ident)
-        currInstructions += Ldr(rd, RegisterOffset(R13_SP, stackPointer - i))
+        currInstructions += Ldr(rd, RegisterOffset(R13_SP, currSP - i))
         currInstructions += Ldr(rd, RegAdd(rd))
   
       case Ord(expr) =>
@@ -179,8 +176,8 @@ object ExpressionGen {
 
     currInstructions ++= ListBuffer(
       Cmp(rd, rm),
-      MovCond(cond, rd, Imm_Int(INT_TRUE)),
-      MovCond(cond.oppositeCmp, rd, Imm_Int(INT_FALSE))
+      MovCond(cond, rd, Imm_Int(TRUE_INT)),
+      MovCond(cond.oppositeCmp, rd, Imm_Int(FALSE_INT))
     )
   }
 

@@ -17,9 +17,9 @@ object Assignments {
 
   /*Translating declaration of new variable to ARM language*/
   def translateDeclaration(t: Type, id : Ident, rhs : AssignRHS): Unit = {
-    SP_scope += getTypeSize(t)
-    symbTable.add(id, SP_scope, t)
-    val spOffset = stackPointer - SP_scope
+    scopeSP += getTypeSize(t)
+    symbTable.add(id, scopeSP, t)
+    val spOffset = currSP - scopeSP
     val freeRegister = saveReg()
     val isByte = transAssignRHS(t, rhs, freeRegister)
     currInstructions += Str(isByte, freeRegister, R13_SP, spOffset)
@@ -34,7 +34,7 @@ object Assignments {
       case id : Ident                   =>
         val (index, t) = symbTable(id)
         val isByte= transAssignRHS(t, rhs, freeRegister)
-        val spOffset = stackPointer - index  
+        val spOffset = currSP - index  
         currInstructions += Str(isByte, freeRegister, R13_SP, spOffset)
       case Fst(id : Ident)              => 
         transPairAssign(rhs, id, 1, freeRegister)

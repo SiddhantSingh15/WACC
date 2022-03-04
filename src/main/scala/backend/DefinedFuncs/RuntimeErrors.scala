@@ -4,7 +4,7 @@ import backend.CodeGen.{
   dataTable,
   funcTable,
   resultRegister,
-  FALSE
+  FALSE_INT
 }
 
 import backend.DefinedFuncs.PreDefinedFuncs._
@@ -61,7 +61,7 @@ object RuntimeErrors {
       ArrayBounds.functionLabel,
       ListBuffer[Instr](
         Push(ListBuffer(R14_LR)),
-        Cmp(resultRegister, Imm_Int(FALSE)),
+        Cmp(resultRegister, Imm_Int(FALSE_INT)),
         LdrCond(LT, resultRegister, DataLabel(Label(ArrayBounds.msgName(0)))),
         BranchLinkCond(LT, RuntimeError.functionLabel),
         Ldr(R1, RegAdd(R1)),
@@ -81,7 +81,7 @@ object RuntimeErrors {
       DivideByZero.functionLabel,
       ListBuffer[Instr](
         Push(ListBuffer(R14_LR)),
-        Cmp(R1, Imm_Int(FALSE)),
+        Cmp(R1, Imm_Int(FALSE_INT)),
         LdrCond(EQ, resultRegister, DataLabel(Label(DivideByZero.msgName(0)))),
         BranchLinkCond(EQ, RuntimeError.functionLabel),
         Pop(ListBuffer(R15_PC))
@@ -110,7 +110,7 @@ object RuntimeErrors {
       FreePair.functionLabel,
       ListBuffer[Instr](
         Push(ListBuffer(R14_LR)),
-        Cmp(resultRegister, Imm_Int(FALSE)),
+        Cmp(resultRegister, Imm_Int(FALSE_INT)),
         LdrCond(EQ, resultRegister, DataLabel(Label(FreePair.msgName(0)))),
         BranchCond(EQ, RuntimeError.functionLabel),
         Push(ListBuffer(resultRegister)),
@@ -134,7 +134,7 @@ object RuntimeErrors {
       FreeArray.functionLabel,
       ListBuffer[Instr](
         Push(ListBuffer(R14_LR)),
-        Cmp(resultRegister, Imm_Int(FALSE)),
+        Cmp(resultRegister, Imm_Int(FALSE_INT)),
         LdrCond(EQ, resultRegister, DataLabel(Label(FreeArray.msgName(0)))),
         BranchCond(EQ, RuntimeError.functionLabel),
         Bl(Label("free")),
@@ -151,7 +151,7 @@ object RuntimeErrors {
       NPE.functionLabel,
       ListBuffer[Instr](
         Push(ListBuffer(R14_LR)),
-        Cmp(resultRegister, Imm_Int(FALSE)),
+        Cmp(resultRegister, Imm_Int(FALSE_INT)),
         LdrCond(EQ, resultRegister, DataLabel(Label(NPE.msgName(0)))),
         BranchLinkCond(EQ, RuntimeError.functionLabel),
         Pop(ListBuffer(R15_PC))

@@ -36,7 +36,7 @@ object ArraysGen {
   def transArrayElem(ident: Ident, exprs: List[Expr], rd: Register): Boolean = {
     var (i, t) = symbTable(ident)
     val typeSize = getTypeSize(t)
-    val spOffset = stackPointer - i
+    val spOffset = currSP - i
 
     currInstructions += Add(rd, R13_SP, Imm_Int(spOffset))
     val nextReg = saveReg()
