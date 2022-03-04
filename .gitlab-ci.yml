@@ -28,7 +28,9 @@ backend-tests:
   image: hseeberger/scala-sbt:eclipse-temurin-17.0.1_1.6.1_2.13.8
   stage: backend-tests
   script:
-    - apt-get install gcc-arm-linux-gnueabi qemu qemu-user -y
+    - apt-get install install gcc-arm*
+    - apt-get install qemu
+    - apt-get install qemu-user -y
     - sbt "testOnly BackendTests"
 
 code-coverage:
