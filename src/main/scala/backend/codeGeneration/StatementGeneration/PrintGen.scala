@@ -45,8 +45,8 @@ object PrintGen {
       )
     }
     currInstructions += Bl(printFunc.functionLabel)
-    if (printFunc.function != null) { //TODO: remove usage of null
-      preDefFuncTable.addFunction(printFunc.function)
+    if (printFunc.function.isDefined) {
+      preDefFuncTable.addFunction(printFunc.function.get)
     }  
 
     if (isLine) {
@@ -55,7 +55,7 @@ object PrintGen {
         PrintLn.msgName(0),
         PrintLn.msgs(0)
       )
-      preDefFuncTable.addFunction(PrintLn.function)
+      preDefFuncTable.addFunction(PrintLn.function.get)
     }
     restoreReg(freeReg)
   }

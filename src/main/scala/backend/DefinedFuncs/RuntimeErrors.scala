@@ -22,13 +22,13 @@ object RuntimeErrors {
    * Add RunTimeError to dataTable and funcTable.
    */
   def addRTE(err: PreDefFunc): Label = {
-    preDefFuncTable.addFunction(RuntimeError.function)
+    preDefFuncTable.addFunction(RuntimeError.function.get)
     preDefFuncTable.addFunction(stringPrintInstrs)
     dataTable.addLabel("msg_string", "%.*s\\0")
     for(n <- 0 until err.msgs.length){
       dataTable.addLabel(err.msgName(n), err.msgs(n))
     }
-    preDefFuncTable.addFunction(err.function)
+    preDefFuncTable.addFunction(err.function.get)
     err.functionLabel
 
   }
