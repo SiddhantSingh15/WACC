@@ -1,4 +1,4 @@
-package backend.codeGeneration
+package backend.CodeGeneration
 
 import frontend.AST.{Stat, Expr}
 import scala.collection.mutable.ListBuffer
@@ -6,7 +6,8 @@ import backend.Opcodes.{Instr, Cmp, Branch, BranchCond}
 import backend.Condition.{EQ}
 import backend.CodeGen._
 import backend.Operand.{Imm_Int}
-import backend.codeGeneration.ExpressionGen.transExp
+import backend.CodeGeneration.ExpressionGen.transExp
+import backend.CodeGeneration.CodeGenHelper._
 
 object ScopeGen {
 
@@ -72,7 +73,7 @@ object ScopeGen {
 		val register = saveReg()
 
 		transExp(expr, register)
-		currInstructions += Cmp(register, Imm_Int(1)) // TODO: remove magic number
+		currInstructions += Cmp(register, Imm_Int(TRUE_INT))
 		restoreReg(register)
 		currInstructions += BranchCond(EQ, bodyLabel)
 	}
@@ -82,20 +83,20 @@ object ScopeGen {
    */
   private def transScope(stats: List[Stat]): Unit = {
     symbTable = symbTable.getNextScope
-    val oldScopeSp = SP_scope
+    val oldScopeSp = scopeSP
     val scopeMaxSpDepth = symbTable.spMaxDepth
-    currInstructions ++= decrementSP(scopeMaxSpDepth)
-    SP_scope = stackPointer
-    stackPointer += scopeMaxSpDepth
+    decrementSP(scopeMaxSpDepth)
+    scopeSP = currSP
+    currSP += scopeMaxSpDepth
     stats.foreach((s: Stat) => {
           transStat(s)
         }
       )
     if (scopeMaxSpDepth > 0) {
-      currInstructions ++= incrementSP(scopeMaxSpDepth)
-      stackPointer -= scopeMaxSpDepth
+      incrementSP(scopeMaxSpDepth)
+      currSP -= scopeMaxSpDepth
     }
-    SP_scope = oldScopeSp
+    scopeSP = oldScopeSp
     symbTable = symbTable.prev
   }
 }

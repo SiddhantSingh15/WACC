@@ -4,7 +4,7 @@ import scala.collection.mutable.ListBuffer
 import backend.Opcodes._
 import frontend.AST.StrLiter
 
-class dataTable {
+class DataTable {
   var table = ListBuffer.empty[Data]
   var size = 0
 

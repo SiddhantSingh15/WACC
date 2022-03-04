@@ -1,7 +1,7 @@
-package backend.codeGeneration
+package backend.CodeGeneration
 
-import backend.codeGeneration.ArraysGen.transArrayElem
-import backend.codeGeneration.PairsGen.transPairElem
+import backend.CodeGeneration.ArraysGen.transArrayElem
+import backend.CodeGeneration.PairsGen.transPairElem
 import backend.CodeGen._
 import backend.DefinedFuncs.PreDefinedFuncs.{ReadInt, ReadChar}
 import backend.Opcodes._
@@ -9,6 +9,7 @@ import backend.Operand._
 import frontend.AST._
 import backend.ReadInstr.{charRead, intRead}
 import scala.collection.mutable.ListBuffer
+import backend.CodeGeneration.CodeGenHelper._
 
 object ReadGen {
 
@@ -27,19 +28,18 @@ object ReadGen {
   /*
    * Matches the type and returns the Bl instruction.
    */
-  private def readBranch(t: Type): Instr = t match {
+  private def readBranch(t: Type): Unit = t match {
     case CharType =>
       preDefFuncTable.addFunction(
         charRead(dataTable.addData(ReadChar.msgs(0)))
       )
-      Bl(ReadChar.functionLabel)
+      currInstructions += Bl(ReadChar.functionLabel)
     case Int      =>
       preDefFuncTable.addFunction(
         intRead(dataTable.addData(ReadInt.msgs(0)))
       )
-      Bl(ReadInt.functionLabel)
+      currInstructions += Bl(ReadInt.functionLabel)
     case _        => 
-      null
   }
 
   /* 
@@ -57,7 +57,7 @@ object ReadGen {
     // value must be in R0 for branch
     currInstructions += Mov(resultRegister, freeReg)
     restoreReg(freeReg)
-    currInstructions += readBranch(t)
+    readBranch(t)
   }
 
   /* 
@@ -67,11 +67,11 @@ object ReadGen {
 
     val freeReg = saveReg()
     val (spIndex, identType) = symbTable(ident)
-    val spOffset = stackPointer - spIndex
+    val spOffset = currSP - spIndex
     currInstructions += Add(freeReg, R13_SP, Imm_Int(spOffset))
     currInstructions += Mov(resultRegister, freeReg)
     restoreReg(freeReg)
-    currInstructions += readBranch(identType)
+    readBranch(identType)
   }
 
   /*
@@ -84,7 +84,7 @@ object ReadGen {
     currInstructions += Mov(resultRegister, resReg)
     restoreReg(resReg)
     val t = getExprType(ae)
-    currInstructions += readBranch(t)
+    readBranch(t)
   }
 
   /*

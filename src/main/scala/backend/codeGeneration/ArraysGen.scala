@@ -1,13 +1,14 @@
-package backend.codeGeneration
+package backend.CodeGeneration
 
 import frontend.AST._
 import backend.Operand._
 import backend.Opcodes._
 import scala.collection.mutable.ListBuffer
 import backend.CodeGen._
-import backend.codeGeneration.ExpressionGen._
+import backend.CodeGeneration.ExpressionGen._
 import backend.DefinedFuncs.RuntimeErrors._
 import backend.DefinedFuncs.PreDefinedFuncs._
+import backend.CodeGeneration.CodeGenHelper._
 
 object ArraysGen {
 
@@ -36,7 +37,7 @@ object ArraysGen {
   def transArrayElem(ident: Ident, exprs: List[Expr], rd: Register): Boolean = {
     var (i, t) = symbTable(ident)
     val typeSize = getTypeSize(t)
-    val spOffset = stackPointer - i
+    val spOffset = currSP - i
 
     currInstructions += Add(rd, R13_SP, Imm_Int(spOffset))
     val nextReg = saveReg()

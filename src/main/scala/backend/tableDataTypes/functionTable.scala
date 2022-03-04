@@ -3,7 +3,7 @@ package backend.tableDataTypes
 import backend.Opcodes._
 import scala.collection.mutable.ListBuffer
 
-class functionTable {
+class FunctionTable {
 
   private var counter = 0
   val table = ListBuffer.empty[(Label, List[Instr])]

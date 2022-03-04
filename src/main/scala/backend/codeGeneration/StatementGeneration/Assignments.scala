@@ -1,14 +1,15 @@
-package backend.codeGeneration
+package backend.CodeGeneration
 
 import backend.Operand._
 import frontend.AST._
 import backend.Opcodes._
 import backend.CodeGen._
 import frontend.SymbolTable
-import backend.codeGeneration.ExpressionGen._
-import backend.codeGeneration.PairsGen._
-import backend.codeGeneration.Functions._
-import backend.codeGeneration.ArraysGen._
+import backend.CodeGeneration.ExpressionGen._
+import backend.CodeGeneration.PairsGen._
+import backend.CodeGeneration.Functions._
+import backend.CodeGeneration.ArraysGen._
+import backend.CodeGeneration.CodeGenHelper._
 
 import scala.collection.mutable.ListBuffer
 
@@ -17,9 +18,9 @@ object Assignments {
 
   /*Translating declaration of new variable to ARM language*/
   def translateDeclaration(t: Type, id : Ident, rhs : AssignRHS): Unit = {
-    SP_scope += getTypeSize(t)
-    symbTable.add(id, SP_scope, t)
-    val spOffset = stackPointer - SP_scope
+    scopeSP += getTypeSize(t)
+    symbTable.add(id, scopeSP, t)
+    val spOffset = currSP - scopeSP
     val freeRegister = saveReg()
     val isByte = transAssignRHS(t, rhs, freeRegister)
     currInstructions += Str(isByte, freeRegister, R13_SP, spOffset)
@@ -34,7 +35,7 @@ object Assignments {
       case id : Ident                   =>
         val (index, t) = symbTable(id)
         val isByte= transAssignRHS(t, rhs, freeRegister)
-        val spOffset = stackPointer - index  
+        val spOffset = currSP - index  
         currInstructions += Str(isByte, freeRegister, R13_SP, spOffset)
       case Fst(id : Ident)              => 
         transPairAssign(rhs, id, 1, freeRegister)

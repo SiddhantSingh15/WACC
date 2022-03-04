@@ -1,4 +1,4 @@
-package backend.codeGeneration
+package backend.CodeGeneration
 
 import scala.collection.mutable.ListBuffer
 import frontend.AST
@@ -22,7 +22,7 @@ object FreeGen {
         val freeRegister = saveReg()
         val (i, t) = symbTable(id)
 
-        currInstructions += Ldr(freeRegister, R13_SP, stackPointer - i)
+        currInstructions += Ldr(freeRegister, R13_SP, currSP - i)
 
         /*Have to move to R0 to call free function*/
         currInstructions += Mov(resultRegister, freeRegister)

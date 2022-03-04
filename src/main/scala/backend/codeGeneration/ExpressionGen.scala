@@ -1,4 +1,4 @@
-package backend.codeGeneration
+package backend.CodeGeneration
 
 import backend.Operand._
 import frontend.AST._
@@ -6,7 +6,8 @@ import backend.Opcodes._
 import backend.CodeGen._
 import frontend.SymbolTable
 import backend.Condition._
-import backend.codeGeneration.ArraysGen._
+import backend.CodeGeneration.ArraysGen._
+import backend.CodeGeneration.CodeGenHelper._
 import backend.DefinedFuncs.RuntimeErrors._
 import backend.DefinedFuncs.PreDefinedFuncs._
 
@@ -14,14 +15,14 @@ import scala.collection.mutable.ListBuffer
 
 object ExpressionGen {
 
-  val INT_TRUE = 1
-  val INT_FALSE = 0
-
+  val MUL_INT = 31
+  val NULL_INT = 0
+  
  /* Mapping True -> 1, False -> 0 */
   def boolToInt(bool: BoolLiter): Int = {
     bool match {
-      case True => INT_TRUE
-      case False => INT_FALSE
+      case True => TRUE_INT
+      case False => FALSE_INT
     }
   }
 
@@ -42,11 +43,11 @@ object ExpressionGen {
         currInstructions += Ldr(rd, DataLabel(label))
 
       case PairLiter() => 
-        currInstructions += Ldr(rd, Load_Mem(0)) // TODO: remove magic number
+        currInstructions += Ldr(rd, Load_Mem(NULL_INT)) 
 
       case ident: Ident => 
         val (i, t) = symbTable(ident)
-        val offset = stackPointer - i
+        val offset = currSP - i
         currInstructions += Ldr(isByte(t), rd, R13_SP, offset)
 
       case ArrayElem(id, exprs) => 
@@ -66,7 +67,7 @@ object ExpressionGen {
     op match {
       case Not(expr) =>
         transExp(expr, rd)
-        currInstructions += Eor(rd, rd, Imm_Int(INT_TRUE))
+        currInstructions += Eor(rd, rd, Imm_Int(TRUE_INT))
       case Negation(expr) =>
         transExp(expr, rd) 
         currInstructions ++= ListBuffer(
@@ -75,7 +76,7 @@ object ExpressionGen {
         )
       case Len(ident: Ident) =>
         val (i, t) = symbTable(ident)
-        currInstructions += Ldr(rd, RegisterOffset(R13_SP, stackPointer - i))
+        currInstructions += Ldr(rd, RegisterOffset(R13_SP, currSP - i))
         currInstructions += Ldr(rd, RegAdd(rd))
   
       case Ord(expr) =>
@@ -132,7 +133,7 @@ object ExpressionGen {
       case frontend.AST.Mul(_,_) =>
         currInstructions ++= ListBuffer(
           SMul(rd, rm, rd, rm),
-          Cmp(rm, ASR(rd, Imm_Int(31))), // TODO: Remove magic number
+          Cmp(rm, ASR(rd, Imm_Int(MUL_INT))),
           BranchLinkCond(NE, addRTE(Overflow))
         )
       case frontend.AST.Div(_,_) =>
@@ -179,8 +180,8 @@ object ExpressionGen {
 
     currInstructions ++= ListBuffer(
       Cmp(rd, rm),
-      MovCond(cond, rd, Imm_Int(INT_TRUE)),
-      MovCond(cond.oppositeCmp, rd, Imm_Int(INT_FALSE))
+      MovCond(cond, rd, Imm_Int(TRUE_INT)),
+      MovCond(cond.oppositeCmp, rd, Imm_Int(FALSE_INT))
     )
   }
 

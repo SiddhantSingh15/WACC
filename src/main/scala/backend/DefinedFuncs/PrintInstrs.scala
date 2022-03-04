@@ -5,6 +5,7 @@ import backend.Condition.{EQ, NE}
 import backend.Operand._
 import PreDefinedFuncs._
 import backend.Opcodes._
+import backend.CodeGeneration.CodeGenHelper._
 
 import scala.collection.mutable.ListBuffer
 
@@ -30,7 +31,7 @@ object PrintInstrs {
     PrintBool.functionLabel,
     ListBuffer[Instr](
       Push(ListBuffer(R14_LR)),
-      Cmp(resultRegister, Imm_Int(FALSE)),
+      Cmp(resultRegister, Imm_Int(FALSE_INT)),
       LdrCond(NE, resultRegister, DataLabel(Label(PrintBool.msgName(0)))),
       LdrCond(EQ, resultRegister, DataLabel(Label(PrintBool.msgName(1)))),
       Add(resultRegister, resultRegister, Imm_Int(SIZE_ADDR)),

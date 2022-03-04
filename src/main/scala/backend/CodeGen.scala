@@ -3,45 +3,39 @@ package backend
 import scala.collection.mutable.ListBuffer
 import backend.Opcodes._
 import backend.Operand._
-import backend.codeGeneration.ExpressionGen._
+import backend.CodeGeneration.ExpressionGen._
 import backend.tableDataTypes._
 import frontend.AST._
 import frontend.SymbolTable
-import backend.codeGeneration.ArraysGen._
-import backend.codeGeneration.ReadGen._
-import backend.codeGeneration.FreeGen._
-import backend.codeGeneration.Functions._
-import backend.codeGeneration.PrintGen._
-import backend.codeGeneration.ScopeGen._
-import backend.codeGeneration.Assignments._
+import backend.CodeGeneration.CodeGenHelper._
+import backend.CodeGeneration.ArraysGen._
+import backend.CodeGeneration.ReadGen._
+import backend.CodeGeneration.FreeGen._
+import backend.CodeGeneration.Functions._
+import backend.CodeGeneration.PrintGen._
+import backend.CodeGeneration.ScopeGen._
+import backend.CodeGeneration.Assignments._
 
 object CodeGen {
 
   // Values for code generation 
-  var stackPointer = 0
+  var currSP = 0
+  var scopeSP  = 0
   var currLabel: Label = _
   var symbTable: SymbolTable = _
-  var dataTable = new dataTable
-  var funcTable = new functionTable
-  var preDefFuncTable = new functionTable
+  var dataTable = new DataTable
+  var funcTable = new FunctionTable
+  var preDefFuncTable = new FunctionTable
   var currInstructions = ListBuffer.empty[Instr]
-  
-  val SIZE_INT = 4
-  val SIZE_CHAR = 1
-  val SIZE_BOOL = 1
-  val SIZE_STR = 4
 
-  val FALSE = 0
-  val SIZE_ADDR = 4
-  val SIZE_PAIR = SIZE_ADDR
-  val SIZE_ARR = SIZE_ADDR
+  val TRUE_INT = 1
+  val FALSE_INT = 0
 
-  val MAX_IMM_INT = 1024
-  
-  var SP_scope  = 0
   val NO_OFFSET = 0
-  
-  private val ERROR = -1
+  val RESET_INT = 0
+
+  val isPrintLn = true
+  val isPrint = false
   
   //list of free registers
   private var freeRegisters: ListBuffer[Register] =
@@ -57,8 +51,8 @@ object CodeGen {
       case Free(expr)                     => transFree(expr)
       case Return(expr)                   => transReturn(expr)
       case Exit(expr)                     => transExit(expr)
-      case Print(expr)                    => transPrint(expr, false) // TODO: remove magic boolean
-      case Println(expr)                  => transPrint(expr, true)
+      case Print(expr)                    => transPrint(expr, isPrint)
+      case Println(expr)                  => transPrint(expr, isPrintLn)
       case If(expr, statThen, statElse)   => transIf(expr, statThen, statElse)
       case While(expr, stats)             => transWhile(expr, stats)
       case Begin(stats)                   => transBegin(stats)
@@ -68,33 +62,6 @@ object CodeGen {
     }
   }
 
-  def incrementSP(toInc: Int): ListBuffer[Instr] = {
-    val instrs = ListBuffer.empty[Instr]
-    if (toInc == 0) {
-      return instrs
-    }
-    var curToInc = toInc
-    while (curToInc > MAX_IMM_INT) {
-      curToInc -= MAX_IMM_INT
-      instrs += backend.Opcodes.Add(R13_SP, R13_SP, Imm_Int(MAX_IMM_INT))
-    }
-    instrs += backend.Opcodes.Add(R13_SP, R13_SP, Imm_Int(curToInc))
-    instrs
-  }
-
-  def decrementSP(toDec: Int): ListBuffer[Instr] = {
-    val instrs = ListBuffer.empty[Instr]
-    if (toDec == 0) {
-      return instrs
-    }
-    var curToDec = toDec
-    while (curToDec > MAX_IMM_INT) {
-      curToDec -= MAX_IMM_INT
-      instrs += backend.Opcodes.Sub(R13_SP, R13_SP, Imm_Int(MAX_IMM_INT))
-    }
-    instrs += backend.Opcodes.Sub(R13_SP, R13_SP, Imm_Int(curToDec))
-    instrs
-  }
   //translates Exit statement, first translate E into a free register, freeRegister, then Mov contents of freeRegister to resultRegister.
   private def transExit(expr: Expr): Unit = {
     val availReg = saveReg()
@@ -102,6 +69,7 @@ object CodeGen {
     currInstructions ++= ListBuffer[Instr](Mov(resultRegister, availReg), Bl(Label("exit"))) 
     restoreReg(availReg)
   }
+
   // Get a free register from freeRegisters list. If none available the popRegister is used.
   def saveReg(): Register = {
     if (freeRegisters.isEmpty) {
@@ -111,12 +79,14 @@ object CodeGen {
     freeRegisters.remove(0)
     register
   }
+
   ///* Add register back to freeRegisters list once finished with. */
   def restoreReg(reg: Register): Unit = {
     if (reg != popRegister) {
       reg +=: freeRegisters
     }
   }
+
   ///* Translates program into our internal representation. Output is used to generate .s file*/
   def transProgram(program: WaccProgram, symbTable: SymbolTable): (List[Data], List[(Label, List[Instr])]) = {
 
@@ -129,76 +99,24 @@ object CodeGen {
 
     currLabel = Label("main")
 
-    SP_scope = stackPointer
+    scopeSP = currSP
     val maxSpDepth = symbTable.spMaxDepth
-    stackPointer += maxSpDepth
+    currSP += maxSpDepth
     currInstructions += Push(ListBuffer(R14_LR))
-    currInstructions ++= decrementSP(maxSpDepth)
+    decrementSP(maxSpDepth)
     stats.foreach((s: Stat) => {
       transStat(s)
       }
     )
     
-    currInstructions ++= incrementSP(stackPointer)
+    incrementSP(currSP)
     currInstructions ++= ListBuffer(
-      Ldr(resultRegister, Load_Mem(0)), // TODO: magic number
+      Ldr(resultRegister, Load_Mem(RESET_INT)),
       Pop(ListBuffer(R15_PC)),
       Ltorg
     )
 
     funcTable.add(currLabel, currInstructions)
     (dataTable.table.toList, (funcTable.table ++ preDefFuncTable.table).toList)
-  }
-
-  private def typeOf(tpe: Type): Type = tpe match {
-    case ArrayType(t) => t
-    case _ => tpe
-  }
-  // returns size for a particular type
-  def getTypeSize(t: Type) : Int = {
-    t match {
-      case Int               => SIZE_INT
-      case Bool              => SIZE_BOOL
-      case CharType          => SIZE_CHAR
-      case String            => SIZE_STR
-      case ArrayType(innerT) => SIZE_ARR
-      case Pair(_, _)        => SIZE_PAIR
-      case _                 => ERROR
-    }
-  }
-
-  def isByte(t : Type): Boolean = {
-    t == Bool || t == CharType
-  }
-  // gets type for a particular expr
-  def getExprType(expr: Expr): Type = {
-    expr match {
-      case _: IntLiter         => Int
-      case _: BoolLiter        => Bool
-      case _: CharLiter        => CharType
-      case StrLiter(_)         => String
-      case PairLiter()         => Pair(null, null)
-      case id: Ident           => 
-        val (_, t) = symbTable(id)
-        t
-      case ArrayElem(id, exprs) =>  
-        var (_, t) = symbTable(id)
-        t = exprs.foldLeft(t)((x, _) => getInnerType(x))
-        t
-
-      // Unary Operators
-      case Not(_)      => Bool
-      case Negation(_) => Int
-      case Len(_)      => Int
-      case Ord(_)      => Int
-      case Chr(_)      => CharType
-
-      // Binary Operators
-      case _: MathFuncs     => Int
-      case _: EqualityFuncs => Bool
-      case _: LogicFuncs    => Bool
-      case _: CompareFuncs  => Bool
-      case _                => ???
-    }
   }
 }
