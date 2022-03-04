@@ -7,6 +7,7 @@ import backend.CodeGen._
 import frontend.SymbolTable
 import backend.CodeGeneration.ExpressionGen._
 import backend.CodeGeneration.PairsGen._
+import backend.CodeGeneration.CodeGenHelper._
 import scala.collection.mutable.ListBuffer
 
 

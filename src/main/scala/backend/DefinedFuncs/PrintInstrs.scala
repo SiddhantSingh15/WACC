@@ -5,6 +5,7 @@ import backend.Condition.{EQ, NE}
 import backend.Operand._
 import PreDefinedFuncs._
 import backend.Opcodes._
+import backend.CodeGeneration.CodeGenHelper._
 
 import scala.collection.mutable.ListBuffer
 

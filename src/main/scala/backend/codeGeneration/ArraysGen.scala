@@ -8,6 +8,7 @@ import backend.CodeGen._
 import backend.CodeGeneration.ExpressionGen._
 import backend.DefinedFuncs.RuntimeErrors._
 import backend.DefinedFuncs.PreDefinedFuncs._
+import backend.CodeGeneration.CodeGenHelper._
 
 object ArraysGen {
 

@@ -7,6 +7,7 @@ import backend.CodeGen._
 import frontend.SymbolTable
 import backend.Condition._
 import backend.CodeGeneration.ArraysGen._
+import backend.CodeGeneration.CodeGenHelper._
 import backend.DefinedFuncs.RuntimeErrors._
 import backend.DefinedFuncs.PreDefinedFuncs._
 

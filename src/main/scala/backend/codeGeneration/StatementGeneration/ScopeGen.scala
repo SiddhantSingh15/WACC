@@ -7,6 +7,7 @@ import backend.Condition.{EQ}
 import backend.CodeGen._
 import backend.Operand.{Imm_Int}
 import backend.CodeGeneration.ExpressionGen.transExp
+import backend.CodeGeneration.CodeGenHelper._
 
 object ScopeGen {
 

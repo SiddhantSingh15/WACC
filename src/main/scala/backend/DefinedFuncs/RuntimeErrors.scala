@@ -1,12 +1,5 @@
 package backend.DefinedFuncs
 
-import backend.CodeGen.{
-  dataTable,
-  funcTable,
-  resultRegister,
-  FALSE_INT
-}
-
 import backend.DefinedFuncs.PreDefinedFuncs._
 import backend.DefinedFuncs.PrintInstrs._
 import backend.Operand._
@@ -14,6 +7,7 @@ import backend.Condition._
 import scala.collection.mutable.ListBuffer
 import backend.Opcodes._
 import backend.CodeGen._
+import backend.CodeGeneration.CodeGenHelper._
 
 
 import backend.Condition.{EQ, NE}

@@ -7,6 +7,7 @@ import backend.DefinedFuncs.PreDefinedFuncs._
 import backend.DefinedFuncs.PrintInstrs._
 import scala.collection.mutable.ListBuffer
 import backend.Opcodes._
+import backend.CodeGeneration.CodeGenHelper._
 
 object PrintGen {
   

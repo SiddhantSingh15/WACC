@@ -9,6 +9,7 @@ import backend.Operand._
 import frontend.AST._
 import backend.ReadInstr.{charRead, intRead}
 import scala.collection.mutable.ListBuffer
+import backend.CodeGeneration.CodeGenHelper._
 
 object ReadGen {
 
