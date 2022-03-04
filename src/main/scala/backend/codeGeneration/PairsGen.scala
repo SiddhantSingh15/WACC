@@ -1,121 +1,126 @@
-package backend.codeGeneration
+package backend.CodeGeneration
 
 import frontend.AST._
 import backend.Operand.{Register, RegAdd, Load_Mem}
 import backend.CodeGen._
 import scala.collection.mutable.ListBuffer
-import backend.Opcodes.{Instr, Mov, Ldr, Bl}
-import backend.codeGeneration.ExpressionGen.transExp
 import backend.DefinedFuncs.RuntimeErrors._
 import backend.DefinedFuncs.PreDefinedFuncs.{NPE}
-import backend.codeGeneration.ExpressionGen._
 import backend.Opcodes._
-import parsley.internal.deepembedding.StringLiteral
-import backend.codeGeneration.ExpressionGen._
+import backend.CodeGeneration.ExpressionGen._
+import backend.CodeGeneration.Assignments._
+import backend.CodeGeneration.CodeGenHelper._
 
 object PairsGen {
-  def transPairElem(ident: Ident, pos: Int, rd: Register): ListBuffer[Instr] = {
-    val instructions = ListBuffer.empty[Instr]
-    instructions ++= transExp(ident, rd)
-    instructions += Mov(resultRegister, rd)
-    instructions += Bl(addRTE(NPE))
+
+  /*
+   * Translates the PairElem type.
+   * Takes an Ident, pair position and a register.
+   * Returns a list of instructions.
+   */
+  def transPairElem(ident: Ident, pos: Int, rd: Register): Unit = {
+    transExp(ident, rd)
+    currInstructions += Mov(resultRegister, rd)
+    currInstructions += Bl(addRTE(NPE))
     
     if (pos == 1) {
-      instructions += Ldr(rd, RegAdd(rd))
+      currInstructions += Ldr(rd, RegAdd(rd))
     } else {
-      instructions += Ldr(rd, rd, SIZE_PAIR)
+      currInstructions += Ldr(rd, rd, SIZE_PAIR)
     }
-    instructions
   }
 
-  def transPairAssign(rhs: AssignRHS, ident: Ident, pos: Int, rd: Register): ListBuffer[Instr] = {
-    val instructions = ListBuffer.empty[Instr]
+  /* 
+   * Loads the pair into RD
+   */
+  def transPairAssign(rhs: AssignRHS, ident: Ident, pos: Int, rd: Register): Unit = {
+    
     val (i, t) = symbTable(ident)
     val pElemType = 
     if (pos == 1) {
       t match {
         case Pair(PairElemWithType(fType), _) => fType
         case Pair(PairElemPair, _)            => Pair(null, null)
-        case _                                => 
+        case _                                => ???
       }
     } else {
       t match {
         case Pair(_, PairElemWithType(sType)) => sType
-        case Pair(PairElemPair, _)            => Pair(null, null)
-        case _                                => 
+        case Pair(_, PairElemPair)            => Pair(null, null)
+        case _                                => ???
       }
     }
-
+    val isByte = transAssignRHS(pElemType, rhs, rd)
     val nextRegister = saveReg()
-    instructions ++= transPairElem(ident, pos, nextRegister)
+    transPairElem(ident, pos, nextRegister)
+    currInstructions += Str(isByte, rd, nextRegister, NO_OFFSET)
     restoreReg(nextRegister)
-    instructions
   }
 
-  def transAssignRHSPair(tpe : Type, fst : Expr, snd: Expr, register : Register) : ListBuffer[Instr] = {
-    val instrs = ListBuffer.empty[Instr]
+  /* 
+   * Translates Pair assignment.
+   * Takes the type of the fst and snd, and a register
+   * Returns the instructions list for the assignment.
+   */
+  def transAssignRHSPair(tpe : Type, fst : Expr, snd: Expr, register : Register) : Unit = {
+
     val Pair(typeOne, typeTwo) = tpe 
     val nextRegister = saveReg()
 
-    instrs += Ldr(resultRegister, Load_Mem(2 * SIZE_PAIR))
-    instrs += Mov(register, resultRegister)
+    currInstructions += Ldr(resultRegister, Load_Mem(2 * SIZE_PAIR))
+    currInstructions += Bl(Label("malloc"))
+    currInstructions += Mov(register, resultRegister)
 
-    instrs ++= transExp(fst, nextRegister)
+    transExp(fst, nextRegister)
 
-    instrs += Ldr(resultRegister ,Load_Mem(getPairTypeSize(typeOne)))
+    currInstructions += Ldr(resultRegister, Load_Mem(getPairTypeSize(typeOne)))
+    currInstructions += Bl(Label("malloc"))
+    currInstructions += Str(isBytePair(tpe, 1), nextRegister, resultRegister, NO_OFFSET)
 
-    instrs += Str(
-      isBytePair(tpe, 1),
-      nextRegister,
-      resultRegister,
-      NO_OFFSET
-    )
+    currInstructions += Str(resultRegister , RegAdd(register))
+    transExp(snd, nextRegister)
+    currInstructions += Ldr(resultRegister, Load_Mem(getPairTypeSize(typeTwo)))
+    currInstructions += Bl(Label("malloc"))
 
-    instrs += Str(resultRegister , RegAdd(register))
-
-    instrs ++= transExp(snd, nextRegister)
-
-    instrs += Ldr(resultRegister, Load_Mem(getPairTypeSize(typeTwo)))
-    instrs += Bl(Label("malloc"))
-
-    instrs += Str(
-      isBytePair(tpe, 2),
-      nextRegister,
-      resultRegister,
-      NO_OFFSET
-    )
+    currInstructions += Str(isBytePair(tpe, 2), nextRegister, resultRegister, NO_OFFSET)
 
     restoreReg(nextRegister)
-    instrs += Str(resultRegister, register, SIZE_PAIR)
-    instrs
+    currInstructions += Str(resultRegister, register, SIZE_PAIR)
   }
 
-  def getPairElem(ident: Ident, pos: Int, rd: Register): Instr = {
+  /*
+   * Loads pair of name "ident" into passed in rd.
+   */
+  def getPairElem(ident: Ident, pos: Int, rd: Register): Unit = {
     val (_, tpe) = symbTable(ident)
-    Ldr(isBytePair(tpe, 1), rd, rd, NO_OFFSET)
+    currInstructions += Ldr(isBytePair(tpe, pos), rd, rd, NO_OFFSET)
   }
 
+  /*
+   * Returns the size of the pair type.
+   */
   private def getPairTypeSize(tpe : PairElemType) : Int = {
     tpe match {
-      case PairElemPair => SIZE_PAIR
+      case PairElemPair        => SIZE_PAIR
       case PairElemWithType(t) => getTypeSize(t)
-      case _ => ???
+      case _                   => ???
     }
   }
 
+  /* 
+   * Helper function for getPairElem().
+   * Returns true if the passed in type is byte sized.
+   */
   private def isBytePair(tpe : Type, pos : Int) = {
-    if(!(pos == 1 || pos == 2)){
-      false
-    }
     tpe match {
       case Pair(PairElemWithType(a), PairElemWithType(b)) =>
-        if (pos == 0) {
+        if (pos == 1) {
           isByte(a)
         } else {
           isByte(b)
         }
-      case _ 
-        => false
+      case _                                              => 
+        false
     }
   }
 }

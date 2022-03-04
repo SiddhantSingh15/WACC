@@ -15,7 +15,7 @@ object PreDefinedFuncs {
     val functionLabel: Label
     val msgName: List[String]
     val msgs: List[String]
-    val function: (Label, ListBuffer[Instr])
+    val function: Option[(Label, ListBuffer[Instr])]
   }
 
   case object ArrayBounds extends PreDefFunc {
@@ -25,14 +25,14 @@ object PreDefinedFuncs {
       "ArrayIndexOutOfBoundsError: negative index\\n\\0",
       "ArrayIndexOutOfBoundsError: index too large\\n\\0"
     )
-    override val function = checkArrayBounds
+    override val function = Some(checkArrayBounds)
   }
   case object DivideByZero extends PreDefFunc {
     override val functionLabel = Label("p_check_division_by_zero")
     override val msgName = List("msg_division_by_zero")
     override val msgs =
       List("DivisionByZeroError: division or modulo by zero\\n\\0")
-    override val function = checkDivideByZero
+    override val function = Some(checkDivideByZero)
   }
 
   case object Overflow extends PreDefFunc {
@@ -40,9 +40,9 @@ object PreDefinedFuncs {
     override val msgName = List("msg_overflow")
     override val msgs =
       List(
-        "OverflowError: the result is too large/small to be stored as a 4-byte signed-integer.\\n"
+        "OverflowError: the result is too small/large to store in a 4-byte signed-integer.\\n\\0"
       )
-    override val function = throwOverflowError
+    override val function = Some(throwOverflowError)
   }
 
   case object FreePair extends PreDefFunc {
@@ -50,7 +50,7 @@ object PreDefinedFuncs {
     override val msgName = List("msg_null_reference")
     override val msgs =
       List("NullReferenceError: dereferencing a null reference\\n\\0")
-    override val function = freePair
+    override val function = Some(freePair)
   }
 
   case object FreeArray extends PreDefFunc {
@@ -58,7 +58,7 @@ object PreDefinedFuncs {
     override val msgName = List("msg_null_reference")
     override val msgs =
       List("NullReferenceError: dereferencing a null reference\\n\\0")
-    override val function = freeArray
+    override val function = Some(freeArray)
   }
 
   case object NPE extends PreDefFunc {
@@ -66,14 +66,14 @@ object PreDefinedFuncs {
     override val msgName = List("msg_null_reference")
     override val msgs =
       List("NullReferenceError: dereferencing a null reference\\n\\0")
-    override val function = checkNullPointer
+    override val function = Some(checkNullPointer)
   }
 
   case object RuntimeError extends PreDefFunc {
     override val functionLabel = Label("p_throw_runtime_error")
     override val msgName = List.empty[String]
     override val msgs = List.empty[String]
-    override val function = throwRuntimeError
+    override val function = Some(throwRuntimeError)
   }
 
   case object PutChar extends PreDefFunc {
@@ -83,7 +83,7 @@ object PreDefinedFuncs {
 
     override val msgs = List.empty[String]
 
-    override val function = null
+    override val function = None
   }
 
 
@@ -91,35 +91,35 @@ object PreDefinedFuncs {
     override val functionLabel = Label("p_print_int")
     override val msgName = List("msg_int")
     override val msgs = List("%d\\0")
-    override val function = intPrintInstrs
+    override val function = Some(intPrintInstrs)
   }
 
   case object PrintBool extends PreDefFunc {
     override val functionLabel = Label("p_print_bool")
     override val msgName = List("msg_true", "msg_false")
     override val msgs = List("true\\0", "false\\0")
-    override val function = boolPrintInstrs
+    override val function = Some(boolPrintInstrs)
   }
 
   case object PrintString extends PreDefFunc {
     override val functionLabel = Label("p_print_string")
     override val msgName = List("msg_string")
     override val msgs = List("%.*s\\0")
-    override val function = stringPrintInstrs
+    override val function = Some(stringPrintInstrs)
   }
 
   case object PrintReference extends PreDefFunc {
     override val functionLabel = Label("p_print_reference")
     override val msgName = List("msg_reference")
     override val msgs = List("%p\\0")
-    override val function = referencePrintInstrs
+    override val function = Some(referencePrintInstrs)
   }
 
   case object PrintLn extends PreDefFunc {
     override val functionLabel = Label("p_print_ln")
     override val msgName = List("msg_new_line")
     override val msgs = List("\\0")
-    override val function = newLinePrintInstrs
+    override val function = Some(newLinePrintInstrs)
   }
 
 

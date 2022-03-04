@@ -404,13 +404,23 @@ sealed case class ArrayElem(ident: Ident, exprList : List[Expr]) extends AssignL
 	case object False extends BoolLiter {
 		override def getType(symbTable: SymbolTable): Type = Bool
 	}
-	case class CharLiter(character: Char) extends Expr{
-    override def toString: String = "\'" + character + "\'"
+	sealed trait Character
+	case class NormalCharacter(char: Char) extends Character {
+		override def toString: String = char.toString
+	}
+	case class EscapeCharacter(char: Char) extends Character {
+		override def toString: String = s"\\$char"
+	}
+	case class CharLiter(character: Character) extends Expr{
+    override def toString: String = character match {
+		case NormalCharacter(_) => "\'" + character.toString() + "\'"
+		case EscapeCharacter(_) => "\'" + character.toString()(1) + "\'"
+	}
 		override def getType(symbTable: SymbolTable): Type = CharType
 	}
-	case class StrLiter(string: String) extends Expr{
-    override def toString: String = string
-		override def getType(symbTable: SymbolTable): Type = String
+	case class StrLiter(string: List[Character]) extends Expr{
+    override def toString: String = string.mkString
+			override def getType(symbTable: SymbolTable): Type = String
 	}
 	case class PairLiter() extends Expr {
     override def toString: String = "pairLit"

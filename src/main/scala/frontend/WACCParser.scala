@@ -57,19 +57,19 @@ object Parser {
     (CharLiter <#>  '\'' *> `<character>` <* '\'')
 
   private val `<str-liter>` : Parsley[StrLiter] =
-    StrLiter <#> ('\"' *> (many(`<character>`)) <* '\"'.label("end of string")).map(_.mkString).label("string")     
+    StrLiter <#> ('\"' *> (many(`<character>`)) <* '\"'.label("end of string")).label("string")     
   
   private val `<escaped-char>` : Parsley[Char] = 
     oneOf(
-        '0','b','t','n','f','r','"','"','\''
+        '0','b','t','n','f','r','"','\'','\\'
     )
     .label("end of escape sequence")
     .explain("valid escape sequences include \\0, \\b, \\t, \\n, \\f, \\r, \\\", \\' or \\\\")
 
   
-  private val `<character>` : Parsley[Char] =
-    amend { ("\\" *> `<escaped-char>`) }.label("escape character") <|>
-    noneOf('\\', '\'', '"').label("string character")    
+  private val `<character>` : Parsley[Character] =
+    amend {EscapeCharacter <#> ("\\" *> `<escaped-char>`) }.label("escape character") <|>
+    (NormalCharacter <#> noneOf('\\', '\'', '"')).label("string character")    
   
   private val `<bool-liter>`: Parsley[BoolLiter] = 
     ("true" #> True) <|> ("false" #> False)  
@@ -164,7 +164,7 @@ object Parser {
           ("!=".label("operator") #> NotEqual)
       ) :+
 
-      Ops(InfixR)(
+      Ops(InfixL)(
           ("&&".label("operator") #> And),
           ("||".label("operator") #> Or)
       )

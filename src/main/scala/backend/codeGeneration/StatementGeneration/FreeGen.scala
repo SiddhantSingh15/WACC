@@ -1,4 +1,4 @@
-package backend.codeGeneration
+package backend.CodeGeneration
 
 import scala.collection.mutable.ListBuffer
 import frontend.AST
@@ -14,26 +14,28 @@ import backend.DefinedFuncs.PreDefinedFuncs.{FreeArray, FreePair}
 
 object FreeGen {
 
-  def transFree(expr: Expr): ListBuffer[Instr] = {
-    val instructions = ListBuffer.empty[Instr]
+  /*Translating a Free statement into ARM language*/
+  def transFree(expr: Expr): Unit = {
+
     expr match {
       case id: Ident => 
         val freeRegister = saveReg()
         val (i, t) = symbTable(id)
 
-        instructions += Ldr(freeRegister, R13_SP)
-        instructions += Mov(resultRegister, freeRegister)
+        currInstructions += Ldr(freeRegister, R13_SP, currSP - i)
+
+        /*Have to move to R0 to call free function*/
+        currInstructions += Mov(resultRegister, freeRegister)
 
         restoreReg(freeRegister)
 
         t match {
-          case _: Pair      => Bl(addRTE(FreePair))
-          case _: ArrayType => Bl(addRTE(FreeArray))
+          case _: Pair      => currInstructions += Bl(addRTE(FreePair))
+          case _: ArrayType => currInstructions += Bl(addRTE(FreeArray))
           case _            => 
         }
 
-      case _ =>
+      case _         =>
     }
-    instructions
   }
 }
