@@ -2,10 +2,9 @@ package backend
 
 import backend.Opcodes._
 import java.io.{File, FileWriter}
+import scala.collection.mutable.StringBuilder
 
 object PrettyPrinter {
-  private val tab = "\t"
-  private val doubleTab = tab * 2
 
   def prettyPrint(waccFilename: String, data: List[Data], instrs: List[(Label, List[Instr])]): Unit = {
     val assemblyFilename = waccFilename.replaceFirst(".wacc", ".s")
@@ -16,29 +15,31 @@ object PrettyPrinter {
     
     val fileWriter = new FileWriter(file)
 
+    val sb = new StringBuilder
+
     if (!data.isEmpty) {
-      fileWriter.write(tab + ".data\n\n")
-      data.foreach(d => printDataTable(d, fileWriter))
-      fileWriter.write("\n")
+      sb ++= ".data\n\n"
+      data.foreach(d => printDataTable(d, sb))
+      sb ++= "\n"
     }
 
-    fileWriter.write(tab + ".text\n\n" + tab + ".global main\n")
+    sb ++= "\t.text\n\n\t.global main\n"
 
     instrs.foreach((x: (Label, List[Instr])) => {
-        fileWriter.write(tab + x._1 + ":\n")
-        x._2.foreach((i: Instr) => fileWriter.write(doubleTab + i + "\n"))
+        val labelStr = x._1
+        sb ++= s"\t$labelStr:\n"
+        x._2.foreach((i: Instr) => sb ++= s"\t\t$i\n")
     })
+    fileWriter.write(sb.toString())
     fileWriter.close()
   }
 
-  private def printDataTable(d: Data, fW: FileWriter): Unit = {
+  private def printDataTable(d: Data, sb: StringBuilder): Unit = {
     val Data(Label(l), s) = d
-    fW.write(tab + l)
-    fW.write(":\n")
-    fW.write(doubleTab + ".word " + size(s))
-    fW.write("\n")
-    fW.write(doubleTab + ".ascii \"")
-    fW.write(s + "\"" + "\n")
+    sb ++= s"\t$l:\n"
+    val len = size(s)
+    sb ++= s"\t\t.word $len\n"
+    sb ++= s"\t\t.ascii \"$s\"\n"
   }
 
   private def size(str: String): Int = {
