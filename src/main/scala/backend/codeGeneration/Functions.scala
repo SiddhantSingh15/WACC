@@ -20,7 +20,7 @@ object Functions {
   def transCall(ident : Ident, arguments : ArgList, freeRegister : Register): Unit = {
     val toInc = storeArguments(arguments, freeRegister)
     currInstructions += Bl(Label("f_" + ident))
-    currInstructions ++= incrementSP(toInc)
+    incrementSP(toInc)
     currInstructions += Mov(freeRegister, resultRegister)
   }
 
@@ -43,7 +43,7 @@ object Functions {
     scopeSP = currSP
     currSP += maxSpDepth
     currInstructions += Push(ListBuffer(R14_LR))
-    currInstructions ++= decrementSP(maxSpDepth)
+    decrementSP(maxSpDepth)
 
     for (stat <- stats) {
       transStat(stat)
@@ -110,7 +110,7 @@ object Functions {
     transExp(expr, register)
     currInstructions += Mov(resultRegister, register)
     if(currSP > 0) { 
-        currInstructions ++= incrementSP(currSP)
+        incrementSP(currSP)
     }
 
     currInstructions ++= ListBuffer(

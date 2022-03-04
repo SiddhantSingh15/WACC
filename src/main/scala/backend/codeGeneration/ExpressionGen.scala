@@ -14,6 +14,9 @@ import scala.collection.mutable.ListBuffer
 
 object ExpressionGen {
 
+  val MUL_INT = 31
+  val NULL_INT = 0
+  
  /* Mapping True -> 1, False -> 0 */
   def boolToInt(bool: BoolLiter): Int = {
     bool match {
@@ -39,7 +42,7 @@ object ExpressionGen {
         currInstructions += Ldr(rd, DataLabel(label))
 
       case PairLiter() => 
-        currInstructions += Ldr(rd, Load_Mem(0)) // TODO: remove magic number
+        currInstructions += Ldr(rd, Load_Mem(NULL_INT)) 
 
       case ident: Ident => 
         val (i, t) = symbTable(ident)
@@ -129,7 +132,7 @@ object ExpressionGen {
       case frontend.AST.Mul(_,_) =>
         currInstructions ++= ListBuffer(
           SMul(rd, rm, rd, rm),
-          Cmp(rm, ASR(rd, Imm_Int(31))), // TODO: Remove magic number
+          Cmp(rm, ASR(rd, Imm_Int(MUL_INT))),
           BranchLinkCond(NE, addRTE(Overflow))
         )
       case frontend.AST.Div(_,_) =>

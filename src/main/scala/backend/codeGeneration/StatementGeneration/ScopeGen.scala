@@ -72,7 +72,7 @@ object ScopeGen {
 		val register = saveReg()
 
 		transExp(expr, register)
-		currInstructions += Cmp(register, Imm_Int(1)) // TODO: remove magic number
+		currInstructions += Cmp(register, Imm_Int(TRUE_INT))
 		restoreReg(register)
 		currInstructions += BranchCond(EQ, bodyLabel)
 	}
@@ -84,7 +84,7 @@ object ScopeGen {
     symbTable = symbTable.getNextScope
     val oldScopeSp = scopeSP
     val scopeMaxSpDepth = symbTable.spMaxDepth
-    currInstructions ++= decrementSP(scopeMaxSpDepth)
+    decrementSP(scopeMaxSpDepth)
     scopeSP = currSP
     currSP += scopeMaxSpDepth
     stats.foreach((s: Stat) => {
@@ -92,7 +92,7 @@ object ScopeGen {
         }
       )
     if (scopeMaxSpDepth > 0) {
-      currInstructions ++= incrementSP(scopeMaxSpDepth)
+      incrementSP(scopeMaxSpDepth)
       currSP -= scopeMaxSpDepth
     }
     scopeSP = oldScopeSp

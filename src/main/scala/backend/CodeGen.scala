@@ -40,6 +40,7 @@ object CodeGen {
 
   val MAX_IMM_INT = 1024
   val NO_OFFSET = 0
+  val RESET_INT = 0
 
   val isPrintLn = true
   val isPrint = false
@@ -71,32 +72,28 @@ object CodeGen {
     }
   }
 
-  def incrementSP(toInc: Int): ListBuffer[Instr] = {
-    val instrs = ListBuffer.empty[Instr]
+  def incrementSP(toInc: Int): Unit = {
     if (toInc == 0) {
-      return instrs
+      return
     }
-    var curToInc = toInc
-    while (curToInc > MAX_IMM_INT) {
-      curToInc -= MAX_IMM_INT
-      instrs += backend.Opcodes.Add(R13_SP, R13_SP, Imm_Int(MAX_IMM_INT))
+    var currToInc = toInc
+    while (currToInc > MAX_IMM_INT) {
+      currToInc -= MAX_IMM_INT
+      currInstructions += backend.Opcodes.Add(R13_SP, R13_SP, Imm_Int(MAX_IMM_INT))
     }
-    instrs += backend.Opcodes.Add(R13_SP, R13_SP, Imm_Int(curToInc))
-    instrs
+    currInstructions += backend.Opcodes.Add(R13_SP, R13_SP, Imm_Int(currToInc))
   }
 
-  def decrementSP(toDec: Int): ListBuffer[Instr] = {
-    val instrs = ListBuffer.empty[Instr]
+  def decrementSP(toDec: Int): Unit = {
     if (toDec == 0) {
-      return instrs
+      return
     }
-    var curToDec = toDec
-    while (curToDec > MAX_IMM_INT) {
-      curToDec -= MAX_IMM_INT
-      instrs += backend.Opcodes.Sub(R13_SP, R13_SP, Imm_Int(MAX_IMM_INT))
+    var currToDec = toDec
+    while (currToDec > MAX_IMM_INT) {
+      currToDec -= MAX_IMM_INT
+      currInstructions += backend.Opcodes.Sub(R13_SP, R13_SP, Imm_Int(MAX_IMM_INT))
     }
-    instrs += backend.Opcodes.Sub(R13_SP, R13_SP, Imm_Int(curToDec))
-    instrs
+    currInstructions += backend.Opcodes.Sub(R13_SP, R13_SP, Imm_Int(currToDec))
   }
   //translates Exit statement, first translate E into a free register, freeRegister, then Mov contents of freeRegister to resultRegister.
   private def transExit(expr: Expr): Unit = {
@@ -136,15 +133,15 @@ object CodeGen {
     val maxSpDepth = symbTable.spMaxDepth
     currSP += maxSpDepth
     currInstructions += Push(ListBuffer(R14_LR))
-    currInstructions ++= decrementSP(maxSpDepth)
+    decrementSP(maxSpDepth)
     stats.foreach((s: Stat) => {
       transStat(s)
       }
     )
     
-    currInstructions ++= incrementSP(currSP)
+    incrementSP(currSP)
     currInstructions ++= ListBuffer(
-      Ldr(resultRegister, Load_Mem(0)), // TODO: magic number
+      Ldr(resultRegister, Load_Mem(RESET_INT)),
       Pop(ListBuffer(R15_PC)),
       Ltorg
     )
