@@ -15,7 +15,7 @@ build:
 
 frontend-tests:
   image: hseeberger/scala-sbt:eclipse-temurin-17.0.1_1.6.1_2.13.8
-  stage: test
+  stage: frontend-tests
   script:
     # Execute your project's tests
     - sbt "testOnly ParserTests"
