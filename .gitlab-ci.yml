@@ -5,6 +5,7 @@
 stages:
   - compilation
   - frontend-tests
+  - backend-tests
   - code-coverage
 
 build:
@@ -22,6 +23,13 @@ frontend-tests:
     - sbt "testOnly SemanticTests"
   needs:
     ["build"]
+
+backend-tests:
+  image: hseeberger/scala-sbt:eclipse-temurin-17.0.1_1.6.1_2.13.8
+  stage: backend-tests
+  script:
+    - apt-get install gcc-arm-linux-gnueabi qemu qemu-user -y
+    - sbt "testOnly BackendTests"
 
 code-coverage:
   image: hseeberger/scala-sbt:eclipse-temurin-17.0.1_1.6.1_2.13.8
