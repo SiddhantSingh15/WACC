@@ -20,8 +20,7 @@ object SemanticChecker {
       }
 
       for (func <- s) {
-        checkReturnExits(func, globSymTable.nextScope(func.ident))
-        checkStats(stats, globSymTable.nextScope(func.ident))
+        checkReturnExits(func)
       }
 
       checkStats(stats, globSymTable)
@@ -39,7 +38,7 @@ object SemanticChecker {
     checkStats(stat, symbTable)
   }
 
-  private def checkReturnExits(func: Func, symbTable: SymbolTable): Unit = {
+  private def checkReturnExits(func: Func): Unit = {
     val Func(_, _, _, stats) = func
 
     if (!checkReturnHelper(stats)) {
