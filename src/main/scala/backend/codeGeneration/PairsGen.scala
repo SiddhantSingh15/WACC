@@ -49,7 +49,7 @@ object PairsGen {
     } else {
       t match {
         case Pair(_, PairElemWithType(sType)) => sType
-        case Pair(PairElemPair, _)            => Pair(null, null)
+        case Pair(_, PairElemPair)            => Pair(null, null)
         case _                                => ???
       }
     }
