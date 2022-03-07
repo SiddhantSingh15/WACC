@@ -2,19 +2,18 @@
 # Official OpenJDK Java image. Look for the different tagged releases at
 # https://hub.docker.com/_/openjdk/ . A Java image is not required
 # but an image with a JVM speeds up the build a bit.
+image: hseeberger/scala-sbt:eclipse-temurin-17.0.1_1.6.1_2.13.8
 stages:
   - compilation
   - test
   - code-coverage
 
 build:
-  image: hseeberger/scala-sbt:eclipse-temurin-17.0.1_1.6.1_2.13.8
   stage: compilation
   script:
     - sbt compile
 
 test:
-  image: hseeberger/scala-sbt:eclipse-temurin-17.0.1_1.6.1_2.13.8
   stage: test
   script:
     # Execute your project's tests
@@ -23,7 +22,6 @@ test:
     ["build"]
 
 code-coverage:
-  image: hseeberger/scala-sbt:eclipse-temurin-17.0.1_1.6.1_2.13.8
   stage: code-coverage
   script:
     - sbt coverage test coverageReport
