@@ -92,10 +92,9 @@ object ScopeGen {
           transStat(s)
         }
       )
-    if (scopeMaxSpDepth > 0) {
-      incrementSP(scopeMaxSpDepth)
-      currSP -= scopeMaxSpDepth
-    }
+    
+    incrementSP(scopeMaxSpDepth)
+    currSP -= scopeMaxSpDepth
     scopeSP = oldScopeSp
     symbTable = symbTable.prev
   }
