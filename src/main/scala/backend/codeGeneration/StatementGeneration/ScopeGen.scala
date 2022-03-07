@@ -34,9 +34,9 @@ object ScopeGen {
 		currInstructions += BranchCond(EQ, elseLabel)
 
 		transScope(statThen)
-		val thenLabel = funcTable.getNext()
+		val postLabel = funcTable.getNext()
 
-		currInstructions += Branch(thenLabel)
+		currInstructions += Branch(postLabel)
 		funcTable.add(currLabel, currInstructions)		
 
 		currLabel = elseLabel
@@ -44,7 +44,7 @@ object ScopeGen {
 		transScope(statElse)
 		funcTable.add(currLabel, currInstructions)
 
-		currLabel = thenLabel
+		currLabel = postLabel
 		currInstructions = ListBuffer.empty[Instr]
 	}
 
