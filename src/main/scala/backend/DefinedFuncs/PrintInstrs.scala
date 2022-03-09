@@ -12,9 +12,9 @@ import scala.collection.mutable.ListBuffer
 object PrintInstrs {
   private val RESET_INT = 0
 
-  def stringPrintInstrs: (Label, ListBuffer[Instr]) = (
+  def stringPrintInstrs: (Label, BlockInstrs) = (
     PrintString.functionLabel,
-    ListBuffer[Instr](
+    BlockInstrs(ListBuffer[Instr](
       Push(ListBuffer(R14_LR)),
       Ldr(R1, RegAdd(resultRegister)),
       Add(R2, resultRegister, Imm_Int(SIZE_ADDR)),
@@ -24,12 +24,12 @@ object PrintInstrs {
       Mov(resultRegister, Imm_Int(RESET_INT)),
       Bl(Label("fflush")),
       Pop(ListBuffer(R15_PC))
-    )
+    ))
   )
 
-  def boolPrintInstrs: (Label, ListBuffer[Instr]) = (
+  def boolPrintInstrs: (Label, BlockInstrs) = (
     PrintBool.functionLabel,
-    ListBuffer[Instr](
+    BlockInstrs(ListBuffer[Instr](
       Push(ListBuffer(R14_LR)),
       Cmp(resultRegister, Imm_Int(FALSE_INT)),
       LdrCond(NE, resultRegister, DataLabel(Label(PrintBool.msgName(0)))),
@@ -39,12 +39,12 @@ object PrintInstrs {
       Mov(resultRegister, Imm_Int(RESET_INT)),
       Bl(Label("fflush")),
       Pop(ListBuffer(R15_PC))
-    )
+    ))
   )
 
-  def intPrintInstrs: (Label, ListBuffer[Instr]) = (
+  def intPrintInstrs: (Label, BlockInstrs) = (
     PrintInt.functionLabel,
-    ListBuffer[Instr](
+    BlockInstrs(ListBuffer[Instr](
       Push(ListBuffer(R14_LR)),
       Mov(R1, resultRegister),
       Ldr(resultRegister, DataLabel(Label(PrintInt.msgName(0)))),
@@ -53,12 +53,12 @@ object PrintInstrs {
       Mov(resultRegister, Imm_Int(RESET_INT)),
       Bl(Label("fflush")),
       Pop(ListBuffer(R15_PC))
-    )
+    ))
   )
 
-  def referencePrintInstrs: (Label, ListBuffer[Instr]) = (
+  def referencePrintInstrs: (Label, BlockInstrs) = (
     PrintReference.functionLabel,
-    ListBuffer[Instr](
+    BlockInstrs(ListBuffer[Instr](
       Push(ListBuffer(R14_LR)),
       Mov(R1, resultRegister),
       Ldr(resultRegister, DataLabel(Label(PrintReference.msgName(0)))),
@@ -67,12 +67,12 @@ object PrintInstrs {
       Mov(resultRegister, Imm_Int(RESET_INT)),
       Bl(Label("fflush")),
       Pop(ListBuffer(R15_PC))
-    )
+    ))
   )
 
-  def newLinePrintInstrs: (Label, ListBuffer[Instr]) = (
+  def newLinePrintInstrs: (Label, BlockInstrs) = (
     PrintLn.functionLabel,
-    ListBuffer[Instr](
+    BlockInstrs(ListBuffer[Instr](
       Push(ListBuffer(R14_LR)),
       Ldr(resultRegister, DataLabel(Label(PrintLn.msgName(0)))),
       Add(resultRegister, resultRegister, Imm_Int(SIZE_ADDR)),
@@ -80,6 +80,6 @@ object PrintInstrs {
       Mov(resultRegister, Imm_Int(RESET_INT)),
       Bl(Label("fflush")),
       Pop(ListBuffer(R15_PC))
-    )
+    ))
   )
 }

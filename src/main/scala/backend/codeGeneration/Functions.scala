@@ -20,9 +20,9 @@ object Functions {
    */
   def transCall(ident : Ident, arguments : ArgList, freeRegister : Register): Unit = {
     val toInc = storeArguments(arguments, freeRegister)
-    currInstructions += Bl(Label("f_" + ident))
+    currInstructions.add(Bl(Label("f_" + ident)))
     incrementSP(toInc)
-    currInstructions += Mov(freeRegister, resultRegister)
+    currInstructions.add(Mov(freeRegister, resultRegister))
   }
 
 
@@ -43,7 +43,7 @@ object Functions {
 
     scopeSP = currSP
     currSP += maxSpDepth
-    currInstructions += Push(ListBuffer(R14_LR))
+    currInstructions.add(Push(ListBuffer(R14_LR)))
     decrementSP(maxSpDepth)
 
     for (stat <- stats) {
@@ -56,12 +56,12 @@ object Functions {
 
     scopeSP = prevScopeSP
     symbTable = symbTable.prev
-    currInstructions ++= ListBuffer(
+    currInstructions.addAll(ListBuffer(
       Pop(ListBuffer(R15_PC)),
       Ltorg
-    )
+    ))
     funcTable.add(currLabel, currInstructions)
-    currInstructions = ListBuffer.empty[Instr]
+    currInstructions = BlockInstrs(ListBuffer.empty[Instr])
   }
 
   /*
@@ -76,7 +76,7 @@ object Functions {
     for (a <- args.reverse) {
       val tpe = getExprType(a)
       transExp(a, register)
-      currInstructions += StrOffsetIndex(isByte(tpe), register, R13_SP, -getTypeSize(tpe))
+      currInstructions.add(StrOffsetIndex(isByte(tpe), register, R13_SP, -getTypeSize(tpe)))
       currSP += getTypeSize(tpe)
       offset += getTypeSize(tpe)
     }
@@ -109,14 +109,11 @@ object Functions {
   def transReturn(expr : Expr): Unit = {
     val register = saveReg()
     transExp(expr, register)
-    currInstructions += Mov(resultRegister, register)
+    currInstructions.add(Mov(resultRegister, register))
     if(currSP > 0) { 
         incrementSP(currSP)
     }
-
-    currInstructions ++= ListBuffer(
-      Pop(ListBuffer(R15_PC))
-    )        
+    currInstructions.add(Pop(ListBuffer(R15_PC)))
     restoreReg(register)
   }
 }

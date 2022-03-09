@@ -79,9 +79,9 @@ object CodeGenHelper {
         var currToInc = toInc
         while (currToInc > MAX_IMM_INT) {
         currToInc -= MAX_IMM_INT
-        currInstructions += backend.Opcodes.Add(R13_SP, R13_SP, Imm_Int(MAX_IMM_INT))
+        currInstructions.add(backend.Opcodes.Add(R13_SP, R13_SP, Imm_Int(MAX_IMM_INT)))
         }
-        currInstructions += backend.Opcodes.Add(R13_SP, R13_SP, Imm_Int(currToInc))
+        currInstructions.add(backend.Opcodes.Add(R13_SP, R13_SP, Imm_Int(currToInc)))
     }
 
     def decrementSP(toDec: Int): Unit = {
@@ -91,8 +91,8 @@ object CodeGenHelper {
         var currToDec = toDec
         while (currToDec > MAX_IMM_INT) {
         currToDec -= MAX_IMM_INT
-        currInstructions += backend.Opcodes.Sub(R13_SP, R13_SP, Imm_Int(MAX_IMM_INT))
+        currInstructions.add(backend.Opcodes.Sub(R13_SP, R13_SP, Imm_Int(MAX_IMM_INT)))
         }
-        currInstructions += backend.Opcodes.Sub(R13_SP, R13_SP, Imm_Int(currToDec))
+        currInstructions.add(backend.Opcodes.Sub(R13_SP, R13_SP, Imm_Int(currToDec)))
     }
 }

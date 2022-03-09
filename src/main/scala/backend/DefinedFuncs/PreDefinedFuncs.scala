@@ -15,7 +15,7 @@ object PreDefinedFuncs {
     val functionLabel: Label
     val msgName: List[String]
     val msgs: List[String]
-    val function: Option[(Label, ListBuffer[Instr])]
+    val function: Option[(Label, BlockInstrs)]
   }
 
   case object ArrayBounds extends PreDefFunc {

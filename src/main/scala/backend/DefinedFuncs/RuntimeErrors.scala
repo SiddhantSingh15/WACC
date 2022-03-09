@@ -36,24 +36,24 @@ object RuntimeErrors {
   /*
    * Raises RTE and adds the ARM machine code to the list of instructions.
    */
-  def throwRuntimeError: (Label, ListBuffer[Instr]) = {
+  def throwRuntimeError: (Label, BlockInstrs) = {
     (
       RuntimeError.functionLabel,
-      ListBuffer[Instr](
+      BlockInstrs(ListBuffer[Instr](
         Bl(Label("p_print_string")),
         Mov(resultRegister, Imm_Int(ERROR_EXIT_CODE)),
         Bl(Label("exit"))
-      )
+      ))
     )
   }
 
   /* 
    * Checks for illegal array accesses. 
    */
-  def checkArrayBounds: (Label, ListBuffer[Instr]) = {
+  def checkArrayBounds: (Label, BlockInstrs) = {
     (
       ArrayBounds.functionLabel,
-      ListBuffer[Instr](
+      BlockInstrs(ListBuffer[Instr](
         Push(ListBuffer(R14_LR)),
         Cmp(resultRegister, Imm_Int(FALSE_INT)),
         LdrCond(LT, resultRegister, DataLabel(Label(ArrayBounds.msgName(0)))),
@@ -63,46 +63,46 @@ object RuntimeErrors {
         LdrCond(CS, resultRegister, DataLabel(Label(ArrayBounds.msgName(1)))),
         BranchLinkCond(CS, RuntimeError.functionLabel),
         Pop(ListBuffer(R15_PC))
-      )
+      ))
     )
   }
 
   /* 
    * Adds illegal division by zero error instructions.
    */
-  def checkDivideByZero: (Label, ListBuffer[Instr]) = {
+  def checkDivideByZero: (Label, BlockInstrs) = {
     (
       DivideByZero.functionLabel,
-      ListBuffer[Instr](
+      BlockInstrs(ListBuffer[Instr](
         Push(ListBuffer(R14_LR)),
         Cmp(R1, Imm_Int(FALSE_INT)),
         LdrCond(EQ, resultRegister, DataLabel(Label(DivideByZero.msgName(0)))),
         BranchLinkCond(EQ, RuntimeError.functionLabel),
         Pop(ListBuffer(R15_PC))
-      )
+      ))
     )
   }
 
   /*
    * Adds integer overflow to instructions list.
    */
-  def throwOverflowError: (Label, ListBuffer[Instr]) = {
+  def throwOverflowError: (Label, BlockInstrs) = {
     (
       Overflow.functionLabel,
-      ListBuffer[Instr](
+      BlockInstrs(ListBuffer[Instr](
         Ldr(resultRegister, DataLabel(Label(Overflow.msgName(0)))),
         Bl(RuntimeError.functionLabel)
-      )
+      ))
     )
   }
 
   /*
    * Adds instruction to free a pair.
    */
-  def freePair: (Label, ListBuffer[Instr]) = {
+  def freePair: (Label, BlockInstrs) = {
     (
       FreePair.functionLabel,
-      ListBuffer[Instr](
+      BlockInstrs(ListBuffer[Instr](
         Push(ListBuffer(R14_LR)),
         Cmp(resultRegister, Imm_Int(FALSE_INT)),
         LdrCond(EQ, resultRegister, DataLabel(Label(FreePair.msgName(0)))),
@@ -116,40 +116,40 @@ object RuntimeErrors {
         Pop(ListBuffer(resultRegister)),
         Bl(Label("free")),
         Pop(ListBuffer(R15_PC))
-      )
+      ))
     )
   }
 
   /*
    * Adds instruction to free an array.
    */
-  def freeArray: (Label, ListBuffer[Instr]) = {
+  def freeArray: (Label, BlockInstrs) = {
     (
       FreeArray.functionLabel,
-      ListBuffer[Instr](
+      BlockInstrs(ListBuffer[Instr](
         Push(ListBuffer(R14_LR)),
         Cmp(resultRegister, Imm_Int(FALSE_INT)),
         LdrCond(EQ, resultRegister, DataLabel(Label(FreeArray.msgName(0)))),
         BranchCond(EQ, RuntimeError.functionLabel),
         Bl(Label("free")),
         Pop(ListBuffer(R15_PC))
-      )
+      ))
     )
   }
 
   /*
    * Add NPE instructions to list of instructions.
    */
-  def checkNullPointer: (Label, ListBuffer[Instr]) = {
+  def checkNullPointer: (Label, BlockInstrs) = {
     (
       NPE.functionLabel,
-      ListBuffer[Instr](
+      BlockInstrs(ListBuffer[Instr](
         Push(ListBuffer(R14_LR)),
         Cmp(resultRegister, Imm_Int(FALSE_INT)),
         LdrCond(EQ, resultRegister, DataLabel(Label(NPE.msgName(0)))),
         BranchLinkCond(EQ, RuntimeError.functionLabel),
         Pop(ListBuffer(R15_PC))
-      )
+      ))
     )
   }
 }

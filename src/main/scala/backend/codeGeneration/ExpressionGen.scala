@@ -31,24 +31,24 @@ object ExpressionGen {
     expr match {
       case IntLiter(number) =>
         val reg = collectRegister(rd)
-        currInstructions += Ldr(reg, Load_Mem(number))
+        currInstructions.add(Ldr(reg, Load_Mem(number)))
       case bool: BoolLiter =>
-        currInstructions += Mov(rd, Imm_Int(boolToInt(bool)))
+        currInstructions.add(Mov(rd, Imm_Int(boolToInt(bool))))
 
       case character: CharLiter =>
-        currInstructions += Mov(rd, Imm_Char(character.toString.charAt(1)))
+        currInstructions.add(Mov(rd, Imm_Char(character.toString.charAt(1))))
 
       case str: StrLiter => 
         val label = dataTable.addStrLiter(str)
-        currInstructions += Ldr(rd, DataLabel(label))
+        currInstructions.add(Ldr(rd, DataLabel(label)))
 
       case PairLiter() => 
-        currInstructions += Ldr(rd, Load_Mem(NULL_INT)) 
+        currInstructions.add(Ldr(rd, Load_Mem(NULL_INT))) 
 
       case ident: Ident => 
         val (i, t) = symbTable(ident)
         val offset = currSP - i
-        currInstructions += Ldr(isByte(t), rd, R13_SP, offset)
+        currInstructions.add(Ldr(isByte(t), rd, R13_SP, offset))
 
       case ArrayElem(id, exprs) => 
         loadArrayElem(id, exprs, rd)
@@ -67,17 +67,19 @@ object ExpressionGen {
     op match {
       case Not(expr) =>
         transExp(expr, rd)
-        currInstructions += Eor(rd, rd, Imm_Int(TRUE_INT))
+        currInstructions.add(Eor(rd, rd, Imm_Int(TRUE_INT)))
       case Negation(expr) =>
         transExp(expr, rd) 
-        currInstructions ++= ListBuffer(
+        currInstructions.addAll(ListBuffer[Instr](
           RsbS(rd, rd, Imm_Int(0)),
           BranchLinkCond(OF, addRTE(Overflow))
-        )
+        ))
       case Len(ident: Ident) =>
         val (i, t) = symbTable(ident)
-        currInstructions += Ldr(rd, RegisterOffset(R13_SP, currSP - i))
-        currInstructions += Ldr(rd, RegAdd(rd))
+        currInstructions.addAll(ListBuffer[Instr](
+          Ldr(rd, RegisterOffset(R13_SP, currSP - i)),
+          Ldr(rd, RegAdd(rd))
+        ))
   
       case Ord(expr) =>
         transExp(expr, rd)
@@ -93,7 +95,7 @@ object ExpressionGen {
     var reg = rd
 
     if (rd == popRegister) {
-      currInstructions += Push(ListBuffer(R10))
+      currInstructions.add(Push(ListBuffer(R10)))
       reg = R10
     }
 
@@ -109,7 +111,7 @@ object ExpressionGen {
     // Check over allocation of register
     var rd = rn
     if (popRegister == rm) {
-      currInstructions += Pop(ListBuffer(popRegister))
+      currInstructions.add(Pop(ListBuffer(popRegister)))
       rd = R10
     }
 
@@ -131,37 +133,37 @@ object ExpressionGen {
 
     op match {
       case frontend.AST.Mul(_,_) =>
-        currInstructions ++= ListBuffer(
+        currInstructions.addAll(ListBuffer(
           SMul(rd, rm, rd, rm),
           Cmp(rm, ASR(rd, Imm_Int(MUL_INT))),
           BranchLinkCond(NE, addRTE(Overflow))
-        )
+        ))
       case frontend.AST.Div(_,_) =>
-        currInstructions ++= ListBuffer(
+        currInstructions.addAll(ListBuffer(
           Mov(resultRegister, rd),
           Mov(R1, rm), // need to be in R0 and R1 for __aeabi_idiv
           Bl(addRTE(DivideByZero)),
           Bl(Label("__aeabi_idiv")),
           Mov(rd, resultRegister)
-        )
+        ))
       case frontend.AST.Mod(_,_) => 
-        currInstructions ++= ListBuffer(
+        currInstructions.addAll(ListBuffer(
           Mov(resultRegister, rd),
           Mov(R1, rm),
           Bl(addRTE(DivideByZero)),
           Bl(Label("__aeabi_idivmod")),
           Mov(rd, R1)
-        )
+        ))
       case frontend.AST.Plus(_,_) =>
-        currInstructions ++= ListBuffer(
+        currInstructions.addAll(ListBuffer(
           AddS(rd, rd, rm),
           BranchLinkCond(OF, addRTE(Overflow))
-        )
+        ))
       case frontend.AST.Sub(_,_) =>
-        currInstructions ++= ListBuffer(
+        currInstructions.addAll(ListBuffer(
           SubS(rd, rd, rm),
           BranchLinkCond(OF, addRTE(Overflow))
-        )
+        ))
     }
   }
 
@@ -178,18 +180,18 @@ object ExpressionGen {
       case _ =>
     }
 
-    currInstructions ++= ListBuffer(
+    currInstructions.addAll(ListBuffer(
       Cmp(rd, rm),
       MovCond(cond, rd, Imm_Int(TRUE_INT)),
       MovCond(cond.oppositeCmp, rd, Imm_Int(FALSE_INT))
-    )
+    ))
   }
 
   /* Translating a logic operator to the ARM language  */
   def transLgOp(op: LogicFuncs, rd: Register, rm: Register): Unit = {
     op match {
-      case frontend.AST.And(_,_) => currInstructions += backend.Opcodes.And(rd, rd, rm)
-      case frontend.AST.Or(_,_) => currInstructions += backend.Opcodes.Or(rd, rd, rm)
+      case frontend.AST.And(_,_) => currInstructions.add(backend.Opcodes.And(rd, rd, rm))
+      case frontend.AST.Or(_,_) => currInstructions.add(backend.Opcodes.Or(rd, rd, rm))
     }
   }
 }

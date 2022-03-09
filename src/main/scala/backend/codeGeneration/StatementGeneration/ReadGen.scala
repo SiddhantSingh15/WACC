@@ -33,12 +33,12 @@ object ReadGen {
       preDefFuncTable.addFunction(
         charRead(dataTable.addData(ReadChar.msgs(0)))
       )
-      currInstructions += Bl(ReadChar.functionLabel)
+      currInstructions.add(Bl(ReadChar.functionLabel))
     case Int      =>
       preDefFuncTable.addFunction(
         intRead(dataTable.addData(ReadInt.msgs(0)))
       )
-      currInstructions += Bl(ReadInt.functionLabel)
+      currInstructions.add(Bl(ReadInt.functionLabel))
     case _        => 
   }
 
@@ -55,7 +55,7 @@ object ReadGen {
     val (_, pairType) = symbTable(ident)
     val t = getPairElemType(pairType, pos)
     // value must be in R0 for branch
-    currInstructions += Mov(resultRegister, freeReg)
+    currInstructions.add(Mov(resultRegister, freeReg))
     restoreReg(freeReg)
     readBranch(t)
   }
@@ -68,8 +68,10 @@ object ReadGen {
     val freeReg = saveReg()
     val (spIndex, identType) = symbTable(ident)
     val spOffset = currSP - spIndex
-    currInstructions += Add(freeReg, R13_SP, Imm_Int(spOffset))
-    currInstructions += Mov(resultRegister, freeReg)
+    currInstructions.addAll(ListBuffer[Instr](
+      Add(freeReg, R13_SP, Imm_Int(spOffset)),
+      Mov(resultRegister, freeReg)
+    ))
     restoreReg(freeReg)
     readBranch(identType)
   }
@@ -81,7 +83,7 @@ object ReadGen {
     val ArrayElem(ident, exprs) = ae
     val resReg = saveReg()
     transArrayElem(ident, exprs, resReg)
-    currInstructions += Mov(resultRegister, resReg)
+    currInstructions.add(Mov(resultRegister, resReg))
     restoreReg(resReg)
     val t = getExprType(ae)
     readBranch(t)

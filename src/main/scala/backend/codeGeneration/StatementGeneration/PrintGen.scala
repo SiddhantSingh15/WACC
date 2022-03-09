@@ -19,7 +19,7 @@ object PrintGen {
     val t = getExprType(expr)
     val freeReg = saveReg()
     transExp(expr, freeReg)
-    currInstructions += Mov(resultRegister, freeReg)
+    currInstructions.add(Mov(resultRegister, freeReg))
 
     // Chooses the print functions based on the expression type.
     var printFunc: PreDefFunc = null
@@ -44,13 +44,13 @@ object PrintGen {
           printFunc.msgs(i)
       )
     }
-    currInstructions += Bl(printFunc.functionLabel)
+    currInstructions.add(Bl(printFunc.functionLabel))
     if (printFunc.function.isDefined) {
       preDefFuncTable.addFunction(printFunc.function.get)
     }  
 
     if (isLine) {
-      currInstructions += Bl(PrintLn.functionLabel)
+      currInstructions.add(Bl(PrintLn.functionLabel))
       dataTable.addLabel(
         PrintLn.msgName(0),
         PrintLn.msgs(0)
