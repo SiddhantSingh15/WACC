@@ -9,13 +9,13 @@ stages:
   - code-coverage
 
 build:
-  image: hseeberger/scala-sbt:eclipse-temurin-17.0.1_1.6.1_2.13.8
+  image: hseeberger/scala-sbt:11.0.9.1_1.4.6_2.13.4
   stage: compilation
   script:
     - sbt compile
 
 frontend-tests:
-  image: hseeberger/scala-sbt:eclipse-temurin-17.0.1_1.6.1_2.13.8
+  image: hseeberger/scala-sbt:11.0.9.1_1.4.6_2.13.4
   stage: frontend-tests
   script:
     - sbt "testOnly ParserTests"
@@ -24,7 +24,7 @@ frontend-tests:
     - build
 
 backend-tests:
-  image: hseeberger/scala-sbt:eclipse-temurin-17.0.1_1.6.1_2.13.8
+  image: hseeberger/scala-sbt:11.0.9.1_1.4.6_2.13.4
   stage: backend-tests
   script:
     - apt-get install gcc-arm-linux-gnueabi qemu qemu-user -y
@@ -33,7 +33,7 @@ backend-tests:
     - build
 
 code-coverage:
-  image: hseeberger/scala-sbt:eclipse-temurin-17.0.1_1.6.1_2.13.8
+  image: hseeberger/scala-sbt:11.0.9.1_1.4.6_2.13.4
   stage: code-coverage
   script:
     - sbt coverage test coverageReport
