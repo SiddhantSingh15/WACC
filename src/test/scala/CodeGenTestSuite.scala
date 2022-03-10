@@ -23,7 +23,7 @@ object CodeGenTestSuite {
     makeExec(file)
     val fName = file.getName().replaceAll(".wacc", "")
     val result = new File(s"$fName.out")
-    val inputs = Source.fromFile(getFileFromPath(file, "wacc_examples/expected/input")).getLines().mkString("\n")
+    val inputs = Source.fromFile(getFileFromPath(file, "wacc_examples/expected")).getLines().mkString("\n")
     val cmd = 
     if (inputs.isEmpty) {
       s"qemu-arm -L /usr/arm-linux-gnueabi/ $fName" #> result
