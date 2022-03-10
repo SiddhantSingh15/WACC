@@ -27,6 +27,7 @@ backend-tests:
   stage: backend-tests
   script:
     - apt-get update -y
+    - apt-get install apt-transport-https -y
     - apt-get install gcc-arm-linux-gnueabi -y
     - apt-get install qemu-user -y
     - sbt "testOnly BackendTests"
