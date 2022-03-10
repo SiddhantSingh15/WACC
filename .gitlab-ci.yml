@@ -26,7 +26,8 @@ backend-tests:
   image: hseeberger/scala-sbt:11.0.9.1_1.4.6_2.13.4
   stage: backend-tests
   script:
-    - apt-get install gcc-arm-linux-gnueabi qemu qemu-user -y
+    - apt-get install gcc-arm-linux-gnueabi
+    - apt-get install qemu-user
     - sbt "testOnly BackendTests"
   needs:
     - build
