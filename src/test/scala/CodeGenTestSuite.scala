@@ -35,7 +35,7 @@ object CodeGenTestSuite {
   }
 
   private def getFileFromPath(file: File, folder: String): File = {
-    new File (file.getPath().replace("wacc_examples/valid", folder).replace("valid", "expected"))
+    new File (file.getPath().replace("wacc", "txt").replace("wacc_examples/valid", folder))
   }
 
   private def makeExec(file: File): Unit = {
