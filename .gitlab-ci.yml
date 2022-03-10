@@ -1,21 +1,24 @@
 image: openjdk:8
 
+before_script:
+  # Enable the usage of sources over https
+  - apt-get update -yqq
+  - apt-get install apt-transport-https -yqq
+  # Add keyserver for SBT
+  - echo "deb https://repo.scala-sbt.org/scalasbt/debian /" | tee -a /etc/apt/sources.list.d/sbt.list
+  - mkdir -p /root/.gnupg
+  - gpg --recv-keys --no-default-keyring --keyring gnupg-ring:/etc/apt/trusted.gpg.d/scalasbt-release.gpg --keyserver hkp://keyserver.ubuntu.com:80 2EE0EA64E40A89B84B2DF73499E82A75642AC823
+  - chmod 644 /etc/apt/trusted.gpg.d/scalasbt-release.gpg
+  # Install SBT
+  - apt-get update -yqq
+  - apt-get install sbt -yqq
+  # Log the sbt version
+  - sbt sbtVersion
 
 stages:
   - frontend-tests
   - backend-tests
   - code-coverage
-
-before_script:
-  - apt-get update -y
-  - apt-get install apt-transport-https -y
-  ## Install SBT
-  - echo "deb http://dl.bintray.com/sbt/debian /" | tee -a /etc/apt/sources.list.d/sbt.list
-  - apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 642AC823
-  - apt-get update -y
-  - apt-get install sbt -y
-  - sbt sbtVersion
-
 
 frontend-tests:
   stage: frontend-tests
