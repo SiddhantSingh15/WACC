@@ -8,25 +8,23 @@ import parsley.Failure
 import backend._
 
 object Main {
-  val parser = frontend.Parser
-  val semChecker = frontend.SemanticChecker
-  val codeGen = backend.CodeGen;
-  val prettyPrinter = backend.PrettyPrinter;
 
   def main(args: Array[String]): Unit =  {
-    assert(args.length == 1)
+    val file = new File(args(0))
+
+    assert(file.exists())
     println("Parsing: " + args(0))
 
     val EXITCODE_SUCC = 0
     val EXITCODE_SYNTAX_ERROR = 100
     val EXITCODE_SEM_ERROR = 200
 
-    val file = new File(args(0))
+    val parser = frontend.Parser
     val parsed = parser.parseFromFile(file).get
 
     val parsedResult = parsed match {
       case Success(x) =>
-        // println(x)
+        val semChecker = frontend.SemanticChecker
         val (symbTable, semRes) = semChecker.checkProgram(parsed.get)
         for (err <- semRes) {
           if (err.isInstanceOf[FuncNoRetErr]) {
@@ -46,7 +44,10 @@ object Main {
         println(Console.GREEN + s"${args(0)} is semantically valid.")
           // System.exit(EXITCODE_SUCC)
           val programTree = parsed.get
+          val codeGen = backend.CodeGen
           val (data, instructions) = codeGen.transProgram(programTree, symbTable)
+
+          val prettyPrinter = backend.PrettyPrinter
           prettyPrinter.prettyPrint(file.getName(), data, instructions)
 
       case Failure(err) =>

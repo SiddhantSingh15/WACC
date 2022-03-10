@@ -5,6 +5,24 @@ import backend.Condition._
 import scala.collection.mutable.ListBuffer
 
 object Opcodes {
+
+  case class BlockInstrs(instrBlock: ListBuffer[Instr]) {
+
+    def add(instr: Instr): Unit = {
+      instrBlock += instr
+    }
+
+    def addAll(instrs: ListBuffer[Instr]): Unit = {
+      instrBlock ++= instrs
+    }
+
+    override def toString: String = {
+      val sb = new StringBuilder
+      instrBlock.foreach((i: Instr) => sb ++= s"\t\t$i\n")
+      sb.toString()
+    }
+  }
+
   sealed trait Instr
   //Arithematic ops
   case class Add(rd: Register, rn: Register, op2: Operand) extends Instr {

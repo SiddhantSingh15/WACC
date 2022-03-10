@@ -6,7 +6,7 @@ import scala.collection.mutable.StringBuilder
 
 object PrettyPrinter {
 
-  def prettyPrint(waccFilename: String, data: List[Data], instrs: List[(Label, List[Instr])]): Unit = {
+  def prettyPrint(waccFilename: String, data: List[Data], instrs: List[(Label, BlockInstrs)]): Unit = {
     val assemblyFilename = waccFilename.replaceFirst(".wacc", ".s")
     var file = new File(assemblyFilename)
 
@@ -25,10 +25,10 @@ object PrettyPrinter {
 
     sb ++= "\t.text\n\n\t.global main\n"
 
-    instrs.foreach((x: (Label, List[Instr])) => {
+    instrs.foreach((x: (Label, BlockInstrs)) => {
         val labelStr = x._1
         sb ++= s"\t$labelStr:\n"
-        x._2.foreach((i: Instr) => sb ++= s"\t\t$i\n")
+        sb ++= x._2.toString()
     })
     fileWriter.write(sb.toString())
     fileWriter.close()

@@ -22,16 +22,17 @@ object FreeGen {
         val freeRegister = saveReg()
         val (i, t) = symbTable(id)
 
-        currInstructions += Ldr(freeRegister, R13_SP, currSP - i)
-
-        /*Have to move to R0 to call free function*/
-        currInstructions += Mov(resultRegister, freeRegister)
+        currInstructions.addAll(ListBuffer[Instr](
+          Ldr(freeRegister, R13_SP, currSP - i),
+          /*Have to move to R0 to call free function*/
+          Mov(resultRegister, freeRegister)
+        ))
 
         restoreReg(freeRegister)
 
         t match {
-          case _: Pair      => currInstructions += Bl(addRTE(FreePair))
-          case _: ArrayType => currInstructions += Bl(addRTE(FreeArray))
+          case _: Pair      => currInstructions.add(Bl(addRTE(FreePair)))
+          case _: ArrayType => currInstructions.add(Bl(addRTE(FreeArray)))
           case _            => 
         }
 

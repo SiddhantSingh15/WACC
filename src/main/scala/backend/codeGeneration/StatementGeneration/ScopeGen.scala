@@ -2,7 +2,7 @@ package backend.CodeGeneration
 
 import frontend.AST.{Stat, Expr}
 import scala.collection.mutable.ListBuffer
-import backend.Opcodes.{Instr, Cmp, Branch, BranchCond}
+import backend.Opcodes._
 import backend.Condition.{EQ}
 import backend.CodeGen._
 import backend.Operand.{Imm_Int}
@@ -27,25 +27,25 @@ object ScopeGen {
 	def transIf(expr: Expr, statThen: List[Stat], statElse: List[Stat]): Unit = {
 		val freeRegister = saveReg()
 		transExp(expr, freeRegister)
-		currInstructions += Cmp(freeRegister, Imm_Int(0))
+		currInstructions.add(Cmp(freeRegister, Imm_Int(0)))
 		restoreReg(freeRegister)
 
 		val elseLabel = funcTable.getNext()
-		currInstructions += BranchCond(EQ, elseLabel)
+		currInstructions.add(BranchCond(EQ, elseLabel))
 
 		transScope(statThen)
 		val postLabel = funcTable.getNext()
 
-		currInstructions += Branch(postLabel)
+		currInstructions.add(Branch(postLabel))
 		funcTable.add(currLabel, currInstructions)		
 
 		currLabel = elseLabel
-    currInstructions = ListBuffer.empty[Instr]
+    currInstructions = BlockInstrs(ListBuffer.empty[Instr])
 		transScope(statElse)
 		funcTable.add(currLabel, currInstructions)
 
 		currLabel = postLabel
-		currInstructions = ListBuffer.empty[Instr]
+		currInstructions = BlockInstrs(ListBuffer.empty[Instr])
 	}
 
   /*
@@ -58,24 +58,24 @@ object ScopeGen {
 		
 		val nextLabel = funcTable.getNext()
 
-		currInstructions += Branch(nextLabel)
+		currInstructions.add(Branch(nextLabel))
 		funcTable.add(currLabel, currInstructions)
 
 		val bodyLabel = funcTable.getNext()
 		currLabel = bodyLabel
-    currInstructions = ListBuffer.empty[Instr]
+    currInstructions = BlockInstrs(ListBuffer.empty[Instr])
 		transScope(stats)
 		funcTable.add(currLabel, currInstructions)
 
 		currLabel = nextLabel
-    currInstructions = ListBuffer.empty[Instr]
+    currInstructions = BlockInstrs(ListBuffer.empty[Instr])
 
 		val register = saveReg()
 
 		transExp(expr, register)
-		currInstructions += Cmp(register, Imm_Int(TRUE_INT))
+		currInstructions.add(Cmp(register, Imm_Int(TRUE_INT)))
 		restoreReg(register)
-		currInstructions += BranchCond(EQ, bodyLabel)
+		currInstructions.add(BranchCond(EQ, bodyLabel))
 	}
 
   /*

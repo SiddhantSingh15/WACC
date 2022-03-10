@@ -26,7 +26,7 @@ object CodeGen {
   var dataTable = new DataTable
   var funcTable = new FunctionTable
   var preDefFuncTable = new FunctionTable
-  var currInstructions = ListBuffer.empty[Instr]
+  var currInstructions = new BlockInstrs(ListBuffer.empty[Instr])
 
   val TRUE_INT = 1
   val FALSE_INT = 0
@@ -66,7 +66,7 @@ object CodeGen {
   private def transExit(expr: Expr): Unit = {
     val availReg = saveReg()
     transExp(expr, availReg)
-    currInstructions ++= ListBuffer[Instr](Mov(resultRegister, availReg), Bl(Label("exit"))) 
+    currInstructions.addAll(ListBuffer[Instr](Mov(resultRegister, availReg), Bl(Label("exit"))))
     restoreReg(availReg)
   }
 
@@ -88,7 +88,7 @@ object CodeGen {
   }
 
   ///* Translates program into our internal representation. Output is used to generate .s file*/
-  def transProgram(program: WaccProgram, symbTable: SymbolTable): (List[Data], List[(Label, List[Instr])]) = {
+  def transProgram(program: WaccProgram, symbTable: SymbolTable): (List[Data], List[(Label, BlockInstrs)]) = {
 
     this.symbTable = symbTable
     val WaccProgram(funcs, stats) = program
@@ -102,7 +102,7 @@ object CodeGen {
     scopeSP = currSP
     val maxSpDepth = symbTable.spMaxDepth
     currSP += maxSpDepth
-    currInstructions += Push(ListBuffer(R14_LR))
+    currInstructions.add(Push(ListBuffer(R14_LR)))
     decrementSP(maxSpDepth)
     stats.foreach((s: Stat) => {
       transStat(s)
@@ -110,11 +110,10 @@ object CodeGen {
     )
     
     incrementSP(currSP)
-    currInstructions ++= ListBuffer(
+    currInstructions.addAll(ListBuffer(
       Ldr(resultRegister, Load_Mem(RESET_INT)),
       Pop(ListBuffer(R15_PC)),
-      Ltorg
-    )
+      Ltorg))
 
     funcTable.add(currLabel, currInstructions)
     (dataTable.table.toList, (funcTable.table ++ preDefFuncTable.table).toList)

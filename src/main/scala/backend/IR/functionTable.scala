@@ -6,31 +6,27 @@ import scala.collection.mutable.ListBuffer
 class FunctionTable {
 
   private var counter = 0
-  val table = ListBuffer.empty[(Label, List[Instr])]
+  val table = ListBuffer.empty[(Label, BlockInstrs)]
 
   /*
    * Adds function to funcTable.
    */
-  def addFunction(label : Label, instrs : ListBuffer[Instr]) : Unit = {
-    table += ((label, instrs.toList))
+  def add(label : Label, instrs : BlockInstrs) : Unit = {
+
+    if (!contains(label)) {
+      table += ((label, instrs))
+    }
   }
 
   /*
    * Adds functions as a pair with (Label, list of instructions)
    */
-  def addFunction(tup : (Label, ListBuffer[Instr])) : Unit = {
+  def addFunction(tup : (Label, BlockInstrs)) : Unit = {
     val (label, instrs) = tup 
     if(!contains(label)){
-      val entry = (label, instrs.toList)
+      val entry = (label, instrs)
       table += entry 
     }
-  }
-
-  /*
-   * Adds to funcTable
-   */
-  def add(label: Label, instrs: ListBuffer[Instr]): Unit = {
-    table += ((label, instrs.toList))
   }
 
   /*

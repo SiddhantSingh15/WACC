@@ -23,7 +23,7 @@ object Assignments {
     val spOffset = currSP - scopeSP
     val freeRegister = saveReg()
     val isByte = transAssignRHS(t, rhs, freeRegister)
-    currInstructions += Str(isByte, freeRegister, R13_SP, spOffset)
+    currInstructions.add(Str(isByte, freeRegister, R13_SP, spOffset))
     restoreReg(freeRegister)
   }
 
@@ -36,7 +36,7 @@ object Assignments {
         val (index, t) = symbTable(id)
         val isByte= transAssignRHS(t, rhs, freeRegister)
         val spOffset = currSP - index  
-        currInstructions += Str(isByte, freeRegister, R13_SP, spOffset)
+        currInstructions.add(Str(isByte, freeRegister, R13_SP, spOffset))
       case Fst(id : Ident)              => 
         transPairAssign(rhs, id, 1, freeRegister)
       case Snd(id : Ident)              => 
