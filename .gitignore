@@ -3,6 +3,7 @@ bin
 src/antlr
 antlr_config
 grun
+.jar
 
 #ignore Java class files
 *.class
