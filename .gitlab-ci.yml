@@ -17,27 +17,27 @@ build:
 test:
   stage: test
   script:
-    # Execute your project's tests
     - sbt "testOnly ParserTests"
     - sbt "testOnly SemanticTests"
   needs:
-    ["build"]
+    - build
 
 backend-tests:
   image: hseeberger/scala-sbt:eclipse-temurin-17.0.1_1.6.1_2.13.8
   stage: backend-tests
   script:
-    - apt-get install install gcc-arm*
-    - apt-get install qemu
-    - apt-get install qemu-user -y
+    - apt-get apt-get install gcc-arm-linux-gnueabi qemu qemu-user -y
     - sbt "testOnly BackendTests"
+  needs:
+    - build
 
 code-coverage:
   stage: code-coverage
   script:
     - sbt coverage test coverageReport
   needs:
-    ["build"]
+    - frontend-tests
+    - backend-tests
   artifacts: 
     reports:
       cobertura:
