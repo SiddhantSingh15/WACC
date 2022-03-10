@@ -1,42 +1,36 @@
+image: openjdk:8
 
-# Official OpenJDK Java image. Look for the different tagged releases at
-# https://hub.docker.com/_/openjdk/ . A Java image is not required
-# but an image with a JVM speeds up the build a bit.
+
 stages:
-  - compilation
   - frontend-tests
   - backend-tests
   - code-coverage
 
-build:
-  image: hseeberger/scala-sbt:11.0.9.1_1.4.6_2.13.4
-  stage: compilation
-  script:
-    - sbt compile
+before_script:
+  - apt-get update -y
+  - apt-get install apt-transport-https -y
+  ## Install SBT
+  - echo "deb http://dl.bintray.com/sbt/debian /" | tee -a /etc/apt/sources.list.d/sbt.list
+  - apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 642AC823
+  - apt-get update -y
+  - apt-get install sbt -y
+  - sbt sbtVersion
+
 
 frontend-tests:
-  image: hseeberger/scala-sbt:11.0.9.1_1.4.6_2.13.4
   stage: frontend-tests
   script:
     - sbt "testOnly ParserTests"
     - sbt "testOnly SemanticTests"
-  needs:
-    - build
 
 backend-tests:
-  image: hseeberger/scala-sbt:11.0.9.1_1.4.6_2.13.4
   stage: backend-tests
   script:
-    - apt-get update -y
-    - apt-get install apt-transport-https -y
     - apt-get install gcc-arm-linux-gnueabi -y
     - apt-get install qemu-user -y
     - sbt "testOnly BackendTests"
-  needs:
-    - build
 
 code-coverage:
-  image: hseeberger/scala-sbt:11.0.9.1_1.4.6_2.13.4
   stage: code-coverage
   script:
     - sbt coverage test coverageReport
