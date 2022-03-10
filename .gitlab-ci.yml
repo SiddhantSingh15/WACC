@@ -16,7 +16,7 @@ before_script:
   - sbt sbtVersion
 
 stages:
-  - frontend-tests
+  # - frontend-tests
   - backend-tests
   - code-coverage
 
