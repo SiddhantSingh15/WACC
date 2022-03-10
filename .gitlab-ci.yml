@@ -28,7 +28,7 @@ backend-tests:
   stage: backend-tests
   script:
     - apt-get install gcc-arm-linux-gnueabi
-    - apt-get install qemu-user
+    - apt-get install qemu-user -y
     - sbt "testOnly BackendTests"
   needs:
     - build
