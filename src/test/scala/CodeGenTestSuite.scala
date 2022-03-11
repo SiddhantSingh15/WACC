@@ -23,6 +23,8 @@ object CodeGenTestSuite {
     makeExec(file)
     val fName = file.getName().replaceAll(".wacc", "")
     val result = new File(s"$fName.out")
+    result.delete()
+    result.createNewFile()
     val inputs = Source.fromFile(getFileFromPath(file, "wacc_examples/expected")).getLines().mkString("\n")
     val cmd = 
     if (inputs.isEmpty) {
@@ -35,15 +37,17 @@ object CodeGenTestSuite {
   }
 
   private def getFileFromPath(file: File, folder: String): File = {
-    new File (file.getPath().replace("wacc", "txt").replace("wacc_examples/valid", folder))
+    new File (file.getPath().replace("wacc_examples/valid", folder).replace(".wacc", ".txt"))
   }
 
   private def makeExec(file: File): Unit = {
     val name = file.getPath()
-    s"java -jar target/scala-2.13/wacc.jar $name".!
+    s"java -jar compiler.jar $name".!
     val changeName = file.getName().replaceAll(".wacc", "")
-    s"arm-linux-gnueabi-gcc -o $name -mcpu=arm1176jzf-s -mtune=arm1176jzf-s $name.s".!
-    val exec = new File(file.getName.replaceAll(".wacc", ".s"))
+    s"arm-linux-gnueabi-gcc -o $changeName -mcpu=arm1176jzf-s -mtune=arm1176jzf-s $changeName.s".!
+    val assembly = new File(file.getName.replaceAll(".wacc", ".s"))
+    val exec = new File(changeName)
+    assembly.delete()
     exec.delete()
   }
 
@@ -52,7 +56,7 @@ object CodeGenTestSuite {
     var printed = Source.fromFile(result).getLines().mkString("\n")
     val expPrinted = Source.fromFile(expected).getLines().mkString("\n")
 
-    result.delete
+    result.delete()
 
     val registerAddr = "0x[0-9a-z]+".r
     printed = registerAddr replaceAllIn (printed, "#addr#")

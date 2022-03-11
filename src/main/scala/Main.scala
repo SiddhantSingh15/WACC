@@ -15,7 +15,7 @@ object Main {
 
   def main(args: Array[String]): Unit =  {
     assert(args.length == 1)
-    println("Parsing: " + args(0))
+    // println("Parsing: " + args(0))
 
     val EXITCODE_SUCC = 0
     val EXITCODE_SYNTAX_ERROR = 100
@@ -35,7 +35,7 @@ object Main {
           }
         }
 
-        println(Console.GREEN + s"${args(0)} is synctactically valid.")
+        // println(Console.GREEN + s"${args(0)} is synctactically valid.")
         if (!semRes.isEmpty) {
             for (error <- semRes.toList) {
             println("[" + Console.RED + "error" + Console.RESET + "]: " + error)
@@ -43,7 +43,7 @@ object Main {
           }
         }
 
-        println(Console.GREEN + s"${args(0)} is semantically valid.")
+        // println(Console.GREEN + s"${args(0)} is semantically valid.")
           // System.exit(EXITCODE_SUCC)
           val programTree = parsed.get
           val (data, instructions) = codeGen.transProgram(programTree, symbTable)
