@@ -16,15 +16,15 @@ before_script:
   - sbt sbtVersion
 
 stages:
-  # - frontend-tests
+  - frontend-tests
   - backend-tests
   - code-coverage
 
-# frontend-tests:
-#   stage: frontend-tests
-#   script:
-#     - sbt "testOnly ParserTests"
-#     - sbt "testOnly SemanticTests"
+frontend-tests:
+  stage: frontend-tests
+  script:
+    - sbt "testOnly ParserTests"
+    - sbt "testOnly SemanticTests"
 
 backend-tests:
   stage: backend-tests
@@ -38,7 +38,7 @@ code-coverage:
   script:
     - sbt coverage test coverageReport
   needs:
-    # - frontend-tests
+    - frontend-tests
     - backend-tests
   artifacts: 
     reports:
