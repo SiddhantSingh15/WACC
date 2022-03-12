@@ -1,0 +1,12 @@
+# variables are not assigned to other variables
+
+# Output:
+# b
+# a
+begin
+  ??? a = 'a' ;
+  ??? b = a ;
+  a = 'b' ;
+  println a ;
+  println b
+end

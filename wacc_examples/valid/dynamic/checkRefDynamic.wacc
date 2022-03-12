@@ -1,0 +1,11 @@
+# can assign values of different types to 
+# the same dynamic variables
+
+begin
+  ??? a = 5 ;
+  a = 'a' ;
+  a = "string" ;
+  a = false ;
+  a = newpair(4, 'a') ;
+  a = [1, 2, 3, 4, 5] 
+end

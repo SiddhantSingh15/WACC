@@ -1,0 +1,11 @@
+# basic dynamic variable initializing
+
+# Program:
+
+begin
+  ??? a = 1 ;
+  ??? b = 'c' ;
+  ??? c = "string" ;
+  ??? d = true ;
+  ??? e = newpair(10, 'a')
+end
