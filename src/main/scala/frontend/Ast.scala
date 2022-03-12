@@ -105,13 +105,17 @@ sealed case class ArrayElem(ident: Ident, exprList : List[Expr]) extends AssignL
 	sealed trait Type {
 		def isArray : Boolean = this match {
 			case ArrayType(_) => true 
-			case _ 				 	  => false 
+			case _ 			  => false 
 		}
 		def isPair : Boolean = this match {
 			case Pair(_,_) => true 
 			case _         => false 
 		}
-	}		
+	}	
+
+	case object DynamicType extends Type {
+		override def toString: String = "???"
+	}	
 
   case object Any extends Type {
 	override def equals(d: Any): Boolean =

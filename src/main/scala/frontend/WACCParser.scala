@@ -33,7 +33,10 @@ object Parser {
     ("string" #> String)  
   
   private lazy val `<type>` : Parsley[Type] =
-    attempt(`<array-type>`) <|> `<base-type>` <|> `<pair-type>`
+    attempt(`<array-type>`) <|> `<base-type>` <|> `<pair-type>` <|> `<dynamic>`
+
+  private lazy val `<dynamic>` : Parsley[Type] =
+    "???" #> DynamicType
 
   private lazy val `<array-type>` : Parsley[ArrayType] =
     chain.postfix1((`<base-type>` <|> `<pair-type>`), "[]".label("to be part of an ArrayType") #> ArrayType)
