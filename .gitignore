@@ -26,10 +26,6 @@ null
 !target/scala-2.13/scoverage-report
 
 
-#ignore wacc_examples
-wacc_examples
-
-
 #ignore other junk files
 *~
 .gitignore
