@@ -27,7 +27,29 @@ object ExpressionGen {
   }
 
   /* Translating an Expr to the ARM language */
-  def transExp(expr: Expr, rd: Register): Unit = {   
+  def transExp(expr: Expr, rd: Register): Option[AnyVal]= {   
+
+    if (constantEval) {
+      val exprType = getExprType(expr)
+
+      exprType match {
+        case Int => 
+          val value = getIntValue(expr)
+          val reg = collectRegister(rd)
+          currInstructions.add(Ldr(reg, Load_Mem(value)))
+          return Some(value)
+        case Bool =>
+          val value = getBoolValue(expr)
+          val number = if (value) 1 else 0
+          currInstructions.add(Mov(rd, Imm_Int(number)))
+          return Some(value)
+        case CharType => 
+          val value = getCharValue(expr)
+          currInstructions.add(Mov(rd, Imm_Char(value)))
+          return Some(value)
+        case _ => 
+      }
+    }
     expr match {
       case IntLiter(number) =>
         val reg = collectRegister(rd)
@@ -60,6 +82,7 @@ object ExpressionGen {
 
       case _ =>
     }
+    None
   }
 
   /* Translating a unary operator to the ARM language */
