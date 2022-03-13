@@ -15,7 +15,7 @@ case class SymbolTable(
 
   val children = mutable.ListBuffer.empty[SymbolTable]
 
-  val varMap = new HashMap[Ident, (Int, Type)]
+  val varMap = new HashMap[Ident, (Int, Type, Option[AnyVal])]
 
   def nextScope(nextFunc: Ident): SymbolTable = {
     val next = SymbolTable(this, nextFunc, funcMap)
@@ -51,22 +51,22 @@ case class SymbolTable(
     t.get.t
   }
 
-  def add(ident: Ident, n: Int, t: Type): Unit = {
-    varMap.addOne(ident, (n, t))
+  def add(ident: Ident, n: Int, t: Type, value: Option[AnyVal]): Unit = {
+    varMap.addOne(ident, (n, t, value))
   }
 
   def add(ident: Ident, t: Type): Unit = {
-    varMap.addOne(ident, (0, t))
+    varMap.addOne(ident, (0, t, None))
   }
 
-  def lookupCG(ident: Ident): (Int, Type) = {
+  def lookupCG(ident: Ident): (Int, Type, Option[AnyVal]) = {
     var currentST = this
     while (currentST != null) {
       val vMap = currentST.varMap
       if (vMap.contains(ident)) {
-        val (i, t) = vMap.apply(ident)
+        val (i, t, v) = vMap.apply(ident)
         if (i != 0) {
-          return (i, t)
+          return (i, t, v)
         }
       }
       currentST = currentST.prev
@@ -125,7 +125,13 @@ case class SymbolTable(
   }
 
   def apply(expr: Ident): (Int, Type) = {
-    lookupCG(expr)
+    val (i, t, v) = lookupCG(expr)
+    (i, t)
+  }
+
+  def getValue(expr: Ident): Option[AnyVal] = {
+    val (i, t, v) = lookupCG(expr)
+    v
   }
   
   def parameterMatch(ident: Ident, args: Option[ArgList]): 

@@ -52,7 +52,7 @@ object PairsGen {
         case _                                => ???
       }
     }
-    val isByte = transAssignRHS(pElemType, rhs, rd)
+    val (isByte, maybeValue) = transAssignRHS(pElemType, rhs, rd)
     val nextRegister = saveReg()
     transPairElem(ident, pos, nextRegister)
     currInstructions.add(Str(isByte, rd, nextRegister, NO_OFFSET))
