@@ -33,7 +33,7 @@ object Main {
           }
         }
 
-        println(Console.GREEN + s"${args(0)} is synctactically valid.")
+        // println(Console.GREEN + s"${args(0)} is synctactically valid.")
         if (!semRes.isEmpty) {
             for (error <- semRes.toList) {
             println("[" + Console.RED + "error" + Console.RESET + "]: " + error)
@@ -41,7 +41,7 @@ object Main {
           }
         }
 
-        println(Console.GREEN + s"${args(0)} is semantically valid.")
+        // println(Console.GREEN + s"${args(0)} is semantically valid.")
           // System.exit(EXITCODE_SUCC)
           val programTree = parsed.get
           val codeGen = backend.CodeGen
