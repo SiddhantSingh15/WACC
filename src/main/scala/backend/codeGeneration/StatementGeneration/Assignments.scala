@@ -19,10 +19,11 @@ object Assignments {
   /*Translating declaration of new variable to ARM language*/
   def translateDeclaration(t: Type, id : Ident, rhs : AssignRHS): Unit = {
     scopeSP += getTypeSize(t)
-    symbTable.add(id, scopeSP, t)
+    // symbTable.add(id, scopeSP, t)
     val spOffset = currSP - scopeSP
     val freeRegister = saveReg()
-    val isByte = transAssignRHS(t, rhs, freeRegister)
+    val (isByte, maybeValue) = transAssignRHS(t, rhs, freeRegister)
+    symbTable.add(id, scopeSP, t, maybeValue)
     currInstructions.add(Str(isByte, freeRegister, R13_SP, spOffset))
     restoreReg(freeRegister)
   }
@@ -34,7 +35,7 @@ object Assignments {
     lhs match {
       case id : Ident                   =>
         val (index, t) = symbTable(id)
-        val isByte= transAssignRHS(t, rhs, freeRegister)
+        val (isByte, maybeValue) = transAssignRHS(t, rhs, freeRegister)
         val spOffset = currSP - index  
         currInstructions.add(Str(isByte, freeRegister, R13_SP, spOffset))
       case Fst(id : Ident)              => 
@@ -55,10 +56,11 @@ object Assignments {
       - Boolean (True if the size of RHS is a byte)
       - ListBuffer[Instr] (Translated instructions)
   */
-  def transAssignRHS(t: Type, rhs: AssignRHS, freeRegister: Register): Boolean = {
+  def transAssignRHS(t: Type, rhs: AssignRHS, freeRegister: Register): (Boolean, Option[AnyVal]) = {
+    var maybeValue: Option[AnyVal] = None
     rhs match {
       case expr : Expr => 
-        transExp(expr, freeRegister)
+        maybeValue = transExp(expr, freeRegister)
       case Fst(ident : Ident) => 
         transPairElem(ident, 1, freeRegister)
         getPairElem(ident, 1, freeRegister)
@@ -73,7 +75,7 @@ object Assignments {
         transAssignRHSPair(fst, snd, freeRegister)
       case _ =>
     }
-    isByte(t)
+    (isByte(t), maybeValue)
   }
 }
 
