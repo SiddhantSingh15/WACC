@@ -68,7 +68,7 @@ object Assignments {
       case Call(ident, argList) =>
         transCall(ident, argList, freeRegister)
       case ArrayLiter(list) => 
-        transArrayLiter(t, list, freeRegister)
+        transArrayLiter(list, freeRegister)
       case NewPair(fst, snd) =>  
         transAssignRHSPair(fst, snd, freeRegister)
       case _ =>
