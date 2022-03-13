@@ -67,9 +67,9 @@ object ArraysGen {
 
 
   /*Translating an ArrayLiter into the ARM language*/
-  def transArrayLiter(arr: List[Expr], freeReg: Register): Unit = {
+  def transArrayLiter(t: Type, arr: List[Expr], freeReg: Register): Unit = {
+    val ArrayType(innerT) = t
     val size = arr.size
-    val innerT = getExprType(arr(0))
 
     /*Array size + (size of each indvidual elem) * (# of elems)*/
     currInstructions.addAll(ListBuffer[Instr](
