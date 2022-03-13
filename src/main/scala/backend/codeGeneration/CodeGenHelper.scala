@@ -5,6 +5,7 @@ import backend.CodeGeneration.ArraysGen._
 import frontend.AST._
 import backend.Operand._
 import backend.Opcodes._
+import frontend.AST
 
 object CodeGenHelper {
 
@@ -94,5 +95,121 @@ object CodeGenHelper {
         currInstructions.add(backend.Opcodes.Sub(R13_SP, R13_SP, Imm_Int(MAX_IMM_INT)))
         }
         currInstructions.add(backend.Opcodes.Sub(R13_SP, R13_SP, Imm_Int(currToDec)))
+    }
+
+    def getIntValue(expr: Expr): Int = {
+        expr match {
+            case IntLiter(number) => 
+                number
+            case Negation(op) =>
+                -1 * getIntValue(op)
+            case Ord(char) =>
+                getCharValue(char).toInt
+            case Len(arry) =>
+                val ArrayElem(id, exprs) = arry
+                exprs.size
+            case mathOp: MathFuncs => 
+                mathOp match {
+                    case Div(exp1, exp2) => 
+                        getIntValue(exp1) / getIntValue(exp2)
+                    case Mod(exp1, exp2) => 
+                        getIntValue(exp1) % getIntValue(exp2) 
+                    case Mul(exp1, exp2) => 
+                        getIntValue(exp1) * getIntValue(exp2)
+                    case Plus(exp1, exp2) => 
+                        getIntValue(exp1) + getIntValue(exp2)
+                    case AST.Sub(exp1, exp2) => 
+                        getIntValue(exp1) - getIntValue(exp2)
+                }
+            case id: Ident =>
+                symbTable.getValue(id).get.asInstanceOf[Int]
+            case _ => 
+                0
+        }
+    }
+
+    def getBoolValue(expr: Expr): Boolean = {
+        expr match {
+            case True =>
+                true
+            case False =>
+                false
+            case Not(boolExpr) => 
+                !getBoolValue(boolExpr)
+            case eqOp: EqualityFuncs =>
+                eqOp match {
+                    case Equal(exp1, exp2) => 
+                        getBoolValue(exp1) == getBoolValue(exp2)
+                    case NotEqual(exp1, exp2) => 
+                        getBoolValue(exp1) != getBoolValue(exp2)
+                }
+            case lgOp: LogicFuncs =>
+                lgOp match {
+                    case AST.And(exp1, exp2) => 
+                        getBoolValue(exp1) && getBoolValue(exp2)
+                    case AST.Or(exp1, exp2) => 
+                        getBoolValue(exp1) || getBoolValue(exp2)
+                }
+            case cmpOp: CompareFuncs =>
+                cmpOp match {
+                    case GT(exp1, exp2) => 
+                        val exprType = getExprType(exp1)
+                        exprType match {
+                            case Int =>
+                                getIntValue(exp1) > getIntValue(exp2)
+                            case CharType => 
+                                getCharValue(exp1) > getCharValue(exp2)
+                            case _ =>
+                                false
+                        }
+                    case GTE(exp1, exp2) => 
+                        val exprType = getExprType(exp1)
+                        exprType match {
+                            case Int =>
+                                getIntValue(exp1) >= getIntValue(exp2)
+                            case CharType => 
+                                getCharValue(exp1) >= getCharValue(exp2)
+                            case _ =>
+                                false
+                        }
+                    case LT(exp1, exp2) => 
+                        val exprType = getExprType(exp1)
+                        exprType match {
+                            case Int =>
+                                getIntValue(exp1) < getIntValue(exp2)
+                            case CharType => 
+                                getCharValue(exp1) < getCharValue(exp2)
+                            case _ =>
+                                false
+                        }
+                    case LTE(exp1, exp2) => 
+                        val exprType = getExprType(exp1)
+                        exprType match {
+                            case Int =>
+                                getIntValue(exp1) <= getIntValue(exp2)
+                            case CharType => 
+                                getCharValue(exp1) <= getCharValue(exp2)
+                            case _ =>
+                                false
+                        }
+                }
+            case id: Ident =>
+                symbTable.getValue(id).get.asInstanceOf[Boolean]
+            case _ =>
+                false      
+        }
+    }
+
+    def getCharValue(expr: Expr): Char = {
+        expr match {
+            case character: CharLiter => 
+                character.toString.charAt(1)
+            case Chr(intExpr) => 
+                getIntValue(intExpr).toChar
+            case id: Ident =>
+                symbTable.getValue(id).get.asInstanceOf[Char]
+            case _ =>
+                'z'
+        }
     }
 }
