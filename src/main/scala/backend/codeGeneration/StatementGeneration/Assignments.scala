@@ -70,7 +70,7 @@ object Assignments {
       case ArrayLiter(list) => 
         transArrayLiter(t, list, freeRegister)
       case NewPair(fst, snd) =>  
-        transAssignRHSPair(t, fst, snd, freeRegister)
+        transAssignRHSPair(fst, snd, freeRegister)
       case _ =>
     }
     isByte(t)

@@ -64,9 +64,10 @@ object PairsGen {
    * Takes the type of the fst and snd, and a register
    * Returns the instructions list for the assignment.
    */
-  def transAssignRHSPair(tpe : Type, fst : Expr, snd: Expr, register : Register) : Unit = {
+  def transAssignRHSPair(fst : Expr, snd: Expr, register : Register) : Unit = {
 
-    val Pair(typeOne, typeTwo) = tpe 
+    val typeOne = getExprType(fst)
+    val typeTwo = getExprType(snd)
     val nextRegister = saveReg()
 
     currInstructions.addAll(ListBuffer[Instr](
@@ -78,17 +79,17 @@ object PairsGen {
     transExp(fst, nextRegister)
 
     currInstructions.addAll(ListBuffer[Instr](
-      Ldr(resultRegister, Load_Mem(getPairTypeSize(typeOne))),
+      Ldr(resultRegister, Load_Mem(getTypeSize(typeOne))),
       Bl(Label("malloc")),
-      Str(isBytePair(tpe, 1), nextRegister, resultRegister, NO_OFFSET),
+      Str(isByte(typeOne), nextRegister, resultRegister, NO_OFFSET),
       Str(resultRegister , RegAdd(register))
     ))
 
     transExp(snd, nextRegister)
     currInstructions.addAll(ListBuffer[Instr](
-      Ldr(resultRegister, Load_Mem(getPairTypeSize(typeTwo))),
+      Ldr(resultRegister, Load_Mem(getTypeSize(typeTwo))),
       Bl(Label("malloc")),
-      Str(isBytePair(tpe, 2), nextRegister, resultRegister, NO_OFFSET)
+      Str(isByte(typeTwo), nextRegister, resultRegister, NO_OFFSET)
     ))
 
     restoreReg(nextRegister)
