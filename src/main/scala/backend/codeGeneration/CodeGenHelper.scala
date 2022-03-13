@@ -11,6 +11,7 @@ object CodeGenHelper {
     val SIZE_ADDR = 4
     val SIZE_PAIR = SIZE_ADDR
     val SIZE_ARR = SIZE_ADDR
+    val SIZE_DYN = SIZE_ADDR
     val SIZE_INT = 4
     val SIZE_CHAR = 1
     val SIZE_BOOL = 1
@@ -33,6 +34,7 @@ object CodeGenHelper {
         case String            => SIZE_STR
         case ArrayType(innerT) => SIZE_ARR
         case Pair(_, _)        => SIZE_PAIR
+        case DynamicType       => SIZE_DYN
         case _                 => ERROR
         }
     }

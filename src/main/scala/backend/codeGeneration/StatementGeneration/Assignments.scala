@@ -56,21 +56,31 @@ object Assignments {
       - ListBuffer[Instr] (Translated instructions)
   */
   def transAssignRHS(t: Type, rhs: AssignRHS, freeRegister: Register): Boolean = {
+    
+    var nextRegister = freeRegister
+    t match {
+      case DynamicType => 
+        currInstructions.add(Ldr(resultRegister, Load_Mem(SIZE_DYN)))
+        currInstructions.add(Bl(Label("malloc")))
+        currInstructions.add(Mov(freeRegister, resultRegister))
+        nextRegister = saveReg()
+      case _ => 
+    }
     rhs match {
       case expr : Expr => 
-        transExp(expr, freeRegister)
+        transExp(expr, nextRegister)
       case Fst(ident : Ident) => 
-        transPairElem(ident, 1, freeRegister)
-        getPairElem(ident, 1, freeRegister)
+        transPairElem(ident, 1, nextRegister)
+        getPairElem(ident, 1, nextRegister)
       case Snd(ident : Ident) => 
-        transPairElem(ident, 2, freeRegister)
-        getPairElem(ident, 2, freeRegister)
+        transPairElem(ident, 2, nextRegister)
+        getPairElem(ident, 2, nextRegister)
       case Call(ident, argList) =>
-        transCall(ident, argList, freeRegister)
+        transCall(ident, argList, nextRegister)
       case ArrayLiter(list) => 
-        transArrayLiter(t, list, freeRegister)
+        transArrayLiter(t, list, nextRegister)
       case NewPair(fst, snd) =>  
-        transAssignRHSPair(t, fst, snd, freeRegister)
+        transAssignRHSPair(t, fst, snd, nextRegister)
       case _ =>
     }
     isByte(t)
