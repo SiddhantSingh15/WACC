@@ -5,16 +5,20 @@ import java.io.File
 
 class BackendTests extends AnyFunSuite {
   
-  val dir = new File("wacc_examples/expected/")
+  val dir = new File("wacc_examples/valid/")
   val listOfDir = dir.listFiles.map(_.getName).toList
 
   for (subDir <- listOfDir) {
-    for (file <- loadFile(s"wacc_examples/valid/$subDir")) {
-      val fName = file.getName
-      println(s"Testing $fName")
-      val (f, output, cmd) = createDummyOutput(file)
-      test(s"Expected Test Name: ($fName)") {
-        assert(checkOutput(f, output))
+    if (!subDir.equals("advanced") && !subDir.equals("runtimeErr")) {
+      for (f <- getFilesFrom(s"wacc_examples/valid/$subDir")) {
+        val name = f.getName
+        val (file, out, command) = createOutputFiles(f)
+        test(s"Array exit code test for $name") {
+          assert(checkExitCode(file, command))
+        }
+        test(s"Array expected test for $name") {
+          assert(checkStdOut(file, out))
+        }
       }
     }
   }

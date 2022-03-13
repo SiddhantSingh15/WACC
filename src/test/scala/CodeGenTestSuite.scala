@@ -6,65 +6,81 @@ import scala.sys.process._
 
 object CodeGenTestSuite {
 
-  def loadFile(path: String): ListBuffer[File] = {
-    var result = ListBuffer.empty[File]
-    val folder = new File(path)
-    for (file <- folder.listFiles) {
-      if (file.isFile) {
-        result += file
+  def getFilesFrom(path: String): ListBuffer[File] = {
+    var files = ListBuffer.empty[File]
+    val dir = new File(path)
+    for (f <- dir.listFiles) {
+      if (f.isFile()) {
+        files += f
       } else {
-        result ++= loadFile(file.getPath)
+        files ++= getFilesFrom(f.getPath())
       }
     }
-    result
+    files
   }
 
-  def createDummyOutput(file: File): (File, File, ProcessBuilder) = {
-    makeExec(file)
-    val fName = file.getName().replaceAll(".wacc", "")
-    val result = new File(s"$fName.out")
-    result.delete()
-    result.createNewFile()
-    val inputs = Source.fromFile(getFileFromPath(file, "wacc_examples/expected")).getLines().mkString("\n")
-    val cmd = 
-    if (inputs.isEmpty) {
-      s"qemu-arm -L /usr/arm-linux-gnueabi/ $fName" #> result
-    } else {
-      (s"printf '$inputs'" #| s"qemu-arm -L /usr/arm-linux/gnueabi/ $fName" #> result)
-    }
-
-    (file, result, cmd)
+  private def createExecutable(file: File): Unit = {
+    val fName = file.getPath()
+    s"java -jar compiler.jar $fName".!
+    val name = file.getName().replaceAll(".wacc", "")
+    s"arm-linux-gnueabi-gcc -o $name -mcpu=arm1176jzf-s -mtune=arm1176jzf-s $name.s".!
+    val armFile = new File(file.getName().replaceAll(".wacc", ".s"))
+    armFile.delete()
   }
 
-  private def getFileFromPath(file: File, folder: String): File = {
-    new File (file.getPath().replace("wacc_examples/valid", folder).replace(".wacc", ".txt"))
+  def createOutputFiles(file: File): (File, File, ProcessBuilder) = {
+    createExecutable(file)
+    val name = file.getName().replaceAll(".wacc", "")
+    val output = new File(s"$name.out")
+    val inputString = readFile(getFilePath(file, "wacc_inputs"))
+    val command =
+      if (inputString.isEmpty()) {
+        s"qemu-arm -L /usr/arm-linux-gnueabi/ $name" #> output
+      } else {
+        (s"printf '$inputString'" #| s"qemu-arm -L /usr/arm-linux-gnueabi/ $name" #> output)
+      }
+    (file, output, command)
   }
 
-  private def makeExec(file: File): Unit = {
-    val name = file.getPath()
-    s"java -jar compiler.jar $name".!
-    val changeName = file.getName().replaceAll(".wacc", "")
-    s"arm-linux-gnueabi-gcc -o $changeName -mcpu=arm1176jzf-s -mtune=arm1176jzf-s $changeName.s".!
-    val assembly = new File(file.getName.replaceAll(".wacc", ".s"))
-    val exec = new File(changeName)
-    assembly.delete()
-    exec.delete()
+  private def readFile(file: File): String = {
+    Source.fromFile(file).getLines().mkString("\n")
   }
 
-  def checkOutput(file: File, result: File): Boolean = {
-    val expected = getFile(file, "wacc_examples/expected")
-    var printed = Source.fromFile(result).getLines().mkString("\n")
-    val expPrinted = Source.fromFile(expected).getLines().mkString("\n")
-
-    result.delete()
-
-    val registerAddr = "0x[0-9a-z]+".r
-    printed = registerAddr replaceAllIn (printed, "#addr#")
-    expPrinted.equals(printed)
+  /* Generates the target file in the given directory. */
+  private def getFilePath(file: File, dir: String): File = {
+    new File(
+      file
+        .getPath()
+        .replace("wacc_examples/valid", dir)
+        .replace(".wacc", ".txt")
+    )
   }
 
-  private def getFile(file: File, folder: String): File = {
-    new File(file.getPath().replace("wacc_examples/valid", folder).replace(".wacc", ".txt"))    
+  private def getExitCodeFile(file: File): File = {
+    getFilePath(file, "wacc_exitcodes")
   }
 
+  private def getExpectedFile(file: File): File = {
+    getFilePath(file, "wacc_expected")
+  }
+
+  def checkExitCode(file: File, command: ProcessBuilder): Boolean = {
+    val expExitCode = readFile(getExitCodeFile(file)).toInt
+    val exitCode = command.!
+    val name = file.getName().replaceAll(".wacc", "")
+    val exeFile = new File(name)
+    exeFile.delete()
+    expExitCode == exitCode
+  }
+
+  def checkStdOut(file: File, outputFile: File): Boolean = {
+    val expOut = getExpectedFile(file)
+    var outLines = readFile(outputFile)
+    val expLines = readFile(expOut)
+    outputFile.delete()
+    // Replace register addresses
+    val addr = "0x[0-9a-z]+".r
+    outLines = addr replaceAllIn (outLines, "#addr#")
+    outLines.equals(expLines)
+  }
 }
