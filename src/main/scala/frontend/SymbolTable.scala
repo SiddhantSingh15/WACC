@@ -59,6 +59,18 @@ case class SymbolTable(
     varMap.addOne(ident, (0, t, None))
   }
 
+  def updateValue(ident: Ident, value: Option[Any]): Unit = {
+    var currentST = this
+    while (currentST != null) {
+      val vMap = currentST.varMap
+      if (vMap.contains(ident)) {
+        val (sp, tpe, oldValue) = vMap(ident)
+        varMap(ident) = (sp, tpe, value)
+      }
+      currentST = currentST.prev
+    }
+  }
+
   def lookupCG(ident: Ident): (Int, Type, Option[Any]) = {
     var currentST = this
     while (currentST != null) {
