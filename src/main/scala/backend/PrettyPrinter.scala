@@ -18,7 +18,7 @@ object PrettyPrinter {
     val sb = new StringBuilder
 
     if (!data.isEmpty) {
-      sb ++= ".data\n\n"
+      sb ++= "\t.data\n\n"
       data.foreach(d => printDataTable(d, sb))
       sb ++= "\n"
     }
