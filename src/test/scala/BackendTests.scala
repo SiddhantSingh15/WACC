@@ -8,8 +8,8 @@ class BackendTests extends AnyFunSuite {
   val dir = new File("wacc_examples/valid/")
   val listOfDir = dir.listFiles.map(_.getName).toList
 
-  // for (subDir <- listOfDir) {
-    val subDir = "IO/print"
+  for (subDir <- listOfDir) {
+    // val subDir = "variables"
     if (!subDir.equals("advanced") && !subDir.equals("runtimeErr")) {
       for (f <- getFilesFrom(s"wacc_examples/valid/$subDir")) {
         val name = f.getName
@@ -21,7 +21,7 @@ class BackendTests extends AnyFunSuite {
           assert(checkStdOut(file, out))
         }
       }
-    // }
+    }
   }
 }
 
