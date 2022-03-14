@@ -28,14 +28,14 @@ object ScopeGen {
 		val freeRegister = saveReg()
 		val boolValue = transExp(expr, freeRegister).get.asInstanceOf[Boolean]
 
-    if (constantProp) {
-      if (boolValue) {
-        statThen.foreach((s: Stat) => transStat(s))
-      } else {
-        statElse.foreach((s: Stat) => transStat(s))
-      }
-      return
-    }
+    // if (constantProp) {
+    //   if (boolValue) {
+    //     statThen.foreach((s: Stat) => transStat(s))
+    //   } else {
+    //     statElse.foreach((s: Stat) => transStat(s))
+    //   }
+    //   return
+    // }
     
 		currInstructions.add(Cmp(freeRegister, Imm_Int(0)))
 		restoreReg(freeRegister)

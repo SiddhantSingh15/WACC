@@ -61,13 +61,19 @@ case class SymbolTable(
 
   def updateValue(ident: Ident, value: Option[Any]): Unit = {
     var currentST = this
-    while (currentST != null) {
+    if (currentST.varMap.contains(ident)) {
+      val (sp, tpe, oldValue) = currentST.varMap(ident)
+      currentST.varMap(ident) = (sp, tpe, value)
+    } else {
+      currentST = currentST.prev
+      while (currentST != null) {
       val vMap = currentST.varMap
       if (vMap.contains(ident)) {
         val (sp, tpe, oldValue) = vMap(ident)
-        varMap(ident) = (sp, tpe, value)
+        vMap(ident) = (sp, tpe, None)
       }
       currentST = currentST.prev
+    }
     }
   }
 
