@@ -56,8 +56,8 @@ object Assignments {
       - Boolean (True if the size of RHS is a byte)
       - ListBuffer[Instr] (Translated instructions)
   */
-  def transAssignRHS(t: Type, rhs: AssignRHS, freeRegister: Register): (Boolean, Option[AnyVal]) = {
-    var maybeValue: Option[AnyVal] = None
+  def transAssignRHS(t: Type, rhs: AssignRHS, freeRegister: Register): (Boolean, Option[Any]) = {
+    var maybeValue: Option[Any] = None
     rhs match {
       case expr : Expr => 
         maybeValue = transExp(expr, freeRegister)

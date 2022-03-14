@@ -15,7 +15,7 @@ case class SymbolTable(
 
   val children = mutable.ListBuffer.empty[SymbolTable]
 
-  val varMap = new HashMap[Ident, (Int, Type, Option[AnyVal])]
+  val varMap = new HashMap[Ident, (Int, Type, Option[Any])]
 
   def nextScope(nextFunc: Ident): SymbolTable = {
     val next = SymbolTable(this, nextFunc, funcMap)
@@ -51,7 +51,7 @@ case class SymbolTable(
     t.get.t
   }
 
-  def add(ident: Ident, n: Int, t: Type, value: Option[AnyVal]): Unit = {
+  def add(ident: Ident, n: Int, t: Type, value: Option[Any]): Unit = {
     varMap.addOne(ident, (n, t, value))
   }
 
@@ -59,7 +59,7 @@ case class SymbolTable(
     varMap.addOne(ident, (0, t, None))
   }
 
-  def lookupCG(ident: Ident): (Int, Type, Option[AnyVal]) = {
+  def lookupCG(ident: Ident): (Int, Type, Option[Any]) = {
     var currentST = this
     while (currentST != null) {
       val vMap = currentST.varMap
@@ -129,7 +129,7 @@ case class SymbolTable(
     (i, t)
   }
 
-  def getValue(expr: Ident): Option[AnyVal] = {
+  def getValue(expr: Ident): Option[Any] = {
     val (i, t, v) = lookupCG(expr)
     v
   }
