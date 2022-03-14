@@ -31,6 +31,7 @@ backend-tests:
   script:
     - apt-get install gcc-arm-linux-gnueabi -y
     - apt-get install qemu-user -y
+    - sbt assembly
     - sbt "testOnly BackendTests"
 
 code-coverage:
@@ -38,6 +39,7 @@ code-coverage:
   script:
     - apt-get install gcc-arm-linux-gnueabi -y
     - apt-get install qemu-user -y
+    - sbt assembly
     - sbt coverage test coverageReport
   needs:
     - frontend-tests
