@@ -110,6 +110,22 @@ object CodeGenHelper {
 
     def getIntValue(expr: Expr): Int = {
         expr match {
+            case ArrayElem(id, exprList) =>
+                var exprs = symbTable.getValue(id).get.asInstanceOf[List[Expr]]
+                while (true) {
+                    var i = 0
+                    var expr = exprs(getIntValue(exprList(i)))
+                    expr match {
+                        case IntLiter(number) =>
+                            return number
+                        case ident : Ident =>
+                            exprs = symbTable.getValue(ident).get.asInstanceOf[List[Expr]]
+                            i += 1
+                        case _ =>
+                            ???
+                    }
+                }
+                ???
             case IntLiter(number) => 
                 number
             case Negation(op) =>
@@ -117,8 +133,14 @@ object CodeGenHelper {
             case Ord(char) =>
                 getCharValue(char).toInt
             case Len(arry) =>
-                val ArrayElem(id, exprs) = arry
-                exprs.size
+                arry match {
+                    case ArrayElem(id, exprs) => 
+                        exprs.size
+                    case id: Ident =>
+                        val exprs = symbTable.getValue(id).get.asInstanceOf[List[Expr]]
+                        exprs.size
+                    case _ => ???
+                }
             case mathOp: MathFuncs => 
                 mathOp match {
                     case Div(exp1, exp2) => 
