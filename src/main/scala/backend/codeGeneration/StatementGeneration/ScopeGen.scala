@@ -26,7 +26,17 @@ object ScopeGen {
    */
 	def transIf(expr: Expr, statThen: List[Stat], statElse: List[Stat]): Unit = {
 		val freeRegister = saveReg()
-		transExp(expr, freeRegister)
+		val boolValue = transExp(expr, freeRegister).get.asInstanceOf[Boolean]
+
+    if (constantProp) {
+      if (boolValue) {
+        statThen.foreach((s: Stat) => transStat(s))
+      } else {
+        statElse.foreach((s: Stat) => transStat(s))
+      }
+      return
+    }
+    
 		currInstructions.add(Cmp(freeRegister, Imm_Int(0)))
 		restoreReg(freeRegister)
 
