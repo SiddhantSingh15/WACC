@@ -35,23 +35,31 @@ object ExpressionGen {
       exprType match {
         case Int => 
           val value = getIntValue(expr)
-          val reg = collectRegister(rd)
-          currInstructions.add(Ldr(reg, Load_Mem(value)))
-          return Some(value)
+          if (value.nonEmpty) {
+            val reg = collectRegister(rd)
+            currInstructions.add(Ldr(reg, Load_Mem(value.get)))
+            return value
+          }
         case Bool =>
           val value = getBoolValue(expr)
-          val number = if (value) 1 else 0
-          currInstructions.add(Mov(rd, Imm_Int(number)))
-          return Some(value)
+          if (value.nonEmpty) {
+            val number = if (value.get) 1 else 0
+            currInstructions.add(Mov(rd, Imm_Int(number)))
+            return value
+          }
         case CharType => 
           val value = getCharValue(expr)
-          currInstructions.add(Mov(rd, Imm_Char(value)))
-          return Some(value)
+          if (value.nonEmpty) {
+            currInstructions.add(Mov(rd, Imm_Char(value.get)))
+            return value
+          }
         case String =>
           val value = getStringValue(expr)
-          val label = dataTable.addData(value)
-          currInstructions.add(Ldr(rd, DataLabel(label)))
-          return Some(value)
+          if (value.nonEmpty) {
+            val label = dataTable.addData(value.get)
+            currInstructions.add(Ldr(rd, DataLabel(label)))
+            return value
+          }
         case _ => 
       }
     }

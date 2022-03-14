@@ -97,27 +97,32 @@ object CodeGenHelper {
         currInstructions.add(backend.Opcodes.Sub(R13_SP, R13_SP, Imm_Int(currToDec)))
     }
 
-    def getStringValue(expr: Expr): String = {
+    def getStringValue(expr: Expr): Option[String] = {
         expr match {
             case string: StrLiter => 
-                string.toString()
+                Some(string.toString())
             case id: Ident =>
-                symbTable.getValue(id).get.asInstanceOf[String]
+                val maybeValue = symbTable.getValue(id)
+                if (maybeValue.isEmpty) {
+                    return None
+                } else {
+                    return Some(maybeValue.get.asInstanceOf[String])
+                }
             case _ =>
                 ???            
         }
     }
 
-    def getIntValue(expr: Expr): Int = {
+    def getIntValue(expr: Expr): Option[Int] = {
         expr match {
             case ArrayElem(id, exprList) =>
                 var exprs = symbTable.getValue(id).get.asInstanceOf[List[Expr]]
                 while (true) {
                     var i = 0
-                    var expr = exprs(getIntValue(exprList(i)))
+                    var expr = exprs(getIntValue(exprList(i)).get)
                     expr match {
                         case IntLiter(number) =>
-                            return number
+                            return Some(number)
                         case ident : Ident =>
                             exprs = symbTable.getValue(ident).get.asInstanceOf[List[Expr]]
                             i += 1
@@ -127,49 +132,59 @@ object CodeGenHelper {
                 }
                 ???
             case IntLiter(number) => 
-                number
+                Some(number)
             case Negation(op) =>
-                -1 * getIntValue(op)
+                Some(-1 * getIntValue(op).get)
             case Ord(char) =>
-                getCharValue(char).toInt
+                Some(getCharValue(char).get.toInt)
             case Len(arry) =>
-                arry match {
+                Some(arry match {
                     case ArrayElem(id, exprs) => 
                         exprs.size
                     case id: Ident =>
                         val exprs = symbTable.getValue(id).get.asInstanceOf[List[Expr]]
                         exprs.size
                     case _ => ???
-                }
+                })
             case mathOp: MathFuncs => 
-                mathOp match {
+                Some(mathOp match {
                     case Div(exp1, exp2) => 
-                        getIntValue(exp1) / getIntValue(exp2)
+                        getIntValue(exp1).get / getIntValue(exp2).get
                     case Mod(exp1, exp2) => 
-                        getIntValue(exp1) % getIntValue(exp2) 
+                        getIntValue(exp1).get % getIntValue(exp2).get 
                     case Mul(exp1, exp2) => 
-                        getIntValue(exp1) * getIntValue(exp2)
+                        getIntValue(exp1).get * getIntValue(exp2).get
                     case Plus(exp1, exp2) => 
-                        getIntValue(exp1) + getIntValue(exp2)
+                        getIntValue(exp1).get + getIntValue(exp2).get
                     case AST.Sub(exp1, exp2) => 
-                        getIntValue(exp1) - getIntValue(exp2)
-                }
+                        getIntValue(exp1).get - getIntValue(exp2).get
+                })
             case id: Ident =>
-                symbTable.getValue(id).get.asInstanceOf[Int]
+                val maybeValue = symbTable.getValue(id)
+                if (maybeValue.isEmpty) {
+                    return None
+                } else {
+                    return Some(maybeValue.get.asInstanceOf[Int])
+                }
             case _ => 
                 ???
             }
     }
-    def getBoolValue(expr: Expr): Boolean = {
+    def getBoolValue(expr: Expr): Option[Boolean] = {
         expr match {
             case True =>
-                true
+                Some(true)
             case False =>
-                false
+                Some(false)
             case Not(boolExpr) => 
-                !getBoolValue(boolExpr)
+                Some(!getBoolValue(boolExpr).get)
             case id: Ident =>
-                symbTable.getValue(id).get.asInstanceOf[Boolean]
+                val maybeValue = symbTable.getValue(id)
+                if (maybeValue.isEmpty) {
+                    return None
+                } else {
+                    return Some(maybeValue.get.asInstanceOf[Boolean])
+                }
             case op: BinOp =>
                 val exp1 = op.exp1
                 val exp2 = op.exp2
@@ -177,7 +192,7 @@ object CodeGenHelper {
                 val type1 = getExprType(exp1)
                 val type2 = getExprType(exp2)
 
-                op match {
+                Some(op match {
                     case eqOp: EqualityFuncs =>
                         eqOp match {
                             case Equal(exp1, exp2) => 
@@ -186,13 +201,13 @@ object CodeGenHelper {
                                 } else {
                                     type1 match {
                                         case Bool => 
-                                            getBoolValue(exp1) == getBoolValue(exp2)
+                                            getBoolValue(exp1).get == getBoolValue(exp2).get
                                         case CharType => 
-                                            getCharValue(exp1) == getCharValue(exp2)
+                                            getCharValue(exp1).get == getCharValue(exp2).get
                                         case Int => 
-                                            getIntValue(exp1) == getIntValue(exp2)
+                                            getIntValue(exp1).get == getIntValue(exp2).get
                                         case String =>
-                                            getStringValue(exp1) == getStringValue(exp2)
+                                            getStringValue(exp1).get == getStringValue(exp2).get
                                         case _ =>
                                             ???
                                     }
@@ -203,13 +218,13 @@ object CodeGenHelper {
                                 } else {
                                     type1 match {
                                         case Bool => 
-                                            getBoolValue(exp1) != getBoolValue(exp2)
+                                            getBoolValue(exp1).get != getBoolValue(exp2).get
                                         case CharType => 
-                                            getCharValue(exp1) != getCharValue(exp2)
+                                            getCharValue(exp1).get != getCharValue(exp2).get
                                         case Int => 
-                                            getIntValue(exp1) != getIntValue(exp2)
+                                            getIntValue(exp1).get != getIntValue(exp2).get
                                         case String =>
-                                            getStringValue(exp1) != getStringValue(exp2)
+                                            getStringValue(exp1).get != getStringValue(exp2).get
                                         case _ =>
                                             ???
                                     }
@@ -218,9 +233,9 @@ object CodeGenHelper {
                     case lgOp: LogicFuncs =>
                         lgOp match {
                             case AST.And(exp1, exp2) => 
-                                getBoolValue(exp1) && getBoolValue(exp2)
+                                getBoolValue(exp1).get && getBoolValue(exp2).get
                             case AST.Or(exp1, exp2) => 
-                                getBoolValue(exp1) || getBoolValue(exp2)
+                                getBoolValue(exp1).get || getBoolValue(exp2).get
                         }
                     case cmpOp: CompareFuncs =>
                         cmpOp match {
@@ -228,9 +243,9 @@ object CodeGenHelper {
                                 val exprType = getExprType(exp1)
                                 exprType match {
                                     case Int =>
-                                        getIntValue(exp1) > getIntValue(exp2)
+                                        getIntValue(exp1).get > getIntValue(exp2).get
                                     case CharType => 
-                                        getCharValue(exp1) > getCharValue(exp2)
+                                        getCharValue(exp1).get > getCharValue(exp2).get
                                     case _ =>
                                         false
                                 }
@@ -238,9 +253,9 @@ object CodeGenHelper {
                                 val exprType = getExprType(exp1)
                                 exprType match {
                                     case Int =>
-                                        getIntValue(exp1) >= getIntValue(exp2)
+                                        getIntValue(exp1).get >= getIntValue(exp2).get
                                     case CharType => 
-                                        getCharValue(exp1) >= getCharValue(exp2)
+                                        getCharValue(exp1).get >= getCharValue(exp2).get
                                     case _ =>
                                         false
                                 }
@@ -248,9 +263,9 @@ object CodeGenHelper {
                                 val exprType = getExprType(exp1)
                                 exprType match {
                                     case Int =>
-                                        getIntValue(exp1) < getIntValue(exp2)
+                                        getIntValue(exp1).get < getIntValue(exp2).get
                                     case CharType => 
-                                        getCharValue(exp1) < getCharValue(exp2)
+                                        getCharValue(exp1).get < getCharValue(exp2).get
                                     case _ =>
                                         false
                                 }
@@ -258,29 +273,34 @@ object CodeGenHelper {
                                 val exprType = getExprType(exp1)
                                 exprType match {
                                     case Int =>
-                                        getIntValue(exp1) <= getIntValue(exp2)
+                                        getIntValue(exp1).get <= getIntValue(exp2).get
                                     case CharType => 
-                                        getCharValue(exp1) <= getCharValue(exp2)
+                                        getCharValue(exp1).get <= getCharValue(exp2).get
                                     case _ =>
                                         ???
                                 }
                         }
                     case _ =>
                         ???
-                }
+                })
             case _ =>
                 ???      
         }
     }
 
-    def getCharValue(expr: Expr): Char = {
+    def getCharValue(expr: Expr): Option[Char] = {
         expr match {
             case character: CharLiter => 
-                character.toString.charAt(1)
+                Some(character.toString.charAt(1))
             case Chr(intExpr) => 
-                getIntValue(intExpr).toChar
+                Some(getIntValue(intExpr).get.toChar)
             case id: Ident =>
-                symbTable.getValue(id).get.asInstanceOf[Char]
+                val maybeValue = symbTable.getValue(id)
+                if (maybeValue.isEmpty) {
+                    return None
+                } else {
+                    return Some(maybeValue.get.asInstanceOf[Char])
+                }
             case _ =>
                 ???
         }
