@@ -27,9 +27,9 @@ object ExpressionGen {
   }
 
   /* Translating an Expr to the ARM language */
-  def transExp(expr: Expr, rd: Register): Option[AnyVal]= {   
+  def transExp(expr: Expr, rd: Register): Option[Any]= {   
 
-    if (constantEval) {
+    if (constantProp) {
       val exprType = getExprType(expr)
 
       exprType match {
@@ -46,6 +46,11 @@ object ExpressionGen {
         case CharType => 
           val value = getCharValue(expr)
           currInstructions.add(Mov(rd, Imm_Char(value)))
+          return Some(value)
+        case String =>
+          val value = getStringValue(expr)
+          val label = dataTable.addData(value)
+          currInstructions.add(Ldr(rd, DataLabel(label)))
           return Some(value)
         case _ => 
       }
