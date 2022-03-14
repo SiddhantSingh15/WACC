@@ -136,9 +136,8 @@ object CodeGenHelper {
                 symbTable.getValue(id).get.asInstanceOf[Int]
             case _ => 
                 ???
-        }
+            }
     }
-
     def getBoolValue(expr: Expr): Boolean = {
         expr match {
             case True =>
