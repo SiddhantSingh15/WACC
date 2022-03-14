@@ -6,6 +6,7 @@ import frontend.AST._
 import backend.Operand._
 import backend.Opcodes._
 import frontend.AST
+import java.{util => ju}
 
 object CodeGenHelper {
 
@@ -171,120 +172,125 @@ object CodeGenHelper {
             }
     }
     def getBoolValue(expr: Expr): Option[Boolean] = {
-        expr match {
-            case True =>
-                Some(true)
-            case False =>
-                Some(false)
-            case Not(boolExpr) => 
-                Some(!getBoolValue(boolExpr).get)
-            case id: Ident =>
-                val maybeValue = symbTable.getValue(id)
-                if (maybeValue.isEmpty) {
-                    return None
-                } else {
-                    return Some(maybeValue.get.asInstanceOf[Boolean])
-                }
-            case op: BinOp =>
-                val exp1 = op.exp1
-                val exp2 = op.exp2
-                
-                val type1 = getExprType(exp1)
-                val type2 = getExprType(exp2)
+        try {
+            expr match {
+                case True =>
+                    Some(true)
+                case False =>
+                    Some(false)
+                case Not(boolExpr) => 
+                    Some(!getBoolValue(boolExpr).get)
+                case id: Ident =>
+                    val maybeValue = symbTable.getValue(id)
+                    if (maybeValue.isEmpty) {
+                        return None
+                    } else {
+                        return Some(maybeValue.get.asInstanceOf[Boolean])
+                    }
+                case op: BinOp =>
+                    val exp1 = op.exp1
+                    val exp2 = op.exp2
+                    
+                    val type1 = getExprType(exp1)
+                    val type2 = getExprType(exp2)
 
-                Some(op match {
-                    case eqOp: EqualityFuncs =>
-                        eqOp match {
-                            case Equal(exp1, exp2) => 
-                                if (type1 != type2) {
-                                    false
-                                } else {
-                                    type1 match {
-                                        case Bool => 
-                                            getBoolValue(exp1).get == getBoolValue(exp2).get
+                    Some(op match {
+                        case eqOp: EqualityFuncs =>
+                            eqOp match {
+                                case Equal(exp1, exp2) => 
+                                    if (type1 != type2) {
+                                        false
+                                    } else {
+                                        type1 match {
+                                            case Bool => 
+                                                getBoolValue(exp1).get == getBoolValue(exp2).get
+                                            case CharType => 
+                                                getCharValue(exp1).get == getCharValue(exp2).get
+                                            case Int => 
+                                                getIntValue(exp1).get == getIntValue(exp2).get
+                                            case String =>
+                                                getStringValue(exp1).get == getStringValue(exp2).get
+                                            case _ =>
+                                                ???
+                                        }
+                                    }
+                                case NotEqual(exp1, exp2) => 
+                                    if (type1 != type2) {
+                                        true
+                                    } else {
+                                        type1 match {
+                                            case Bool => 
+                                                getBoolValue(exp1).get != getBoolValue(exp2).get
+                                            case CharType => 
+                                                getCharValue(exp1).get != getCharValue(exp2).get
+                                            case Int => 
+                                                getIntValue(exp1).get != getIntValue(exp2).get
+                                            case String =>
+                                                getStringValue(exp1).get != getStringValue(exp2).get
+                                            case _ =>
+                                                ???
+                                        }
+                                    }
+                            }
+                        case lgOp: LogicFuncs =>
+                            lgOp match {
+                                case AST.And(exp1, exp2) => 
+                                    getBoolValue(exp1).get && getBoolValue(exp2).get
+                                case AST.Or(exp1, exp2) => 
+                                    getBoolValue(exp1).get || getBoolValue(exp2).get
+                            }
+                        case cmpOp: CompareFuncs =>
+                            cmpOp match {
+                                case GT(exp1, exp2) => 
+                                    val exprType = getExprType(exp1)
+                                    exprType match {
+                                        case Int =>
+                                            getIntValue(exp1).get > getIntValue(exp2).get
                                         case CharType => 
-                                            getCharValue(exp1).get == getCharValue(exp2).get
-                                        case Int => 
-                                            getIntValue(exp1).get == getIntValue(exp2).get
-                                        case String =>
-                                            getStringValue(exp1).get == getStringValue(exp2).get
+                                            getCharValue(exp1).get > getCharValue(exp2).get
+                                        case _ =>
+                                            false
+                                    }
+                                case GTE(exp1, exp2) => 
+                                    val exprType = getExprType(exp1)
+                                    exprType match {
+                                        case Int =>
+                                            getIntValue(exp1).get >= getIntValue(exp2).get
+                                        case CharType => 
+                                            getCharValue(exp1).get >= getCharValue(exp2).get
+                                        case _ =>
+                                            false
+                                    }
+                                case LT(exp1, exp2) => 
+                                    val exprType = getExprType(exp1)
+                                    exprType match {
+                                        case Int =>
+                                            getIntValue(exp1).get < getIntValue(exp2).get
+                                        case CharType => 
+                                            getCharValue(exp1).get < getCharValue(exp2).get
+                                        case _ =>
+                                            false
+                                    }
+                                case LTE(exp1, exp2) => 
+                                    val exprType = getExprType(exp1)
+                                    exprType match {
+                                        case Int =>
+                                            getIntValue(exp1).get <= getIntValue(exp2).get
+                                        case CharType => 
+                                            getCharValue(exp1).get <= getCharValue(exp2).get
                                         case _ =>
                                             ???
                                     }
-                                }
-                            case NotEqual(exp1, exp2) => 
-                                if (type1 != type2) {
-                                    true
-                                } else {
-                                    type1 match {
-                                        case Bool => 
-                                            getBoolValue(exp1).get != getBoolValue(exp2).get
-                                        case CharType => 
-                                            getCharValue(exp1).get != getCharValue(exp2).get
-                                        case Int => 
-                                            getIntValue(exp1).get != getIntValue(exp2).get
-                                        case String =>
-                                            getStringValue(exp1).get != getStringValue(exp2).get
-                                        case _ =>
-                                            ???
-                                    }
-                                }
-                        }
-                    case lgOp: LogicFuncs =>
-                        lgOp match {
-                            case AST.And(exp1, exp2) => 
-                                getBoolValue(exp1).get && getBoolValue(exp2).get
-                            case AST.Or(exp1, exp2) => 
-                                getBoolValue(exp1).get || getBoolValue(exp2).get
-                        }
-                    case cmpOp: CompareFuncs =>
-                        cmpOp match {
-                            case GT(exp1, exp2) => 
-                                val exprType = getExprType(exp1)
-                                exprType match {
-                                    case Int =>
-                                        getIntValue(exp1).get > getIntValue(exp2).get
-                                    case CharType => 
-                                        getCharValue(exp1).get > getCharValue(exp2).get
-                                    case _ =>
-                                        false
-                                }
-                            case GTE(exp1, exp2) => 
-                                val exprType = getExprType(exp1)
-                                exprType match {
-                                    case Int =>
-                                        getIntValue(exp1).get >= getIntValue(exp2).get
-                                    case CharType => 
-                                        getCharValue(exp1).get >= getCharValue(exp2).get
-                                    case _ =>
-                                        false
-                                }
-                            case LT(exp1, exp2) => 
-                                val exprType = getExprType(exp1)
-                                exprType match {
-                                    case Int =>
-                                        getIntValue(exp1).get < getIntValue(exp2).get
-                                    case CharType => 
-                                        getCharValue(exp1).get < getCharValue(exp2).get
-                                    case _ =>
-                                        false
-                                }
-                            case LTE(exp1, exp2) => 
-                                val exprType = getExprType(exp1)
-                                exprType match {
-                                    case Int =>
-                                        getIntValue(exp1).get <= getIntValue(exp2).get
-                                    case CharType => 
-                                        getCharValue(exp1).get <= getCharValue(exp2).get
-                                    case _ =>
-                                        ???
-                                }
-                        }
-                    case _ =>
-                        ???
-                })
-            case _ =>
-                ???      
+                            }
+                        case _ =>
+                            ???
+                    })
+                case _ =>
+                    ???      
+            }
+        }
+        catch {
+            case _: ju.NoSuchElementException => None
         }
     }
 
