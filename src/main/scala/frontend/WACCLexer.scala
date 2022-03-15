@@ -18,7 +18,8 @@ object lexer {
                     "then", "else", "fi", "while", "do", "done",
                     "begin", "end", "newpair", "call", "fst", "snd", 
                     "newpair", "pair", "null", "true", "false", "int",
-                    "char", "string", "bool", "len", "ord", "chr"
+                    "char", "string", "bool", "len", "ord", "chr",
+                    "malloc", "calloc", "realloc"
                     )
                     
     val operators = Set("!", "-", "len", "ord", "chr", "*",
