@@ -397,14 +397,7 @@ sealed case class ArrayElem(ident: Ident, exprList : List[Expr]) extends AssignL
     override def toString: String = number.toString
 		override def getType(symbTable: SymbolTable): Type = Int
 	}
-	sealed trait BoolLiter extends Expr {
-		override def equals(that: Any) =
-			(this, that) match {
-				case (True, True) => true
-				case (False, False) => true
-				case _ => false
-			}
-	}
+	sealed trait BoolLiter extends Expr 
 	case object True extends BoolLiter {
 		override def getType(symbTable: SymbolTable): Type = Bool
 	}
