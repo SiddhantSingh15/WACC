@@ -111,6 +111,10 @@ sealed case class ArrayElem(ident: Ident, exprList : List[Expr]) extends AssignL
 			case Pair(_,_) => true 
 			case _         => false 
 		}
+    def isPointer: Boolean = this match {
+      case PointerType(_) => true
+      case _              => false
+    }
 	}		
 
   case object Any extends Type {
