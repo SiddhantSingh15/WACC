@@ -26,8 +26,16 @@ object ExpressionGen {
     }
   }
 
+  def transExp(expr: Expr, rd: Register): Unit = {
+    var reducedExpr = expr
+    if (constantEvaluation) {
+      reducedExpr = reduceExpr(expr)
+    }
+    transExpInner(reducedExpr, rd)
+  }
+
   /* Translating an Expr to the ARM language */
-  def transExp(expr: Expr, rd: Register): Unit = {   
+  def transExpInner(expr: Expr, rd: Register): Unit = {   
     expr match {
       case IntLiter(number) =>
         val reg = collectRegister(rd)
