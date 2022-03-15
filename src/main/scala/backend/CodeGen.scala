@@ -20,6 +20,8 @@ object CodeGen {
 
   // Flags for optimisation techniques
   var constantEvaluation = true
+  var constantPropagation = true
+  var inBeginEndScope = true
 
   // Values for code generation 
   var currSP = 0
