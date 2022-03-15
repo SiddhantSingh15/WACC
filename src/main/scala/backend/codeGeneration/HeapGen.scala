@@ -9,10 +9,16 @@ object HeapGen {
     allocType match {
       case Calloc(num, size, _) =>
         instructions ++= transExp(size, reg)
-        instructions ++= Mov(R1, reg)
+        instructions += Mov(R1, reg)
         instructions ++= transExp(num, reg)
-        instructions ++= Mov(resultRegister, reg)
-        instructions ++= Bl(Label("calloc"))
+        instructions += Mov(resultRegister, reg)
+        instructions += Bl(Label("calloc"))
+      
+      case Malloc(size, _) =>
+        instructions ++= transExp(size, reg)
+        instructions += Mov(resultRegister, reg)
+        instuctionms += Bl(Label("malloc"))
+        
     }
   }
 }
