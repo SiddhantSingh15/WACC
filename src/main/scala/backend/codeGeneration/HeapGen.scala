@@ -18,13 +18,6 @@ import scala.collection.mutable.ListBuffer
 import scala.collection.immutable.Map
 import scala.collection.immutable.Set
 
-import frontend.AST._
-import backend.Operand._
-import backend.Opcodes._
-import backend.CodeGen._
-import backend.CodeGeneration.ExpressionGen.{transExp}
-
-
 object HeapGen {
 
   val heap = new HashMap[Ident, Int]
