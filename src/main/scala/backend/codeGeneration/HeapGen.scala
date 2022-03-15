@@ -4,6 +4,12 @@ import scala.collection.mutable.ListBuffer
 import scala.collection.immutable.Map
 import scala.collection.immutable.Set
 
+import frontend.AST._
+import backend.Operand._
+import backend.Opcodes._
+import backend.CodeGen._
+import backend.CodeGeneration.ExpressionGen.{transExp}
+
 
 object HeapGen {
 
@@ -14,33 +20,30 @@ object HeapGen {
   private val unallocMemErr = "MemErr: invalid, memory not allocated."
   private val doubleFreeErr = "MemErr: invalid, double free."
 
-  def transHeap(tpe: Type, allocType: Heap, reg: Register): ListBuffer[Instr] = {
-    val instructions = ListBuffer.empty[Instr]
-
+  def transHeap(tpe: Type, allocType: Heap, reg: Register): Unit = {
     val PointerType(in) = tpe
 
     allocType match {
       case Calloc(num, size, _) =>
-        instructions ++= transExp(size, reg)
-        instructions += Mov(R1, reg)
-        instructions ++= transExp(num, reg)
-        instructions += Mov(resultRegister, reg)
-        instructions += Bl(Label("calloc"))
+        transExp(size, reg)
+        currInstructions.add(Mov(R1, reg))
+        transExp(num, reg)
+        currInstructions.add(Mov(resultRegister, reg))
+        currInstructions.add(Bl(Label("calloc")))
       
       case Malloc(size, _) =>
-        instructions ++= transExp(size, reg)
-        instructions += Mov(resultRegister, reg)
-        instuctionms += Bl(Label("malloc"))
+        transExp(size, reg)
+        currInstructions.add(Mov(resultRegister, reg))
+        currInstructions.add(Bl(Label("malloc")))
 
       case Realloc(ptr, size, _) =>
-        instructions ++= transExp(size, reg)
-        instructions += Mov(R1, reg)
-        instructions ++= transExp(ptr, reg)
-        instructions += Mov(resultRegister, reg)
-        instructions += Bl(Label("realloc"))
+        transExp(size, reg)
+        currInstructions.add(Mov(R1, reg))
+        transExp(ptr, reg)
+        currInstructions.add(Mov(resultRegister, reg))
+        currInstructions.add(Bl(Label("realloc")))
     }
 
-    instructions += Mov(reg, resultRegister)
-    instructions
+    currInstructions.add(Mov(reg, resultRegister))
   }
 }

@@ -27,7 +27,8 @@ object ExpressionGen {
   }
 
   /* Translating an Expr to the ARM language */
-  def transExp(expr: Expr, rd: Register): Unit = {   
+  def transExp(expr: Expr, rd: Register): ListBuffer[Instr] = {
+    val instructions = ListBuffer.empty[Instr]
     expr match {
       case IntLiter(number) =>
         val reg = collectRegister(rd)
@@ -60,6 +61,7 @@ object ExpressionGen {
 
       case _ =>
     }
+    instructions
   }
 
   /* Translating a unary operator to the ARM language */

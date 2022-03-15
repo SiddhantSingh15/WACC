@@ -426,4 +426,8 @@ sealed case class ArrayElem(ident: Ident, exprList : List[Expr]) extends AssignL
     override def toString: String = "pairLit"
 		override def getType(symbTable: SymbolTable): Type = Pair(null, null)
 	}
+
+  sealed trait Heap extends AssignRHS
+
+
 }
