@@ -21,6 +21,7 @@ object CodeGen {
   // Flags for optimization techniques
   var constantProp = true
   var constantEval = true
+  var inBeginEndScope = true
 
   // Values for code generation 
   var currSP = 0

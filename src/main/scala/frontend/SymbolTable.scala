@@ -3,6 +3,7 @@ package frontend
 import scala.collection.mutable.HashMap
 import scala.collection.mutable
 import backend.CodeGeneration.CodeGenHelper._
+import backend.CodeGen._
 import AST._
 
 case class Info(t: Type, pList: Option[List[Type]])
@@ -61,15 +62,28 @@ case class SymbolTable(
 
   def updateValue(ident: Ident, t: Type, value: Option[Any]): Unit = {
     var currentST = this
-    while (currentST != null) {
-      val vMap = currentST.varMap
-      if (vMap.contains(ident)) {
-        val (i, tpe, v) = vMap(ident)
-        if (tpe == t) {
-            vMap(ident) = (i, t, value)
-          }
+    if (inBeginEndScope) {
+      while (currentST != null) {
+        val vMap = currentST.varMap
+        if (vMap.contains(ident)) {
+          val (i, tpe, v) = vMap(ident)
+          if (tpe == t) {
+              vMap(ident) = (i, t, value)
+            }
+        }
+        currentST = currentST.prev
       }
-      currentST = currentST.prev
+    } else {
+      while (currentST != null) {
+        val vMap = currentST.varMap
+        if (vMap.contains(ident)) {
+          val (i, tpe, v) = vMap(ident)
+          if (tpe == t) {
+              vMap(ident) = (i, t, None)
+            }
+        }
+        currentST = currentST.prev
+      }
     }
   }
 

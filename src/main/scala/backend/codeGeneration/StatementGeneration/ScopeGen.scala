@@ -15,7 +15,11 @@ object ScopeGen {
    * Translates the BEGIN function and returns a list of instructions.
    */
 	def transBegin(stats: List[Stat]): Unit = {
+
+    val oldInBeginEndScope = inBeginEndScope
+    inBeginEndScope = true
 		transScope(stats)
+    inBeginEndScope = oldInBeginEndScope
 	}
 
   /*
@@ -42,7 +46,9 @@ object ScopeGen {
 
 		val elseLabel = funcTable.getNext()
 		currInstructions.add(BranchCond(EQ, elseLabel))
-
+    
+    var oldInBeginEndScope = inBeginEndScope
+    inBeginEndScope = false
 		transScope(statThen)
 		val postLabel = funcTable.getNext()
 
@@ -51,9 +57,12 @@ object ScopeGen {
 
 		currLabel = elseLabel
     currInstructions = BlockInstrs(ListBuffer.empty[Instr])
+    oldInBeginEndScope = inBeginEndScope
+    inBeginEndScope = false
 		transScope(statElse)
 		funcTable.add(currLabel, currInstructions)
 
+    inBeginEndScope = oldInBeginEndScope
 		currLabel = postLabel
 		currInstructions = BlockInstrs(ListBuffer.empty[Instr])
 	}
@@ -74,7 +83,10 @@ object ScopeGen {
 		val bodyLabel = funcTable.getNext()
 		currLabel = bodyLabel
     currInstructions = BlockInstrs(ListBuffer.empty[Instr])
+    var oldInBeginEndScope = inBeginEndScope
+    inBeginEndScope = false
 		transScope(stats)
+    inBeginEndScope = oldInBeginEndScope
 		funcTable.add(currLabel, currInstructions)
 
 		currLabel = nextLabel
