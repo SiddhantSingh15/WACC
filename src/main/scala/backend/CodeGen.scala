@@ -18,6 +18,9 @@ import backend.CodeGeneration.Assignments._
 
 object CodeGen {
 
+  // Flags for optimisation techniques
+  var constantEvaluation = true
+
   // Values for code generation 
   var currSP = 0
   var scopeSP  = 0
