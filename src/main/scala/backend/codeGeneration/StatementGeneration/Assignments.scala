@@ -19,7 +19,7 @@ object Assignments {
   /*Translating declaration of new variable to ARM language*/
   def translateDeclaration(t: Type, id : Ident, rhs : AssignRHS): Unit = {
     scopeSP += getTypeSize(t)
-    symbTable.add(id, scopeSP, t)
+    symbTable.add(id, scopeSP, t, None)
     val spOffset = currSP - scopeSP
     val freeRegister = saveReg()
     val isByte = transAssignRHS(t, rhs, freeRegister)

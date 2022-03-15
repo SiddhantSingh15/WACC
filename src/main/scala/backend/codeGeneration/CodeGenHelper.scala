@@ -184,12 +184,49 @@ object CodeGenHelper {
             case op: UnOp =>
                 val redExpr = reduceRHS(op.expr)
                 (op, redExpr) match {
+                    case (Len(_), id : Ident) => 
+                        if (constantPropagation) {
+                            val ArrayLiter(exprs) = symbTable.getValue(id).get.asInstanceOf[ArrayLiter]
+                            return IntLiter(exprs.size)
+                        }
+                        expr
                     case (Negation(_), IntLiter(num)) => IntLiter(-1*num)
                     case (Not(_), True) => False
                     case (Not(_), False) => True
                     case (Chr(_), IntLiter(num)) => CharLiter(NormalCharacter(num.toChar))
                     case (Ord(_), CharLiter(_)) => IntLiter(redExpr.asInstanceOf[CharLiter].getChar.toInt)
                     case _ => rhs
+                }
+            case id: Ident =>
+                if (constantPropagation) {
+                    val maybeValue = symbTable.getValue(id).get
+                    maybeValue match{
+                        case _: Expr => return maybeValue.asInstanceOf[Expr]
+                        case _ => return expr
+                    }
+                }
+                expr
+            case ArrayElem(id, exprList) =>
+                if (constantPropagation) {
+                    var maybeValue = symbTable.getValue(id)
+                    if (maybeValue.nonEmpty) {
+                        var ArrayLiter(exprs) = maybeValue.get.asInstanceOf[ArrayLiter]
+                        while (true) {
+                            var i = 0
+                            var IntLiter(index) = reduceExpr(exprList(i))
+                            var exprValue = exprs(index)
+                            exprValue match {
+                                case ident: Ident =>
+                                    maybeValue = symbTable.getValue(id)
+                                    i += 1
+                                case _ =>
+                                    return exprValue
+                            }
+                        }
+                    }  
+                    expr
+                } else {
+                    expr
                 }
             case _ =>
                 rhs

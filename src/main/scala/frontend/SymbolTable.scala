@@ -4,6 +4,7 @@ import scala.collection.mutable.HashMap
 import scala.collection.mutable
 import backend.CodeGeneration.CodeGenHelper._
 import AST._
+import backend.CodeGen._
 
 case class Info(t: Type, pList: Option[List[Type]])
 
@@ -15,7 +16,7 @@ case class SymbolTable(
 
   val children = mutable.ListBuffer.empty[SymbolTable]
 
-  val varMap = new HashMap[Ident, (Int, Type)]
+  val varMap = new HashMap[Ident, (Int, Type, Option[AssignRHS])]
 
   def nextScope(nextFunc: Ident): SymbolTable = {
     val next = SymbolTable(this, nextFunc, funcMap)
@@ -51,22 +52,50 @@ case class SymbolTable(
     t.get.t
   }
 
-  def add(ident: Ident, n: Int, t: Type): Unit = {
-    varMap.addOne(ident, (n, t))
+  def add(ident: Ident, n: Int, t: Type, value: Option[AssignRHS]): Unit = {
+    varMap.addOne(ident, (n, t, value))
   }
 
   def add(ident: Ident, t: Type): Unit = {
-    varMap.addOne(ident, (0, t))
+    varMap.addOne(ident, (0, t, None))
   }
 
-  def lookupCG(ident: Ident): (Int, Type) = {
+  def updateValue(ident: Ident, t: Type, value: Option[AssignRHS]): Unit = {
+    var currentST = this
+    if (inBeginEndScope) {
+      while (currentST != null) {
+        val vMap = currentST.varMap
+        if (vMap.contains(ident)) {
+          val (i, tpe, v) = vMap(ident)
+          if (tpe == t) {
+              vMap(ident) = (i, t, value)
+            }
+        }
+        currentST = currentST.prev
+      }
+    } else {
+      while (currentST != null) {
+        val vMap = currentST.varMap
+        if (vMap.contains(ident)) {
+          val (i, tpe, v) = vMap(ident)
+          if (tpe == t) {
+              vMap(ident) = (i, t, None)
+            }
+        }
+        currentST = currentST.prev
+      }
+    }
+  }
+
+
+  def lookupCG(ident: Ident): (Int, Type, Option[AssignRHS]) = {
     var currentST = this
     while (currentST != null) {
       val vMap = currentST.varMap
       if (vMap.contains(ident)) {
-        val (i, t) = vMap.apply(ident)
+        val (i, t, v) = vMap.apply(ident)
         if (i != 0) {
-          return (i, t)
+          return (i, t, v)
         }
       }
       currentST = currentST.prev
@@ -124,9 +153,19 @@ case class SymbolTable(
     info.isDefined
   }
 
-  def apply(expr: Ident): (Int, Type) = {
-    lookupCG(expr)
+  def apply(id: Ident): (Int, Type) = {
+    val (i, t, v) = lookupCG(id)
+    (i, t)
   }
+
+  def getValue(id: Ident): Option[AssignRHS] = {
+    if (varMap.contains(id)) {
+      varMap(id)._3
+    } else {
+      None
+    }
+  }
+
   
   def parameterMatch(ident: Ident, args: Option[ArgList]): 
                     mutable.ListBuffer[SemanticError] = {
