@@ -24,19 +24,19 @@ object HeapGen {
     val PointerType(in) = tpe
 
     allocType match {
-      case Calloc(num, size, _) =>
+      case Calloc(num, size)  =>
         transExp(size, reg)
         currInstructions.add(Mov(R1, reg))
         transExp(num, reg)
         currInstructions.add(Mov(resultRegister, reg))
         currInstructions.add(Bl(Label("calloc")))
       
-      case Malloc(size, _) =>
+      case Malloc(size)       =>
         transExp(size, reg)
         currInstructions.add(Mov(resultRegister, reg))
         currInstructions.add(Bl(Label("malloc")))
 
-      case Realloc(ptr, size, _) =>
+      case Realloc(ptr, size) =>
         transExp(size, reg)
         currInstructions.add(Mov(R1, reg))
         transExp(ptr, reg)
