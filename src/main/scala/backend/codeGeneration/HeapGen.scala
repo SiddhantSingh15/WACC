@@ -47,6 +47,27 @@ object HeapGen {
     currInstructions.add(Add(rd, rd, otherReg))
   }
 
+  def freePointer(ident: Ident) =  {
+    val address = heap(ident)
+    
+    if (addresses(address)) {
+      addresses -= address
+      currInstructions.add(Bl(Label("free")))
+    } else {
+      freeErr(doubleFreeErr)
+    }
+  }
+
+  private def freeErr(output: String) = {
+    val label = dataTable.addData(output)
+    currInstructions.add(Ldr(resultRegister, DataLabel(label)))
+    currInstructions.add(Bl(addRTE(RuntimeError)))
+  }
+
+  def throwBadFreeErr = {
+    freeErr(unallocMemErr)
+  }
+
   def transHeap(tpe: Type, allocType: Heap, reg: Register): Unit = {
     val PointerType(in) = tpe
 
