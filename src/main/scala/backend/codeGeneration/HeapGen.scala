@@ -9,6 +9,9 @@ import backend.Operand._
 import backend.Opcodes._
 import backend.CodeGen._
 import backend.CodeGeneration.ExpressionGen.{transExp}
+import backend.DefinedFuncs.PreDefinedFuncs._
+import backend.Condition._
+import backend.DefinedFuncs.RuntimeErrors._
 
 
 object HeapGen {
@@ -45,5 +48,24 @@ object HeapGen {
     }
 
     currInstructions.add(Mov(reg, resultRegister))
+  }
+
+  def addressManip(lhs: Expr, rd: Register): Unit = {
+    getExprType(lhs) match {
+      case ptr: PointerType => ptrArith(ptr, rd)
+      case _                => ???
+    }
+  }
+
+  private def ptrArith(tpe: Type, rd: Register) = {
+    val PointerType(t) = tpe
+    val size = getTypeSize(t)
+    val rm = saveReg()
+    if (size > SIZE_CHAR) {
+      currInstructions.add(Ldr(rm, ImmMem(size)))
+      currInstructions.add(SMul(rd, rm, rd, rm))
+      restoreReg(rm)
+      currInstructions.add(BranchLinkCond(NE, addRTE(Overflow)))
+    }
   }
 }
