@@ -35,7 +35,7 @@ object PairsGen {
   /* 
    * Loads the pair into RD
    */
-  def transPairAssign(rhs: AssignRHS, ident: Ident, pos: Int, rd: Register): Unit = {
+  def transPairAssign(rhs: AssignRHS, ident: Ident, pos: Int, rd: Register): Option[Any] = {
     
     val (i, t) = symbTable(ident)
     val pElemType = 
@@ -57,6 +57,7 @@ object PairsGen {
     transPairElem(ident, pos, nextRegister)
     currInstructions.add(Str(isByte, rd, nextRegister, NO_OFFSET))
     restoreReg(nextRegister)
+    return maybeValue
   }
 
   /* 
