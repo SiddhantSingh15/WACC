@@ -1,5 +1,10 @@
 package backend.codeGeneration
 
+import scala.collection.mutable.ListBuffer
+import scala.collection.immutable.Map
+import scala.collection.immutable.Set
+
+
 object HeapGen {
 
   private var heap = Map.empty[Ident, Int]
