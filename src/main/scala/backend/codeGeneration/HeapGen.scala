@@ -118,5 +118,8 @@ object HeapGen {
       restoreReg(rm)
       currInstructions.add(BranchLinkCond(NE, addRTE(Overflow)))
     }
+
+    instructions += Mov(reg, resultRegister)
+    instructions
   }
 }
