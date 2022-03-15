@@ -1,4 +1,4 @@
-package backend.codeGeneration
+package backend.CodeGeneration
 
 import scala.collection.mutable.ListBuffer
 import scala.collection.immutable.Map
@@ -12,7 +12,7 @@ import backend.CodeGeneration.ExpressionGen.{transExp}
 import backend.DefinedFuncs.PreDefinedFuncs._
 import backend.Condition._
 import backend.DefinedFuncs.RuntimeErrors._
-
+import backend.CodeGeneration.CodeGenHelper._
 
 object HeapGen {
 
@@ -22,6 +22,31 @@ object HeapGen {
   private val OVFLOW_RS = 31
   private val unallocMemErr = "MemErr: invalid, memory not allocated."
   private val doubleFreeErr = "MemErr: invalid, double free."
+
+
+  def populateHeap(ident: Ident, rhs: AssignRHS): Unit = 
+    rhs match {
+      case id: Ident =>
+        heap += ((ident, heap(id)))
+      case h: Heap   =>
+        val nxt = incNext
+        heap += ((ident, nxt))
+        addresses += nxt
+      case _         => 
+  }
+
+  private def incNext: Int = {
+    next += 1
+    next
+  }
+
+  def transPointer(tpe: Type, elem: Expr, rd: Register, otherReg: Register) = {
+    val instructions = ListBuffer.empty[Instr]
+    instructions.add(Ldr(rd, RegAdd(rd)))
+    transExp(elem, otherReg)
+    instructions.add(ptrArith(tpe, otherReg))
+    instructions.add(Add(rd, rd, otherReg))
+  }
 
   def transHeap(tpe: Type, allocType: Heap, reg: Register): Unit = {
     val PointerType(in) = tpe
@@ -62,7 +87,7 @@ object HeapGen {
     val size = getTypeSize(t)
     val rm = saveReg()
     if (size > SIZE_CHAR) {
-      currInstructions.add(Ldr(rm, ImmMem(size)))
+      currInstructions.add(Ldr(rm, Imm_Int(size)))
       currInstructions.add(SMul(rd, rm, rd, rm))
       restoreReg(rm)
       currInstructions.add(BranchLinkCond(NE, addRTE(Overflow)))

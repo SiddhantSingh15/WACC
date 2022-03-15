@@ -222,11 +222,15 @@ object SemanticChecker {
 
 	private def checkFree(expr : Expr, symbolTable : SymbolTable): Unit = {
 		val tpe = checkType(expr, symbolTable)
-		if ((tpe == null) || tpe.isPair || tpe.isArray) {
-			return
-		}
-    semanticErrors += 
+		if ((tpe == null) || tpe.isPair || tpe.isArray || tpe.isPointer) {
+			expr match {
+        case _: Ident =>
+        case _        => semanticErrors += IllegalFree(expr)
+      }
+		} else {
+      semanticErrors += 
       MismatchTypesErr(expr, tpe, List(Pair(null, null), ArrayType(null)))
+    }
 	}
 
   private def checkRead(assignL : AssignLHS, symbTable : SymbolTable) : Unit = {
