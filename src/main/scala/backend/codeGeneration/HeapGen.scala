@@ -41,11 +41,10 @@ object HeapGen {
   }
 
   def transPointer(tpe: Type, elem: Expr, rd: Register, otherReg: Register) = {
-    val instructions = ListBuffer.empty[Instr]
-    instructions.add(Ldr(rd, RegAdd(rd)))
+    currInstructions.add(Ldr(rd, RegAdd(rd)))
     transExp(elem, otherReg)
-    instructions.add(ptrArith(tpe, otherReg))
-    instructions.add(Add(rd, rd, otherReg))
+    ptrArith(tpe, otherReg)
+    currInstructions.add(Add(rd, rd, otherReg))
   }
 
   def transHeap(tpe: Type, allocType: Heap, reg: Register): Unit = {
