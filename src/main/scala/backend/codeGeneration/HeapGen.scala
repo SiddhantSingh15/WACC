@@ -18,6 +18,12 @@ import scala.collection.mutable.ListBuffer
 import scala.collection.immutable.Map
 import scala.collection.immutable.Set
 
+import frontend.AST._
+import backend.Operand._
+import backend.Opcodes._
+import backend.CodeGen._
+import backend.CodeGeneration.ExpressionGen.{transExp}
+
 
 object HeapGen {
 
@@ -124,7 +130,6 @@ object HeapGen {
       currInstructions.add(BranchLinkCond(NE, addRTE(Overflow)))
     }
 
-    instructions += Mov(reg, resultRegister)
-    instructions
+    currInstructions.add(Mov(reg, resultRegister))
   }
 }
