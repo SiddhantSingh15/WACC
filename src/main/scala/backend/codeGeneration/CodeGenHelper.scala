@@ -5,6 +5,7 @@ import backend.CodeGeneration.ArraysGen._
 import frontend.AST._
 import backend.Operand._
 import backend.Opcodes._
+import frontend.AST
 
 object CodeGenHelper {
 
@@ -94,5 +95,104 @@ object CodeGenHelper {
         currInstructions.add(backend.Opcodes.Sub(R13_SP, R13_SP, Imm_Int(MAX_IMM_INT)))
         }
         currInstructions.add(backend.Opcodes.Sub(R13_SP, R13_SP, Imm_Int(currToDec)))
+    }
+
+    def boolToBoolLiter(bool: Boolean): BoolLiter = {
+        if (bool) True else False
+    }
+
+    def reduceExpr(expr: Expr): Expr = {
+        expr match {
+            case op: BinOp =>
+                val expr1 = reduceExpr(op.exp1)
+                val expr2 = reduceExpr(op.exp2)
+                op match {
+                    case mathOp: MathFuncs =>
+                        (expr1, expr2, mathOp) match {
+                            case (IntLiter(num1), IntLiter(num2), Div(_, _)) => IntLiter(num1 / num2)
+                            case (IntLiter(num1), IntLiter(num2), Mod(_, _)) => IntLiter(num1 % num2)
+                            case (IntLiter(num1), IntLiter(num2), Plus(_, _)) => IntLiter(num1 + num2)
+                            case (IntLiter(num1), IntLiter(num2), AST.Sub(_, _)) => IntLiter(num1 - num2)
+                            case (IntLiter(num1), IntLiter(num2), Mul(_, _)) => IntLiter(num1 * num2)
+                            case _ => expr
+                        }
+                    case lgOp: LogicFuncs =>
+                        (expr1, expr2, lgOp) match {
+                            case (True, _, AST.And(_, _)) => expr2
+                            case (_, True, AST.And(_, _)) => expr1
+                            case (False, _, AST.And(_, _)) => False
+                            case (_, False, AST.And(_, _)) => False
+                            case (True, _, AST.Or(_, _)) => True
+                            case (_, True, AST.Or(_, _)) => True
+                            case (False, _, AST.Or(_, _)) => expr2
+                            case (_, False, AST.Or(_, _)) => expr1
+                            case _ => expr
+                        }
+                    case eqOp: EqualityFuncs =>
+                        (expr1, expr2, eqOp) match {
+                            case (IntLiter(num1), IntLiter(num2), Equal(_, _)) => 
+                                boolToBoolLiter(num1 == num2)
+                            case (IntLiter(num1), IntLiter(num2), NotEqual(_, _)) =>
+                                boolToBoolLiter(num1 != num2)
+                            case (StrLiter(str1), StrLiter(str2), Equal(_, _)) =>
+                                boolToBoolLiter(str1 == str2)
+                            case (StrLiter(str1), StrLiter(str2), NotEqual(_, _)) =>
+                                boolToBoolLiter(str1 != str2)
+                            case (CharLiter(char1), CharLiter(char2), Equal(_, _)) =>
+                                boolToBoolLiter(char1 == char2)
+                            case (CharLiter(char1), CharLiter(char2), NotEqual(_, _)) =>
+                                boolToBoolLiter(char1 != char2)
+                            case (True, True, Equal(_, _)) =>
+                                True
+                            case (False, False, Equal(_, _)) =>
+                                True
+                            case (True, False, Equal(_, _)) =>
+                                False
+                            case (False, True, Equal(_, _)) =>
+                                False
+                            case (True, True, NotEqual(_, _)) =>
+                                False
+                            case (False, False, NotEqual(_, _)) =>
+                                False
+                            case (True, False, NotEqual(_, _)) =>
+                                True
+                            case (False, True, NotEqual(_, _)) =>
+                                True
+                            case _ => expr
+                        }
+                    case cmpOp: CompareFuncs => 
+                        (expr1, expr2, cmpOp) match {
+                            case (IntLiter(num1), IntLiter(num2), GT(_, _)) => 
+                                boolToBoolLiter(num1 > num2)
+                            case (IntLiter(num1), IntLiter(num2), GTE(_, _)) =>
+                                boolToBoolLiter(num1 >= num2)
+                            case (IntLiter(num1), IntLiter(num2), LT(_, _)) =>
+                                boolToBoolLiter(num1 < num2)
+                            case (IntLiter(num1), IntLiter(num2), LTE(_, _)) =>
+                                boolToBoolLiter(num1 <= num2)
+                            case (CharLiter(_), CharLiter(_), GT(_, _)) =>
+                                boolToBoolLiter(expr1.asInstanceOf[CharLiter].getChar > expr2.asInstanceOf[CharLiter].getChar)
+                            case (CharLiter(_), CharLiter(_), GTE(_, _)) =>
+                                boolToBoolLiter(expr1.asInstanceOf[CharLiter].getChar >= expr2.asInstanceOf[CharLiter].getChar)
+                            case (CharLiter(_), CharLiter(_), LT(_, _)) =>
+                                boolToBoolLiter(expr1.asInstanceOf[CharLiter].getChar < expr2.asInstanceOf[CharLiter].getChar)
+                            case (CharLiter(_), CharLiter(_), LTE(_, _)) =>
+                                boolToBoolLiter(expr1.asInstanceOf[CharLiter].getChar <= expr2.asInstanceOf[CharLiter].getChar)
+                            case _ => expr
+                        }
+                }
+            case op: UnOp =>
+                val expr = reduceExpr(op.expr)
+                (op, expr) match {
+                    case (Negation(_), IntLiter(num)) => IntLiter(-1*num)
+                    case (Not(_), True) => False
+                    case (Not(_), False) => True
+                    case (Chr(_), IntLiter(num)) => CharLiter(NormalCharacter(num.toChar))
+                    case (Ord(_), CharLiter(_)) => IntLiter(expr.asInstanceOf[CharLiter].getChar.toInt)
+                    case _ => expr
+                }
+            case _ =>
+                expr
+        }
     }
 }
