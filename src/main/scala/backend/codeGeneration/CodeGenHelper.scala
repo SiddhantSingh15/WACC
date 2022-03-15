@@ -182,13 +182,13 @@ object CodeGenHelper {
                         }
                 }
             case op: UnOp =>
-                val expr = reduceExpr(op.expr)
-                (op, expr) match {
+                val redExpr = reduceExpr(op.expr)
+                (op, redExpr) match {
                     case (Negation(_), IntLiter(num)) => IntLiter(-1*num)
                     case (Not(_), True) => False
                     case (Not(_), False) => True
                     case (Chr(_), IntLiter(num)) => CharLiter(NormalCharacter(num.toChar))
-                    case (Ord(_), CharLiter(_)) => IntLiter(expr.asInstanceOf[CharLiter].getChar.toInt)
+                    case (Ord(_), CharLiter(_)) => IntLiter(redExpr.asInstanceOf[CharLiter].getChar.toInt)
                     case _ => expr
                 }
             case _ =>
