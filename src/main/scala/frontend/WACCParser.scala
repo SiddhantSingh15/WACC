@@ -98,10 +98,10 @@ object Parser {
     ))
 
   private val `<heap>` : Parsley[Heap] =
-    (Malloc("malloc" *> parens(`<expr>`)) 
-       <|> ("realloc" *> parens(Realloc(`<ident>`, "," *> `<expr>`)))
-       <|> ("calloc" *> parens(Calloc(`<ident>`, "," *> `<expr>`)))
-    ) 
+    Malloc <#> ("malloc" *> parens(`<expr>`)) <|> 
+    "realloc" *> parens(lift2(Realloc, `<ident>`, "," *> `<expr>`)) <|> 
+    "calloc" *> parens(lift2(Calloc, `<expr>`, "," *> `<expr>`))
+    
   
   private val `<param>` = 
     lift2(Param, `<type>`, `<ident>`)
