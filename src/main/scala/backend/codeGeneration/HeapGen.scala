@@ -18,7 +18,13 @@ object HeapGen {
         instructions ++= transExp(size, reg)
         instructions += Mov(resultRegister, reg)
         instuctionms += Bl(Label("malloc"))
-        
+
+      case Realloc(ptr, size, _) =>
+        instructions ++= transExp(size, reg)
+        instructions += Mov(R1, reg)
+        instructions ++= transExp(ptr, reg)
+        instructions += Mov(resultRegister, reg)
+        instsructions += Bl(Label("realloc"))
     }
   }
 }
