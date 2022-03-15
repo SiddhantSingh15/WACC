@@ -73,6 +73,7 @@ object ExpressionGen {
 
       case _ =>
     }
+    instructions
   }
 
   /* Translating a unary operator to the ARM language */
