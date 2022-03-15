@@ -9,6 +9,7 @@ import backend.CodeGeneration.ExpressionGen._
 import backend.DefinedFuncs.RuntimeErrors._
 import backend.DefinedFuncs.PreDefinedFuncs._
 import backend.CodeGeneration.CodeGenHelper._
+import backend.CodeGeneration.HeapGen._
 
 object ArraysGen {
 
@@ -44,7 +45,7 @@ object ArraysGen {
 
     for (expr <- exprs) {
       if (t.isPointer) {
-        currInstructions.add(transPointer(t, expr, rd, nextReg))
+        transPointer(t, expr, rd, nextReg)
       } else {
         t = getInnerType(t)
         transExp(expr, nextReg)
