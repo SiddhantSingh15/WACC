@@ -37,7 +37,7 @@ object Assignments {
         val (index, t) = symbTable(id)
         val (isByte, maybeValue) = transAssignRHS(t, rhs, freeRegister)
         val spOffset = currSP - index  
-        symbTable.updateValue(id, maybeValue)
+        symbTable.updateValue(id, t, maybeValue)
         currInstructions.add(Str(isByte, freeRegister, R13_SP, spOffset))
       case Fst(id : Ident)              => 
         transPairAssign(rhs, id, 1, freeRegister)

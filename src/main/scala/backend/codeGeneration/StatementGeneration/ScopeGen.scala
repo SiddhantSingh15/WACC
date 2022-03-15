@@ -26,7 +26,7 @@ object ScopeGen {
    */
 	def transIf(expr: Expr, statThen: List[Stat], statElse: List[Stat]): Unit = {
 		val freeRegister = saveReg()
-		val boolValue = transExp(expr, freeRegister).get.asInstanceOf[Boolean]
+		transExp(expr, freeRegister)
 
     // if (constantProp) {
     //   if (boolValue) {

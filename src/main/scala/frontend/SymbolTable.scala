@@ -59,21 +59,17 @@ case class SymbolTable(
     varMap.addOne(ident, (0, t, None))
   }
 
-  def updateValue(ident: Ident, value: Option[Any]): Unit = {
+  def updateValue(ident: Ident, t: Type, value: Option[Any]): Unit = {
     var currentST = this
-    if (currentST.varMap.contains(ident)) {
-      val (sp, tpe, oldValue) = currentST.varMap(ident)
-      currentST.varMap(ident) = (sp, tpe, value)
-    } else {
-      currentST = currentST.prev
-      while (currentST != null) {
+    while (currentST != null) {
       val vMap = currentST.varMap
       if (vMap.contains(ident)) {
-        val (sp, tpe, oldValue) = vMap(ident)
-        vMap(ident) = (sp, tpe, None)
+        val (i, tpe, v) = vMap(ident)
+        if (tpe == t) {
+            vMap(ident) = (i, t, value)
+          }
       }
       currentST = currentST.prev
-    }
     }
   }
 
@@ -148,8 +144,11 @@ case class SymbolTable(
   }
 
   def getValue(expr: Ident): Option[Any] = {
-    val (i, t, v) = lookupCG(expr)
-    v
+    if (varMap.contains(expr)) {
+      varMap(expr)._3
+    } else {
+      None
+    }
   }
   
   def parameterMatch(ident: Ident, args: Option[ArgList]): 

@@ -74,7 +74,7 @@ object ReadGen {
     ))
     restoreReg(freeReg)
     readBranch(identType)
-    symbTable.updateValue(ident, None)
+    symbTable.updateValue(ident, identType, None)
   }
 
   /*
