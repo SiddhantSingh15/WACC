@@ -10,6 +10,7 @@ import backend.CodeGeneration.PairsGen._
 import backend.CodeGeneration.Functions._
 import backend.CodeGeneration.ArraysGen._
 import backend.CodeGeneration.CodeGenHelper._
+import backend.CodeGeneration.HeapGen._
 
 import scala.collection.mutable.ListBuffer
 
@@ -23,6 +24,9 @@ object Assignments {
     val spOffset = currSP - scopeSP
     val freeRegister = saveReg()
     val isByte = transAssignRHS(t, rhs, freeRegister)
+    if (t.isPointer) {
+      populateHeap(id, rhs)
+    }
     currInstructions.add(Str(isByte, freeRegister, R13_SP, spOffset))
     restoreReg(freeRegister)
   }
@@ -35,6 +39,9 @@ object Assignments {
       case id : Ident                   =>
         val (index, t) = symbTable(id)
         val isByte= transAssignRHS(t, rhs, freeRegister)
+        if (t.isPointer) {
+          populateHeap(id, rhs)
+        }
         val spOffset = currSP - index  
         currInstructions.add(Str(isByte, freeRegister, R13_SP, spOffset))
       case Fst(id : Ident)              => 
@@ -43,7 +50,7 @@ object Assignments {
         transPairAssign(rhs, id, 2, freeRegister)
       case x@ArrayElem(ident, exprList) =>
         transAssignRHS(getExprType(x), rhs, freeRegister)
-        storeArrayElem(ident, exprList, freeRegister) 
+        storeArrayElem(ident, exprList, freeRegister)
       case _                            => 
     }
     restoreReg(freeRegister)
