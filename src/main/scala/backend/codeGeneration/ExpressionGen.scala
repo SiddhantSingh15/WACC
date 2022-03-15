@@ -126,7 +126,7 @@ object ExpressionGen {
   }
     
   /* Check if registers are full, if so pushes contents of R10 to stack */
-  private def collectRegister(rd: Register): Register = {
+  def collectRegister(rd: Register): Register = {
 
     var reg = rd
 
