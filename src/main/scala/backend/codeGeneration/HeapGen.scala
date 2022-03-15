@@ -14,6 +14,11 @@ import backend.Condition._
 import backend.DefinedFuncs.RuntimeErrors._
 import backend.CodeGeneration.CodeGenHelper._
 
+import scala.collection.mutable.ListBuffer
+import scala.collection.immutable.Map
+import scala.collection.immutable.Set
+
+
 object HeapGen {
 
   val heap = new HashMap[Ident, Int]
