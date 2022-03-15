@@ -84,6 +84,7 @@ object Parser {
     `<ident>`
   
   val `<assign-rhs>` : Parsley[AssignRHS] = 
+    `<heap>` <|>
     `<pair-elem>` <|>
     `<expr>` <|>
     `<array-liter>` <|>
@@ -95,6 +96,12 @@ object Parser {
         `<ident>`,
         ArgList <#> parens(sepBy(`<expr>`, ","))
     ))
+
+  private val `<heap>` : Parsley[Heap] =
+    (Malloc("malloc" *> parens(`<expr>`)) 
+       <|> ("realloc" *> parens(Realloc(`<ident>`, "," *> `<expr>`)))
+       <|> ("calloc" *> parens(Calloc(`<ident>`, "," *> `<expr>`)))
+    ) 
   
   private val `<param>` = 
     lift2(Param, `<type>`, `<ident>`)
