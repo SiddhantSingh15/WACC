@@ -99,77 +99,103 @@ object CodeGenHelper {
     }
 
     def getStringValue(expr: Expr): Option[String] = {
-        expr match {
-            case string: StrLiter => 
-                Some(string.toString())
-            case id: Ident =>
-                val maybeValue = symbTable.getValue(id)
-                if (maybeValue.isEmpty) {
-                    return None
-                } else {
-                    return Some(maybeValue.get.asInstanceOf[String])
-                }
-            case _ =>
-                ???            
+        try {
+            expr match {
+                case string: StrLiter => 
+                    Some(string.toString())
+                case id: Ident =>
+                    val maybeValue = symbTable.getValue(id)
+                    if (maybeValue.isEmpty) {
+                        return None
+                    } else {
+                        return Some(maybeValue.get.asInstanceOf[String])
+                    }
+                case ArrayElem(id, exprList) =>
+                    var exprs = symbTable.getValue(id).get.asInstanceOf[List[Expr]]
+                    while (true) {
+                        var i = 0
+                        var expr = exprs(getIntValue(exprList(i)).get)
+                        expr match {
+                            case string: StrLiter =>
+                                return Some(string.toString())
+                            case ident : Ident =>
+                                exprs = symbTable.getValue(ident).get.asInstanceOf[List[Expr]]
+                                i += 1
+                            case _ =>
+                                ???
+                        }
+                    }
+                    ???
+                case _ =>
+                    ???            
+            }
+        }
+        catch {
+            case _: ju.NoSuchElementException => None
         }
     }
 
     def getIntValue(expr: Expr): Option[Int] = {
-        expr match {
-            case ArrayElem(id, exprList) =>
-                var exprs = symbTable.getValue(id).get.asInstanceOf[List[Expr]]
-                while (true) {
-                    var i = 0
-                    var expr = exprs(getIntValue(exprList(i)).get)
-                    expr match {
-                        case IntLiter(number) =>
-                            return Some(number)
-                        case ident : Ident =>
-                            exprs = symbTable.getValue(ident).get.asInstanceOf[List[Expr]]
-                            i += 1
-                        case _ =>
-                            ???
+        try {
+            expr match {
+                case ArrayElem(id, exprList) =>
+                    var exprs = symbTable.getValue(id).get.asInstanceOf[List[Expr]]
+                    while (true) {
+                        var i = 0
+                        var expr = exprs(getIntValue(exprList(i)).get)
+                        expr match {
+                            case IntLiter(number) =>
+                                return Some(number)
+                            case ident : Ident =>
+                                exprs = symbTable.getValue(ident).get.asInstanceOf[List[Expr]]
+                                i += 1
+                            case _ =>
+                                ???
+                        }
                     }
+                    ???
+                case IntLiter(number) => 
+                    Some(number)
+                case Negation(op) =>
+                    Some(-1 * getIntValue(op).get)
+                case Ord(char) =>
+                    Some(getCharValue(char).get.toInt)
+                case Len(arry) =>
+                    Some(arry match {
+                        case ArrayElem(id, exprs) => 
+                            exprs.size
+                        case id: Ident =>
+                            val exprs = symbTable.getValue(id).get.asInstanceOf[List[Expr]]
+                            exprs.size
+                        case _ => ???
+                    })
+                case mathOp: MathFuncs => 
+                    Some(mathOp match {
+                        case Div(exp1, exp2) => 
+                            getIntValue(exp1).get / getIntValue(exp2).get
+                        case Mod(exp1, exp2) => 
+                            getIntValue(exp1).get % getIntValue(exp2).get 
+                        case Mul(exp1, exp2) => 
+                            getIntValue(exp1).get * getIntValue(exp2).get
+                        case Plus(exp1, exp2) => 
+                            getIntValue(exp1).get + getIntValue(exp2).get
+                        case AST.Sub(exp1, exp2) => 
+                            getIntValue(exp1).get - getIntValue(exp2).get
+                    })
+                case id: Ident =>
+                    val maybeValue = symbTable.getValue(id)
+                    if (maybeValue.isEmpty) {
+                        return None
+                    } else {
+                        return Some(maybeValue.get.asInstanceOf[Int])
+                    }
+                case _ => 
+                    ???
                 }
-                ???
-            case IntLiter(number) => 
-                Some(number)
-            case Negation(op) =>
-                Some(-1 * getIntValue(op).get)
-            case Ord(char) =>
-                Some(getCharValue(char).get.toInt)
-            case Len(arry) =>
-                Some(arry match {
-                    case ArrayElem(id, exprs) => 
-                        exprs.size
-                    case id: Ident =>
-                        val exprs = symbTable.getValue(id).get.asInstanceOf[List[Expr]]
-                        exprs.size
-                    case _ => ???
-                })
-            case mathOp: MathFuncs => 
-                Some(mathOp match {
-                    case Div(exp1, exp2) => 
-                        getIntValue(exp1).get / getIntValue(exp2).get
-                    case Mod(exp1, exp2) => 
-                        getIntValue(exp1).get % getIntValue(exp2).get 
-                    case Mul(exp1, exp2) => 
-                        getIntValue(exp1).get * getIntValue(exp2).get
-                    case Plus(exp1, exp2) => 
-                        getIntValue(exp1).get + getIntValue(exp2).get
-                    case AST.Sub(exp1, exp2) => 
-                        getIntValue(exp1).get - getIntValue(exp2).get
-                })
-            case id: Ident =>
-                val maybeValue = symbTable.getValue(id)
-                if (maybeValue.isEmpty) {
-                    return None
-                } else {
-                    return Some(maybeValue.get.asInstanceOf[Int])
-                }
-            case _ => 
-                ???
             }
+        catch {
+            case _: ju.NoSuchElementException => None
+        }
     }
     def getBoolValue(expr: Expr): Option[Boolean] = {
         try {
@@ -187,6 +213,24 @@ object CodeGenHelper {
                     } else {
                         return Some(maybeValue.get.asInstanceOf[Boolean])
                     }
+                case ArrayElem(id, exprList) =>
+                    var exprs = symbTable.getValue(id).get.asInstanceOf[List[Expr]]
+                    while (true) {
+                        var i = 0
+                        var expr = exprs(getIntValue(exprList(i)).get)
+                        expr match {
+                            case True =>
+                                return Some(true)
+                            case False =>
+                                return Some(false)
+                            case ident : Ident =>
+                                exprs = symbTable.getValue(ident).get.asInstanceOf[List[Expr]]
+                                i += 1
+                            case _ =>
+                                ???
+                        }
+                    }
+                    ???
                 case op: BinOp =>
                     val exp1 = op.exp1
                     val exp2 = op.exp2
@@ -295,20 +339,41 @@ object CodeGenHelper {
     }
 
     def getCharValue(expr: Expr): Option[Char] = {
-        expr match {
-            case character: CharLiter => 
-                Some(character.toString.charAt(1))
-            case Chr(intExpr) => 
-                Some(getIntValue(intExpr).get.toChar)
-            case id: Ident =>
-                val maybeValue = symbTable.getValue(id)
-                if (maybeValue.isEmpty) {
-                    return None
-                } else {
-                    return Some(maybeValue.get.asInstanceOf[Char])
-                }
-            case _ =>
-                ???
+        try {
+            expr match {
+                case character: CharLiter => 
+                    Some(character.toString.charAt(1))
+                case Chr(intExpr) => 
+                    Some(getIntValue(intExpr).get.toChar)
+                case id: Ident =>
+                    val maybeValue = symbTable.getValue(id)
+                    if (maybeValue.isEmpty) {
+                        return None
+                    } else {
+                        return Some(maybeValue.get.asInstanceOf[Char])
+                    }
+                case ArrayElem(id, exprList) =>
+                    var exprs = symbTable.getValue(id).get.asInstanceOf[List[Expr]]
+                    while (true) {
+                        var i = 0
+                        var expr = exprs(getIntValue(exprList(i)).get)
+                        expr match {
+                            case character: CharLiter =>
+                                return Some(character.toString.charAt(1))
+                            case ident : Ident =>
+                                exprs = symbTable.getValue(ident).get.asInstanceOf[List[Expr]]
+                                i += 1
+                            case _ =>
+                                ???
+                        }
+                    }
+                    ???
+                case _ =>
+                    ???
+            }
+        }
+        catch {
+            case _: ju.NoSuchElementException => None
         }
     }
 }
