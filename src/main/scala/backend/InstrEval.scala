@@ -1,0 +1,105 @@
+package backend
+
+import java.io.{File, FileWriter}
+import backend.Opcodes._
+import backend.Operand._
+import backend.Condition._
+import backend.DefinedFuncs.PreDefinedFuncs._
+import scala.collection._
+import scala.collection.mutable.ListBuffer
+
+object InstrEval {
+    val Is_Byte = true
+    val Not_Byte = false
+
+    /* Blocks of instructions that should be ignored */
+    val ignoreBlocks = mutable.ListBuffer.empty[Label]
+
+    /* Optimises a block of instructions */
+    def optimiseBlock(
+        block: (Label, List[Instr])
+    ): (Label, List[Instr]) = {
+        val (label, instructions) = block
+        val optimised = mutable.ListBuffer.empty[Instr]
+        val instrs = mutable.ListBuffer.empty[Instr]
+        instrs.addAll(instructions)
+        // Store optimised instructions into optimised
+        optimise(instrs, optimised)
+        (label, optimised.toList)
+    }
+
+    /* Continues optimise recursively */
+    def continueOptimise(
+        cur: Instr,
+        remainingHead: Instr,
+        remainingTail: mutable.ListBuffer[Instr],
+        optimised: mutable.ListBuffer[Instr]
+    ): Unit = {
+        optimised += cur
+        optimise(remainingHead, remainingTail, optimised)
+    }
+
+    /* Overloaded optimise function that is recursively called to store
+     optimised instructions in optimised */
+    def optimise(
+        instructions: mutable.ListBuffer[Instr],
+        optimised: mutable.ListBuffer[Instr]
+    ): Unit = {
+        if (!instructions.isEmpty) {
+            optimise(instructions.head, instructions.tail, optimised)
+        }
+    }
+
+    /* Overloaded optimise function that is recursively called to store
+     optimised instructions in OPTIMISED */
+    def optimise(
+        cur: Instr,
+        instructions: mutable.ListBuffer[Instr],
+        optimised: mutable.ListBuffer[Instr]
+    ): Unit = {
+        if (instructions.isEmpty) {
+            optimised += cur
+        } else {
+            val remainingHead = instructions.head
+            val remainingTail = instructions.tail
+            cur, remainingHead) match {
+                case (Mov(r1, op1), Mov(rd, r2)) =>
+                // Remove redundance Mov Instructions
+                peepMov(r1, op1, rd, r2, remainingTail, optimised)
+                case (Mov(r1, op1), Cmp(rd, op2)) =>
+                // Check for redundant compare branches
+                peepBranch(r1, op1, rd, op2, remainingTail, optimised)
+                case (Ldr(r1, op1), Ldr(r2, op2)) =>
+                // Potential strong operation
+                peepStrong(r1, op1, r2, op2, remainingTail, optimised)
+                case (Str(r1, op1), Ldr(r2, op2)) =>
+                // Potential useless Load
+                peepStrLdr(r1, op1, r2, op2, remainingTail, optimised, Not_Byte)
+                case (StrB(r1, op1), LdrSB(r2, op2)) =>
+                // Potential useless Load
+                peepStrLdr(r1, op1, r2, op2, remainingTail, optimised, Is_Byte)
+                case _ =>
+                continueOptimise(cur, remainingHead, remainingTail, optimised)
+            }
+        }
+    }
+
+    /* Call optimise on all blocks necessary */
+    def optimiseBlocks(
+        blocks: List[(Label, List[Instr])]
+    ): List[(Label, List[Instr])] = {
+        val returnBlocks = mutable.ListBuffer.empty[(Label, List[Instr])]
+        for (b <- blocks) {
+            val (Label(name), _) = b
+            // Ignore blocks that are not required
+            if (!ignoreBlocks.contains(Label(name))) {
+                name.take(2) match {
+                // Not necassary to optimise predefined blocks
+                    case "p_" => returnBlocks += b
+                    case _    => returnBlocks += optimiseBlock(b)
+                }
+            }
+        }
+        returnBlocks.toList
+    }
+}
