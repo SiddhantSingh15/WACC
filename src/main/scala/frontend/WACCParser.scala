@@ -103,7 +103,7 @@ object Parser {
     "calloc" *> parens(lift2(Calloc, `<expr>`, "," *> `<expr>`))
   
   private val `<deref>` : Parsley[DerefPointer] = 
-    "*" *> pos
+    "*" *> (DerefPointer <#> <expr>)
   
   private val `<param>` = 
     lift2(Param, `<type>`, `<ident>`)
