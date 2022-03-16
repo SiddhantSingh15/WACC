@@ -101,7 +101,9 @@ object Parser {
     Malloc <#> ("malloc" *> parens(`<expr>`)) <|> 
     "realloc" *> parens(lift2(Realloc, `<ident>`, "," *> `<expr>`)) <|> 
     "calloc" *> parens(lift2(Calloc, `<expr>`, "," *> `<expr>`))
-    
+  
+  private val `<deref>` : Parsley[DerefPointer] = 
+    "*" *> pos
   
   private val `<param>` = 
     lift2(Param, `<type>`, `<ident>`)
@@ -145,6 +147,7 @@ object Parser {
     precedence(
       Atoms(parens(`<expr>`) <|> attempt(`<array-elem>`) <|> atom) :+
       Ops(Prefix)(
+          "*".label("operator") #> DerefPointer,
           "!".label("operator") #> Not,
           notFollowedBy(`<int-liter>`) *> "-".label("operator") #> Negation,
           "len".label("operator") #> Len,
