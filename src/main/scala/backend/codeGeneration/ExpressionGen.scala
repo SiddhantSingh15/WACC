@@ -124,7 +124,7 @@ object ExpressionGen {
       case ident: Ident        =>
         val (i, tpe) = symbTable(ident)
         val offset = currSP - i
-        currInstructions.add(Add(rd, R13_SP, Imm_Int(offset)))
+        currInstructions.add(Add(register, R13_SP, Imm_Int(offset)))
       case DerefPointer(inTpe) =>
         transExp(inTpe, register)
       case _                   => ???
