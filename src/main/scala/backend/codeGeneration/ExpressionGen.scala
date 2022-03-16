@@ -29,7 +29,12 @@ object ExpressionGen {
   def transExp(expr: Expr, rd: Register): Unit = {
     var reducedExpr = expr
     if (constantEvaluation) {
-      reducedExpr = reduceRHS(expr).asInstanceOf[Expr]
+      val reducedRHS = reduceRHS(expr)
+      reducedRHS match {
+        case _: Expr =>
+          reducedExpr = reduceRHS(expr).asInstanceOf[Expr]
+        case _ =>
+      }
     }
     transExpInner(reducedExpr, rd)
   }
