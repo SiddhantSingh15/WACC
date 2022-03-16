@@ -132,12 +132,14 @@ object SemanticChecker {
   private def checkAssign(lhs: AssignLHS, rhs: AssignRHS, 
                           symbTable: SymbolTable): Unit
     = lhs match {
-      case ident: Ident     =>
+      case ident: Ident      =>
         checkEqAssignType(ident, rhs, symbTable)
-      case aElem: ArrayElem =>
+      case aElem: ArrayElem  =>
         checkAssignType(checkType(aElem, symbTable), rhs, symbTable)
-      case pElem: PairElem  =>
+      case pElem: PairElem   =>
         checkAssignType(checkType(pElem, symbTable), rhs, symbTable)
+      case ptr: DerefPointer =>
+        checkAssignType(checkType(ptr, symbTable), rhs, symbTable)
   }
 
   
@@ -235,9 +237,10 @@ object SemanticChecker {
 
   private def checkRead(assignL : AssignLHS, symbTable : SymbolTable) : Unit = {
 		assignL match {
-      case ident: Ident     => readStat(ident, symbTable)
-      case array: ArrayElem => readStat(array, symbTable)
-      case pair: PairElem   => readStat(pair, symbTable)
+      case ident: Ident      => readStat(ident, symbTable)
+      case array: ArrayElem  => readStat(array, symbTable)
+      case pair: PairElem    => readStat(pair, symbTable)
+      case ptr: DerefPointer => readStat(ptr, symbTable)
     }
   }
 

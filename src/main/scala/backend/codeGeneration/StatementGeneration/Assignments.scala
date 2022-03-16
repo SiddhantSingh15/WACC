@@ -51,6 +51,12 @@ object Assignments {
       case x@ArrayElem(ident, exprList) =>
         transAssignRHS(getExprType(x), rhs, freeRegister)
         storeArrayElem(ident, exprList, freeRegister)
+      case deref@DerefPointer(ptr)      =>
+        val isByte = transAssignRHS(getExprType(deref), rhs, freeRegister)
+        val freeReg = saveReg()
+        transExp(ptr, freeReg)
+        currInstructions.add(Str(freeRegister, RegAdd(freeReg)))
+        restoreReg(freeReg)
       case _                            => 
     }
     restoreReg(freeRegister)

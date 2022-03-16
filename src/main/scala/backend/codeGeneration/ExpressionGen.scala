@@ -27,8 +27,7 @@ object ExpressionGen {
   }
 
   /* Translating an Expr to the ARM language */
-  def transExp(expr: Expr, rd: Register): ListBuffer[Instr] = {
-    val instructions = ListBuffer.empty[Instr]
+  def transExp(expr: Expr, rd: Register) = {
     expr match {
       case IntLiter(number) =>
         val reg = collectRegister(rd)
@@ -59,9 +58,12 @@ object ExpressionGen {
       case binOp: BinOp =>
         transBinOp(binOp, rd)
 
+      case DerefPointer(ptr) =>
+        transExp(ptr, rd)
+        currInstructions.add(Ldr(rd, RegAdd(rd)))
+
       case _ =>
     }
-    instructions
   }
 
   /* Translating a unary operator to the ARM language */
@@ -102,6 +104,18 @@ object ExpressionGen {
     }
 
     reg
+  }
+
+  private def transMemLoc(ptr: Expr, register: Register): Unit = {
+    ptr match {
+      case ident: Ident        =>
+        val (i, tpe) = symbTable(ident)
+        val offset = currSP - i
+        currInstructions.add(Add(rd, R13_SP, Imm_Int(offset)))
+      case DerefPointer(inTpe) =>
+        transExp(inTpe, register)
+      case _                   => ???
+    }
   }
 
   def transBinOp(op: BinOp, rn: Register): Unit = {
