@@ -13,7 +13,7 @@ object Main {
     val file = new File(args(0))
 
     assert(file.exists())
-    println("Parsing: " + args(0))
+    // println("Parsing: " + args(0))
 
     val EXITCODE_SUCC = 0
     val EXITCODE_SYNTAX_ERROR = 100

@@ -29,7 +29,7 @@ object ExpressionGen {
   def transExp(expr: Expr, rd: Register): Unit = {
     var reducedExpr = expr
     if (constantEvaluation) {
-      reducedExpr = reduceExpr(expr)
+      reducedExpr = reduceRHS(expr).asInstanceOf[Expr]
     }
     transExpInner(reducedExpr, rd)
   }
