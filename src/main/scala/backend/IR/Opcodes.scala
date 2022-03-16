@@ -110,6 +110,9 @@ object Opcodes {
       }
       Ldr(src, RegisterOffset(dst, offset))
     }
+    def apply(isByte: Boolean, src: Register, op: Operand): Instr = {
+      if (isByte) LdrSB(src, op) else Ldr(src, op)
+    }
   }
   // Load Byte Signed
   case class LdrSB(rd: Register, op2: Operand) extends Instr {
@@ -144,6 +147,9 @@ object Opcodes {
         return Str(src, RegAdd(dst))
       }
       Str(src, RegisterOffset(dst, offset))
+    }
+    def apply(isByte: Boolean, src: Register, addr: Address): Instr = {
+      if (isByte) StrB(src, addr) else Str(src, addr)
     }
   }
   //Storing byte

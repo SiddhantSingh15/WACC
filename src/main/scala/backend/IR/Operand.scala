@@ -82,11 +82,16 @@ object Operand {
   sealed case class DataLabel(label: Label) extends Operand {
     override def toString: String = s"=$label"
   }
-
+  case class ASL(r: Register, n: Imm_Int) extends Operand {
+    override def toString: String = s"$r, ASL $n"
+  }
   case class ASR(r: Register, value: Imm_Int) extends Operand {
     override def toString: String = s"$r, ASR $value"
   }
   case class LSL(r: Register, op: Operand) extends Operand {
     override def toString: String = s"$r, LSL $op"
+  }
+  case class LSR(r: Register, op: Operand) extends Operand {
+    override def toString: String = s"$r, LSR $op"
   }
 }

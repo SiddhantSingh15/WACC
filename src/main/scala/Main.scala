@@ -48,7 +48,7 @@ object Main {
           val (data, instructions) = codeGen.transProgram(programTree, symbTable)
 
           val prettyPrinter = backend.PrettyPrinter
-          prettyPrinter.prettyPrint(file.getName(), data, instructions)
+          prettyPrinter.prettyPrint(file.getName(), data, InstrEval.optimiseBlocks(instructions))
 
       case Failure(err) =>
         print(err.getError())
