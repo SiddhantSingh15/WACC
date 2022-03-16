@@ -68,8 +68,14 @@ object CodeGenHelper {
         case _: EqualityFuncs => Bool
         case _: LogicFuncs    => Bool
         case _: CompareFuncs  => Bool
+
+        case DerefPointer(ptr) =>
+            val PointerType(inTpe) = ptr.getType(symbTable)
+            inTpe
+
         case _                => ???
-        }
+      
+      }
     }
 
     def incrementSP(toInc: Int): Unit = {
