@@ -142,6 +142,12 @@ object CodeGenHelper {
                                 boolToBoolLiter(char1 == char2)
                             case (CharLiter(char1), CharLiter(char2), NotEqual(_, _)) =>
                                 boolToBoolLiter(char1 != char2)
+                            case (NewPair(exp11, exp12), NewPair(exp21,exp22), Equal(_, _)) =>
+                                reduceRHS(AST.And(reduceRHS(Equal(exp11, exp21).asInstanceOf[AssignRHS]).asInstanceOf[Expr], 
+                                reduceRHS(Equal(exp12, exp22).asInstanceOf[AssignRHS]).asInstanceOf[Expr]))
+                            case (NewPair(exp11, exp12), NewPair(exp21,exp22), NotEqual(_, _)) =>
+                                reduceRHS(AST.Or(reduceRHS(NotEqual(exp11, exp21).asInstanceOf[AssignRHS]).asInstanceOf[Expr], 
+                                reduceRHS(NotEqual(exp12, exp22).asInstanceOf[AssignRHS]).asInstanceOf[Expr]))
                             case (True, True, Equal(_, _)) =>
                                 True
                             case (False, False, Equal(_, _)) =>
@@ -170,64 +176,72 @@ object CodeGenHelper {
                                 boolToBoolLiter(num1 < num2)
                             case (IntLiter(num1), IntLiter(num2), LTE(_, _)) =>
                                 boolToBoolLiter(num1 <= num2)
-                            case (CharLiter(_), CharLiter(_), GT(_, _)) =>
-                                boolToBoolLiter(expr1.asInstanceOf[CharLiter].getChar > expr2.asInstanceOf[CharLiter].getChar)
-                            case (CharLiter(_), CharLiter(_), GTE(_, _)) =>
-                                boolToBoolLiter(expr1.asInstanceOf[CharLiter].getChar >= expr2.asInstanceOf[CharLiter].getChar)
-                            case (CharLiter(_), CharLiter(_), LT(_, _)) =>
-                                boolToBoolLiter(expr1.asInstanceOf[CharLiter].getChar < expr2.asInstanceOf[CharLiter].getChar)
-                            case (CharLiter(_), CharLiter(_), LTE(_, _)) =>
-                                boolToBoolLiter(expr1.asInstanceOf[CharLiter].getChar <= expr2.asInstanceOf[CharLiter].getChar)
+                            case (char1: CharLiter, char2: CharLiter, GT(_, _)) =>
+                                boolToBoolLiter(char1.getChar > char2.getChar)
+                            case (char1: CharLiter, char2: CharLiter, GTE(_, _)) =>
+                                boolToBoolLiter(char1.getChar >= char2.getChar)
+                            case (char1: CharLiter, char2: CharLiter, LT(_, _)) =>
+                                boolToBoolLiter(char1.getChar < char2.getChar)
+                            case (char1: CharLiter, char2: CharLiter, LTE(_, _)) =>
+                                boolToBoolLiter(char1.getChar <= char2.getChar)
                             case _ => rhs
                         }
                 }
             case op: UnOp =>
                 val redExpr = reduceRHS(op.expr)
                 (op, redExpr) match {
-                    case (Len(_), id : Ident) => 
+                    case (Len(_), ArrayLiter(exprs)) => 
                         if (constantPropagation) {
-                            val ArrayLiter(exprs) = symbTable.getValue(id).get.asInstanceOf[ArrayLiter]
                             return IntLiter(exprs.size)
                         }
-                        expr
+                        rhs
                     case (Negation(_), IntLiter(num)) => IntLiter(-1*num)
                     case (Not(_), True) => False
                     case (Not(_), False) => True
                     case (Chr(_), IntLiter(num)) => CharLiter(NormalCharacter(num.toChar))
-                    case (Ord(_), CharLiter(_)) => IntLiter(redExpr.asInstanceOf[CharLiter].getChar.toInt)
+                    case (Ord(_), char: CharLiter) => IntLiter(char.getChar.toInt)
                     case _ => rhs
                 }
             case id: Ident =>
                 if (constantPropagation) {
-                    val maybeValue = symbTable.getValue(id).get
-                    maybeValue match{
-                        case _: Expr => return maybeValue.asInstanceOf[Expr]
-                        case _ => return expr
-                    }
+                    return symbTable.getValue(id).getOrElse(rhs)
                 }
-                expr
+                rhs
             case ArrayElem(id, exprList) =>
                 if (constantPropagation) {
-                    var maybeValue = symbTable.getValue(id)
-                    if (maybeValue.nonEmpty) {
-                        var ArrayLiter(exprs) = maybeValue.get.asInstanceOf[ArrayLiter]
-                        while (true) {
-                            var i = 0
-                            var IntLiter(index) = reduceExpr(exprList(i))
-                            var exprValue = exprs(index)
-                            exprValue match {
-                                case ident: Ident =>
-                                    maybeValue = symbTable.getValue(id)
-                                    i += 1
-                                case _ =>
-                                    return exprValue
-                            }
+                    var ident = id
+                    var i = 0
+                    while (true) {
+                        var value = reduceRHS(ident)
+                        if (!value.isInstanceOf[ArrayLiter]) return rhs
+                        var ArrayLiter(exprs) = value
+                        var IntLiter(index) = reduceRHS(exprList(i))
+                        var exprValue = exprs(index)
+
+                        exprValue match {
+                            case id: Ident =>
+                                ident = id
+                                i += 1
+                            case _ =>
+                                return exprValue
                         }
-                    }  
-                    expr
+                    }
+                    rhs
                 } else {
-                    expr
+                    rhs
                 }
+            case Fst(fst) => 
+                val value = reduceRHS(fst)
+                if (!value.isInstanceOf[NewPair]) return rhs
+                var NewPair(expr, _) = value
+                if (expr == null) return rhs
+                expr
+            case Snd(snd) => 
+                val value = reduceRHS(snd)
+                if (!value.isInstanceOf[NewPair]) return rhs
+                var NewPair(_, expr) = value
+                if (expr == null) return rhs
+                expr
             case _ =>
                 rhs
         }
