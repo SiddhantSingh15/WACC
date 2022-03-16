@@ -19,10 +19,10 @@ object Assignments {
   /*Translating declaration of new variable to ARM language*/
   def translateDeclaration(t: Type, id : Ident, rhs : AssignRHS): Unit = {
     scopeSP += getTypeSize(t)
-    symbTable.add(id, scopeSP, t, None)
     val spOffset = currSP - scopeSP
     val freeRegister = saveReg()
-    val isByte = transAssignRHS(t, rhs, freeRegister)
+    val (isByte, value) = transAssignRHS(t, rhs, freeRegister)
+    symbTable.add(id, scopeSP, t, Some(value))
     currInstructions.add(Str(isByte, freeRegister, R13_SP, spOffset))
     restoreReg(freeRegister)
   }
@@ -34,16 +34,20 @@ object Assignments {
     lhs match {
       case id : Ident                   =>
         val (index, t) = symbTable(id)
-        val isByte= transAssignRHS(t, rhs, freeRegister)
+        val (isByte, value) = transAssignRHS(t, rhs, freeRegister)
         val spOffset = currSP - index  
+        symbTable.updateValue(id, t, Some(value))
         currInstructions.add(Str(isByte, freeRegister, R13_SP, spOffset))
       case Fst(id : Ident)              => 
-        transPairAssign(rhs, id, 1, freeRegister)
+        val value = transPairAssign(rhs, id, 1, freeRegister)
+        symbTable.updatePair(id, 1, value)
       case Snd(id : Ident)              => 
-        transPairAssign(rhs, id, 2, freeRegister)
+        val value = transPairAssign(rhs, id, 2, freeRegister)
+        symbTable.updatePair(id, 2, value)
       case x@ArrayElem(ident, exprList) =>
-        transAssignRHS(getExprType(x), rhs, freeRegister)
+        val (_, value) = transAssignRHS(getExprType(x), rhs, freeRegister)
         storeArrayElem(ident, exprList, freeRegister) 
+        symbTable.updateArray(ident, exprList, value)
       case _                            => 
     }
     restoreReg(freeRegister)
@@ -55,7 +59,18 @@ object Assignments {
       - Boolean (True if the size of RHS is a byte)
       - ListBuffer[Instr] (Translated instructions)
   */
-  def transAssignRHS(t: Type, rhs: AssignRHS, freeRegister: Register): Boolean = {
+
+  def transAssignRHS(t: Type, rhs: AssignRHS, freeRegister: Register): (Boolean, AssignRHS) = {
+
+    var reducedRHS = rhs
+    if (constantPropagation) {
+      reducedRHS = reduceRHS(rhs)
+    }
+
+    (transAssignRHSInner(t, reducedRHS, freeRegister), reducedRHS)
+  }
+
+  def transAssignRHSInner(t: Type, rhs: AssignRHS, freeRegister: Register): Boolean = {
     rhs match {
       case expr : Expr => 
         transExp(expr, freeRegister)
