@@ -32,10 +32,10 @@ object ScopeGen {
       val bool = reduceRHS(expr)
       bool match {
         case True =>
-          statThen.foreach((s: Stat) => transStat(s))
+          transScope(statThen)
           return
         case False =>
-          statElse.foreach((s: Stat) => transStat(s))
+          transScope(statElse)
           return
         case _ =>
       }
