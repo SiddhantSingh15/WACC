@@ -467,6 +467,19 @@ sealed case class ArrayElem(ident: Ident, exprList : List[Expr]) extends AssignL
     }
   }
 
+  case class DerefPointer(ptr: Expr) extends Expr with AssignLHS {
+    override def getType(symbTable: SymbolTable): Type = {
+      val tpe = ptr.getType(symbTable)
+      semanticErrors = ptr.semanticErrors
+      tpe match {
+        case PointerType(inType) => inType
+        case _                   =>
+          semanticErrors += MismatchTypesErr(ptr, tpe, List(PointerType(null)))
+          null
+      }
+    }
+  }
+
   sealed trait Heap extends AssignRHS
 
   case class Calloc(num: Expr, size: Expr) extends Heap {
