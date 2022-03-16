@@ -41,9 +41,9 @@ object CodeGenHelper {
     def isByte(t : Type): Boolean = {
         t == Bool || t == CharType
     }
-    // gets type for a particular expr
-    def getExprType(expr: Expr): Type = {
-        expr match {
+    // gets type for a particular rhs
+    def getExprType(rhs: Expr): Type = {
+        rhs match {
         case _: IntLiter         => Int
         case _: BoolLiter        => Bool
         case _: CharLiter        => CharType
@@ -101,11 +101,11 @@ object CodeGenHelper {
         if (bool) True else False
     }
 
-    def reduceExpr(expr: Expr): Expr = {
-        expr match {
+    def reduceRHS(rhs: AssignRHS): AssignRHS = {
+        rhs match {
             case op: BinOp =>
-                val expr1 = reduceExpr(op.exp1)
-                val expr2 = reduceExpr(op.exp2)
+                val expr1 = reduceRHS(op.exp1)
+                val expr2 = reduceRHS(op.exp2)
                 op match {
                     case mathOp: MathFuncs =>
                         (expr1, expr2, mathOp) match {
@@ -114,7 +114,7 @@ object CodeGenHelper {
                             case (IntLiter(num1), IntLiter(num2), Plus(_, _)) => IntLiter(num1 + num2)
                             case (IntLiter(num1), IntLiter(num2), AST.Sub(_, _)) => IntLiter(num1 - num2)
                             case (IntLiter(num1), IntLiter(num2), Mul(_, _)) => IntLiter(num1 * num2)
-                            case _ => expr
+                            case _ => rhs
                         }
                     case lgOp: LogicFuncs =>
                         (expr1, expr2, lgOp) match {
@@ -126,7 +126,7 @@ object CodeGenHelper {
                             case (_, True, AST.Or(_, _)) => True
                             case (False, _, AST.Or(_, _)) => expr2
                             case (_, False, AST.Or(_, _)) => expr1
-                            case _ => expr
+                            case _ => rhs
                         }
                     case eqOp: EqualityFuncs =>
                         (expr1, expr2, eqOp) match {
@@ -158,7 +158,7 @@ object CodeGenHelper {
                                 True
                             case (False, True, NotEqual(_, _)) =>
                                 True
-                            case _ => expr
+                            case _ => rhs
                         }
                     case cmpOp: CompareFuncs => 
                         (expr1, expr2, cmpOp) match {
@@ -178,21 +178,21 @@ object CodeGenHelper {
                                 boolToBoolLiter(expr1.asInstanceOf[CharLiter].getChar < expr2.asInstanceOf[CharLiter].getChar)
                             case (CharLiter(_), CharLiter(_), LTE(_, _)) =>
                                 boolToBoolLiter(expr1.asInstanceOf[CharLiter].getChar <= expr2.asInstanceOf[CharLiter].getChar)
-                            case _ => expr
+                            case _ => rhs
                         }
                 }
             case op: UnOp =>
-                val redExpr = reduceExpr(op.expr)
+                val redExpr = reduceRHS(op.expr)
                 (op, redExpr) match {
                     case (Negation(_), IntLiter(num)) => IntLiter(-1*num)
                     case (Not(_), True) => False
                     case (Not(_), False) => True
                     case (Chr(_), IntLiter(num)) => CharLiter(NormalCharacter(num.toChar))
                     case (Ord(_), CharLiter(_)) => IntLiter(redExpr.asInstanceOf[CharLiter].getChar.toInt)
-                    case _ => expr
+                    case _ => rhs
                 }
             case _ =>
-                expr
+                rhs
         }
     }
 }
