@@ -22,7 +22,7 @@ object lexer {
                     "malloc", "calloc", "realloc"
                     )
                     
-    val operators = Set("!", "-", "len", "ord", "chr", "*",
+    val operators = Set("!", "-", "len", "ord", "chr", "*", "~",
                 "/", "%", "+", "-", ">", ">=", "<",
                 "<=", "==", "!=", "&&", "||", "fst", "snd")
 

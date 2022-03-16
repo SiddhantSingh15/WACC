@@ -33,7 +33,10 @@ object Parser {
     ("string" #> String)  
   
   private lazy val `<type>` : Parsley[Type] =
-    attempt(`<array-type>`) <|> `<base-type>` <|> `<pair-type>`
+    attempt(`<array-type>`) <|> attempt(`<pointer-type>`) <|> `<base-type>` <|> `<pair-type>`
+  
+  private lazy val `<pointer-type>` : Parsley[PointerType] =
+    chain.postfix1((`<base-type>` <|> `<pair-type>`), "~" #> PointerType)
 
   private lazy val `<array-type>` : Parsley[ArrayType] =
     chain.postfix1((`<base-type>` <|> `<pair-type>`), "[]".label("to be part of an ArrayType") #> ArrayType)
@@ -104,7 +107,7 @@ object Parser {
     "calloc" *> parens(lift2(Calloc, `<expr>`, "," *> `<expr>`))
   
   private val `<deref>` : Parsley[DerefPointer] =
-    "*" *> (DerefPointer <#> `<expr>`)
+    "~" *> (DerefPointer <#> `<expr>`)
   
   private val `<param>` = 
     lift2(Param, `<type>`, `<ident>`)
@@ -148,7 +151,7 @@ object Parser {
     precedence(
       Atoms(parens(`<expr>`) <|> attempt(`<array-elem>`) <|> atom) :+
       Ops(Prefix)(
-          "*".label("operator") #> DerefPointer,
+          "~".label("operator") #> DerefPointer,
           "!".label("operator") #> Not,
           notFollowedBy(`<int-liter>`) *> "-".label("operator") #> Negation,
           "len".label("operator") #> Len,
