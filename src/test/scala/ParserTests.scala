@@ -225,6 +225,11 @@ class ParserTests extends AnyFunSuite {
     assert(newParser.parseFromFile(new File("wacc_examples/valid/while/whileCount.wacc")).get.isSuccess)
     assert(newParser.parseFromFile(new File("wacc_examples/valid/while/whileFalse.wacc")).get.isSuccess)
   }
+  
+  test("Valid Heap Tests") {
+    println(newParser.parseFromFile(new File("wacc_examples/valid/heap/refPointer.wacc")).get)
+    assert(newParser.parseFromFile(new File("wacc_examples/valid/heap/refPointer.wacc")).get.isSuccess)
+  }
 
   test("Invalid Array Tests") {
     assert(newParser.parseFromFile(new File("wacc_examples/invalid/syntaxErr/array/arrayExpr.wacc")).get.isFailure)
