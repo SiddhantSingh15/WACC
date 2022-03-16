@@ -79,6 +79,7 @@ object Parser {
     (Snd <#> ("snd" *> `<expr>`))
   
   private val `<assign-lhs>` : Parsley[AssignLHS] =
+    `<deref>` <|>
     `<pair-elem>` <|>
     attempt(`<array-elem>`) <|>
     `<ident>`
@@ -102,8 +103,8 @@ object Parser {
     "realloc" *> parens(lift2(Realloc, `<ident>`, "," *> `<expr>`)) <|> 
     "calloc" *> parens(lift2(Calloc, `<expr>`, "," *> `<expr>`))
   
-  private val `<deref>` : Parsley[DerefPointer] = 
-    "*" *> (DerefPointer <#> <expr>)
+  private val `<deref>` : Parsley[DerefPointer] =
+    "*" *> (DerefPointer <#> `<expr>`)
   
   private val `<param>` = 
     lift2(Param, `<type>`, `<ident>`)
