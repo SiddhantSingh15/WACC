@@ -227,8 +227,18 @@ class ParserTests extends AnyFunSuite {
   }
   
   test("Valid Heap Tests") {
-    println(newParser.parseFromFile(new File("wacc_examples/valid/heap/refPointer.wacc")).get)
+    assert(newParser.parseFromFile(new File("wacc_examples/valid/heap/doubleFree.wacc")).get.isSuccess)
+    assert(newParser.parseFromFile(new File("wacc_examples/valid/heap/malloc.wacc")).get.isSuccess)
+    println(newParser.parseFromFile(new File("wacc_examples/valid/heap/malloc1.wacc")).get)
+    assert(newParser.parseFromFile(new File("wacc_examples/valid/heap/malloc1.wacc")).get.isSuccess)
+    assert(newParser.parseFromFile(new File("wacc_examples/valid/heap/malloc2.wacc")).get.isSuccess)
     assert(newParser.parseFromFile(new File("wacc_examples/valid/heap/refPointer.wacc")).get.isSuccess)
+  }
+
+  test("Invalid Heap Tests") {
+    assert(newParser.parseFromFile(new File("wacc_examples/valid/heap/illegalFree.wacc")).get.isFailure)
+    assert(newParser.parseFromFile(new File("wacc_examples/invalid/syntaxErr/heap/badRealloc.wacc")).get.isFailure)
+    assert(newParser.parseFromFile(new File("wacc_examples/invalid/syntaxErr/heap/noCalloc.wacc")).get.isFailure)
   }
 
   test("Invalid Array Tests") {
