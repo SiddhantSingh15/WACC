@@ -12,11 +12,11 @@ class CodeGenChecker extends AnyFunSuite {
     val codeGen = backend.CodeGen;
     val prettyPrinter = backend.PrettyPrinter;
     val semChecker = frontend.SemanticChecker
-    val file = new File("wacc_examples/valid/array/arrayPrint.wacc")
+    val file = new File("wacc_examples/valid/runtimeErr/divideByZero/divZero.wacc")
     val programTree = parser.parseFromFile(file).get.get
     val (symbTable, semRes) = semChecker.checkProgram(programTree)
     val (data, instructions) = codeGen.transProgram(programTree, symbTable)
-    prettyPrinter.prettyPrint(file.getName(), data, instructions)
+    prettyPrinter.prettyPrint(file.getName(), data, InstrEval.optimiseBlocks(instructions))
 
     assert(true)
 }
