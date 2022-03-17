@@ -20,7 +20,6 @@ class BackendTests extends AnyFunSuite {
 
   for ((opti, i) <- listOfOpti.zipWithIndex) {                  
     for (subDir <- listOfDir) {
-      val subDir = "array"
       if (!subDir.equals("advanced")) {
         for (f <- getFilesFrom(s"wacc_examples/valid/$subDir")) {
           val name = f.getName
