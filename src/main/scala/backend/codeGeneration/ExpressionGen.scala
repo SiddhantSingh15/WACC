@@ -79,7 +79,7 @@ object ExpressionGen {
         transMemLoc(addr, rd)
       
       case Sizeof(tpe) =>
-        currInstructions.add(Ldr(rd, Imm_Int(getTypeSize(tpe))))
+        currInstructions.add(Ldr(rd, Load_Mem(getTypeSize(tpe))))
 
       case _ =>
     }

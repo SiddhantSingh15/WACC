@@ -1,8 +1,8 @@
 package backend.CodeGeneration
 
 import scala.collection.mutable.ListBuffer
-import scala.collection.immutable.Map
 import scala.collection.immutable.Set
+import scala.collection.mutable.HashMap
 
 import frontend.AST._
 import backend.Operand._
@@ -16,7 +16,7 @@ import backend.CodeGeneration.CodeGenHelper._
 
 object HeapGen {
 
-  private var heap = Map.empty[Ident, Int]
+  val heap = new HashMap[Ident, Int]
   private var addresses = Set.empty[Int]
   private var next = 0
   private val OVFLOW_RS = 31
@@ -27,10 +27,12 @@ object HeapGen {
   def populateHeap(ident: Ident, rhs: AssignRHS): Unit = 
     rhs match {
       case id: Ident =>
-        heap += ((ident, heap(id)))
+        if (heap.contains(id)) {
+          heap.addOne(ident, heap(id))
+        }
       case h: Heap   =>
         val nxt = incNext
-        heap += ((ident, nxt))
+        heap.addOne(ident, nxt)
         addresses += nxt
       case _         => 
   }
@@ -47,14 +49,18 @@ object HeapGen {
     currInstructions.add(Add(rd, rd, otherReg))
   }
 
-  def freePointer(ident: Ident) =  {
-    val address = heap(ident)
-    
-    if (addresses(address)) {
-      addresses -= address
-      currInstructions.add(Bl(Label("free")))
+  def freePointer(ident: Ident): Unit =  {
+    if (heap.contains(ident)) {
+      val address = heap(ident)
+      
+      if (addresses(address)) {
+        addresses -= address
+        currInstructions.add(Bl(Label("free")))
+      } else {
+        freeErr(doubleFreeErr)
+      }
     } else {
-      freeErr(doubleFreeErr)
+      throwBadFreeErr
     }
   }
 
