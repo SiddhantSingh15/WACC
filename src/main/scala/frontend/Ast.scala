@@ -312,6 +312,10 @@ sealed case class ArrayElem(ident: Ident, exprList : List[Expr]) extends AssignL
 			if (currentExp1 == Any || currentExp2 == Any) {
 				return expected._2
 			}
+
+      if (isMemAlloc(currentExp1, currentExp2)) {
+        currentExp1
+      }
 			
 			if (currentExp1 != currentExp2) {
         if (expected._1.contains(currentExp1)) {
@@ -339,6 +343,11 @@ sealed case class ArrayElem(ident: Ident, exprList : List[Expr]) extends AssignL
 		}
     override def toString: String = 
       exp1.toString + " " + symbol + " " + exp2.toString
+    
+    def isMemAlloc(lhs: Type, rhs: Type): Boolean = this match {
+      case Plus(_, _) | Sub(_, _) => lhs.isPointer && (rhs == Int)
+      case _                      => false
+    }
 	}
 
 	sealed trait MathFuncs extends BinOp {
