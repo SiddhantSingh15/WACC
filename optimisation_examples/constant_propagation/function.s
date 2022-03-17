@@ -47,6 +47,7 @@ Optimisation:
 		BL f_f
 		MOV r4, r0
 		STR r4, [sp]
+		LDR r4, [sp]
 		MOV r0, r4
 		BL p_print_int
 		BL p_print_ln

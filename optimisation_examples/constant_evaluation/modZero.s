@@ -1,6 +1,6 @@
 /*
 WACC Program:
-	# division by zero
+	# modulus by zero
 
 	# Output:
 	# #runtime_error#

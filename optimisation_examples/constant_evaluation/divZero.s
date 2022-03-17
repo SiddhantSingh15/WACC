@@ -41,8 +41,22 @@ Optimisation:
 	main:
 		PUSH {lr}
 		SUB sp, sp, #4
-		LDR r0, =p_check_division_by_zero
-		BL p_throw_runtime_error
+		LDR r4, =10
+		LDR r5, =0
+		MOV r0, r4
+		MOV r1, r5
+		BL p_check_division_by_zero
+		BL __aeabi_idiv
+		MOV r4, r0
+		STR r4, [sp]
+		LDR r4, =msg_0
+		MOV r0, r4
+		BL p_print_string
+		BL p_print_ln
+		ADD sp, sp, #4
+		LDR r0, =0
+		POP {pc}
+		.ltorg
 	p_throw_runtime_error:
 		BL p_print_string
 		MOV r0, #-1

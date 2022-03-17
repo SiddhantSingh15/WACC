@@ -27,6 +27,7 @@ Optimisation:
 		SUB sp, sp, #4
 		LDR r4, =153
 		STR r4, [sp]
+		LDR r4, [sp]
 		MOV r0, r4
 		BL exit
 		ADD sp, sp, #4

@@ -48,6 +48,7 @@ Optimisation:
 		SUB sp, sp, #4
 		LDR r4, =-2147483647
 		STR r4, [sp]
+		LDR r4, [sp]
 		MOV r0, r4
 		BL p_print_int
 		BL p_print_ln
@@ -56,6 +57,7 @@ Optimisation:
 		SUBS r4, r4, r5
 		BLVS p_throw_overflow_error
 		STR r4, [sp]
+		LDR r4, [sp]
 		MOV r0, r4
 		BL p_print_int
 		BL p_print_ln
@@ -64,6 +66,7 @@ Optimisation:
 		SUBS r4, r4, r5
 		BLVS p_throw_overflow_error
 		STR r4, [sp]
+		LDR r4, [sp]
 		MOV r0, r4
 		BL p_print_int
 		BL p_print_ln

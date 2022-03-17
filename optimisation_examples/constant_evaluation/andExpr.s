@@ -53,7 +53,8 @@ Optimisation:
 		MOV r0, r4
 		BL p_print_bool
 		BL p_print_ln
-		MOV r0, #0
+		MOV r4, #0
+		MOV r0, r4
 		BL p_print_bool
 		BL p_print_ln
 		ADD sp, sp, #2

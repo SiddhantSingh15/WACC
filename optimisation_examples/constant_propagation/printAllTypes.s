@@ -8,7 +8,6 @@ Optimisation:
 	different scopes and replaces the variables with the constant
 	value.
 */
-
 	.data
 
 	msg_0:
@@ -279,17 +278,20 @@ Optimisation:
 		LDR r4, =msg_6
 		MOV r0, r4
 		BL p_print_string
-		MOV r0, #'a'
+		MOV r4, #'a'
+		MOV r0, r4
 		BL putchar
 		LDR r4, [sp, #106]
 		MOV r0, r4
 		BL p_print_string
-		MOV r0, #'b'
+		MOV r4, #'b'
+		MOV r0, r4
 		BL putchar
 		LDR r4, [sp, #106]
 		MOV r0, r4
 		BL p_print_string
-		MOV r0, #'c'
+		MOV r4, #'c'
+		MOV r0, r4
 		BL putchar
 		LDR r4, =msg_7
 		MOV r0, r4
@@ -317,12 +319,14 @@ Optimisation:
 		LDR r4, =msg_9
 		MOV r0, r4
 		BL p_print_string
-		MOV r0, #'a'
+		MOV r4, #'a'
+		MOV r0, r4
 		BL putchar
 		LDR r4, [sp, #86]
 		MOV r0, r4
 		BL p_print_string
-		MOV r0, #1
+		MOV r4, #1
+		MOV r0, r4
 		BL p_print_bool
 		LDR r4, =msg_10
 		MOV r0, r4
@@ -333,12 +337,14 @@ Optimisation:
 		LDR r4, =msg_11
 		MOV r0, r4
 		BL p_print_string
-		MOV r0, #'b'
+		MOV r4, #'b'
+		MOV r0, r4
 		BL putchar
 		LDR r4, [sp, #86]
 		MOV r0, r4
 		BL p_print_string
-		MOV r0, #0
+		MOV r4, #0
+		MOV r0, r4
 		BL p_print_bool
 		LDR r4, =msg_12
 		MOV r0, r4
@@ -383,17 +389,20 @@ Optimisation:
 		BL p_print_string
 		BL p_print_ln
 		ADD sp, sp, #16
-		MOV r0, #1
+		MOV r4, #1
+		MOV r0, r4
 		BL p_print_bool
 		LDR r4, [sp, #34]
 		MOV r0, r4
 		BL p_print_string
-		MOV r0, #0
+		MOV r4, #0
+		MOV r0, r4
 		BL p_print_bool
 		LDR r4, [sp, #34]
 		MOV r0, r4
 		BL p_print_string
-		MOV r0, #1
+		MOV r4, #1
+		MOV r0, r4
 		BL p_print_bool
 		BL p_print_ln
 		ADD sp, sp, #4
@@ -430,11 +439,13 @@ Optimisation:
 		BL p_print_string
 		BL p_print_ln
 		ADD sp, sp, #4
-		MOV r0, #1
+		MOV r4, #1
+		MOV r0, r4
 		BL p_print_bool
 		BL p_print_ln
 		ADD sp, sp, #1
-		MOV r0, #'x'
+		MOV r4, #'x'
+		MOV r0, r4
 		BL putchar
 		BL p_print_ln
 		ADD sp, sp, #1

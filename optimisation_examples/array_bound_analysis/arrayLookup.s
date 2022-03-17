@@ -16,7 +16,6 @@ Optimisation:
 	Program does not check for out of bounds array access 
 	since 0 is lower than the size of array a.
 */
-
 	.data
 
 	msg_int:

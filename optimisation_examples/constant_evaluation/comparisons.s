@@ -36,28 +36,36 @@ Optimisation:
 	.global main
 	main:
 		PUSH {lr}
-		MOV r0, #1
+		MOV r4, #1
+		MOV r0, r4
 		BL p_print_bool
 		BL p_print_ln
-		MOV r0, #1
+		MOV r4, #1
+		MOV r0, r4
 		BL p_print_bool
 		BL p_print_ln
-		MOV r0, #1
+		MOV r4, #1
+		MOV r0, r4
 		BL p_print_bool
 		BL p_print_ln
-		MOV r0, #1
+		MOV r4, #1
+		MOV r0, r4
 		BL p_print_bool
 		BL p_print_ln
-		MOV r0, #1
+		MOV r4, #1
+		MOV r0, r4
 		BL p_print_bool
 		BL p_print_ln
-		MOV r0, #1
+		MOV r4, #1
+		MOV r0, r4
 		BL p_print_bool
 		BL p_print_ln
-		MOV r0, #1
+		MOV r4, #1
+		MOV r0, r4
 		BL p_print_bool
 		BL p_print_ln
-		MOV r0, #1
+		MOV r4, #1
+		MOV r0, r4
 		BL p_print_bool
 		BL p_print_ln
 		LDR r0, =0

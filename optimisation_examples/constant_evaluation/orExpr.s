@@ -19,7 +19,7 @@ WACC Program:
 
 Optimisation:
 	Program automatically evaluates a || true to true (line 52)
-	and b || false to b (line 55).
+	and b || false to b (line 56).
 */
 	.data
 
@@ -49,7 +49,8 @@ Optimisation:
 		MOV r0, r4
 		BL p_print_bool
 		BL p_print_ln
-		MOV r0, #1
+		MOV r4, #1
+		MOV r0, r4
 		BL p_print_bool
 		BL p_print_ln
 		LDRSB r4, [sp]

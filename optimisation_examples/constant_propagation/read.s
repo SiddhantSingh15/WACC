@@ -18,7 +18,6 @@ Optimisation:
 	Program does not replace x with any variables since
 	it is no longer 10 after read and can be any integer.
 */
-
 	.data
 
 	msg_0:
