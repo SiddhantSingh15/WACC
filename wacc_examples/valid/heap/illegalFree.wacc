@@ -1,6 +1,6 @@
 begin
-    char chr = 's';
-    println chr;
-    char ~str = &chr;
+    char c = 's';
+    println c;
+    char ~str = &c;
     free str
 end
