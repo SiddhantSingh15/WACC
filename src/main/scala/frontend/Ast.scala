@@ -438,7 +438,7 @@ sealed case class ArrayElem(ident: Ident, exprList : List[Expr]) extends AssignL
         if (tpe == null) 
           true
         else
-          false
+          in == tpe
       case _                 => false
     }
   }
