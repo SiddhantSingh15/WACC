@@ -19,9 +19,13 @@ object CodeGenTestSuite {
     files
   }
 
-  private def createExecutable(file: File): Unit = {
+  private def createExecutable(file: File, flag: Int): Unit = {
+    var optiFlag = ""
+    if (flag > 0) {
+      optiFlag = s" $flag"
+    }
     val fName = file.getPath()
-    s"java -jar compiler.jar $fName".!
+    s"java -jar compiler.jar $fName$optiFlag".!
     val name = file.getName().replaceAll(".wacc", "")
     s"arm-linux-gnueabi-gcc -o $name -mcpu=arm1176jzf-s -mtune=arm1176jzf-s $name.s".!
     val armFile = new File(file.getName().replaceAll(".wacc", ".s"))
@@ -29,19 +33,15 @@ object CodeGenTestSuite {
   }
 
   def createOutputFiles(file: File, flag: Int): (File, File, ProcessBuilder) = {
-    createExecutable(file)
+    createExecutable(file, flag)
     val name = file.getName().replaceAll(".wacc", "")
     val output = new File(s"$name.out")
     val inputString = readFile(getFilePath(file, "wacc_inputs"))
-    var optiFlag = ""
-    if (flag > 0) {
-      optiFlag = s" $flag"
-    }
     val command =
       if (inputString.isEmpty()) {
-        s"qemu-arm -L /usr/arm-linux-gnueabi/ $name$optiFlag" #> output
+        s"qemu-arm -L /usr/arm-linux-gnueabi/ $name" #> output
       } else {
-        (s"printf '$inputString'" #| s"qemu-arm -L /usr/arm-linux-gnueabi/ $name$optiFlag" #> output)
+        (s"printf '$inputString'" #| s"qemu-arm -L /usr/arm-linux-gnueabi/ $name" #> output)
       }
     (file, output, command)
   }
