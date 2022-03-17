@@ -27,13 +27,13 @@ object CodeGenHelper {
     // returns size for a particular type
     def getTypeSize(t: Type) : Int = {
         t match {
-        case Int               => SIZE_INT
-        case Bool              => SIZE_BOOL
-        case CharType          => SIZE_CHAR
-        case String            => SIZE_STR
-        case ArrayType(innerT) => SIZE_ARR
-        case Pair(_, _)        => SIZE_PAIR
-        case _                 => ERROR
+        case Int                            => SIZE_INT
+        case Bool                           => SIZE_BOOL
+        case CharType                       => SIZE_CHAR
+        case String                         => SIZE_STR
+        case ArrayType(_) | PointerType(_)  => SIZE_ARR
+        case Pair(_, _)                     => SIZE_PAIR
+        case _                              => ERROR
         }
     }
 

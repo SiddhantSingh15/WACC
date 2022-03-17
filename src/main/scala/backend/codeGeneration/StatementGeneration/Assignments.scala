@@ -84,6 +84,8 @@ object Assignments {
         transArrayLiter(t, list, freeRegister)
       case NewPair(fst, snd) =>  
         transAssignRHSPair(fst, snd, freeRegister)
+      case heap: Heap =>
+        transHeap(t, heap, freeRegister)
       case _ =>
     }
     isByte(t)
