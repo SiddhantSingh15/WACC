@@ -36,18 +36,18 @@ object Assignments {
         val (index, t) = symbTable(id)
         val (isByte, value) = transAssignRHS(t, rhs, freeRegister)
         val spOffset = currSP - index  
-        symbTable.updateValue(id, t, Some(value))
+        if (constantPropagation) symbTable.updateValue(id, t, Some(value))
         currInstructions.add(Str(isByte, freeRegister, R13_SP, spOffset))
       case Fst(id : Ident)              => 
         val value = transPairAssign(rhs, id, 1, freeRegister)
-        symbTable.updatePair(id, 1, value)
+        if (constantPropagation) symbTable.updatePair(id, 1, value)
       case Snd(id : Ident)              => 
         val value = transPairAssign(rhs, id, 2, freeRegister)
-        symbTable.updatePair(id, 2, value)
+        if (constantPropagation) symbTable.updatePair(id, 2, value)
       case x@ArrayElem(ident, exprList) =>
         val (_, value) = transAssignRHS(getExprType(x), rhs, freeRegister)
         storeArrayElem(ident, exprList, freeRegister) 
-        symbTable.updateArray(ident, exprList, value)
+        if (constantPropagation) symbTable.updateArray(ident, exprList, value)
       case _                            => 
     }
     restoreReg(freeRegister)
