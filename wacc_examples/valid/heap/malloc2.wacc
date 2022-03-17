@@ -1,0 +1,5 @@
+begin
+    string ~str = malloc(4);
+    str = realloc(str, 10);
+    free str
+end
