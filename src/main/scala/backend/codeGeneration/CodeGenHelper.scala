@@ -68,10 +68,13 @@ object CodeGenHelper {
         case _: EqualityFuncs => Bool
         case _: LogicFuncs    => Bool
         case _: CompareFuncs  => Bool
-
+        
+        case MemAddr(addr)     =>
+            PointerType(getExprType(addr))
         case DerefPointer(ptr) =>
             val PointerType(inTpe) = ptr.getType(symbTable)
             inTpe
+        case _: Sizeof         => Int
 
         case _                => ???
       
