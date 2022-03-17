@@ -16,29 +16,27 @@ import backend.CodeGeneration.HeapGen._
 object FreeGen {
 
   /*Translating a Free statement into ARM language*/
-  def transFree(expr: Expr): Unit = {
+  def transFree(expr: Expr): Unit = expr match {
+    case ident: Ident =>
+      transFreeHelper(ident)
+    case _            => throwBadFreeErr
+  }
 
-    expr match {
-      case id: Ident => 
-        val freeRegister = saveReg()
-        val (i, t) = symbTable(id)
+  def transFreeHelper(ident: Ident) = {
+    val freeRegister = saveReg()
+    val (i, t) = symbTable(ident)
 
-        currInstructions.addAll(ListBuffer[Instr](
-          Ldr(freeRegister, R13_SP, currSP - i),
-          /*Have to move to R0 to call free function*/
-          Mov(resultRegister, freeRegister)
-        ))
+    currInstructions.addAll(ListBuffer[Instr](
+      Ldr(freeRegister, R13_SP, currSP - i),
+      Mov(resultRegister, freeRegister)))
+    
+    restoreReg(freeRegister)
 
-        restoreReg(freeRegister)
-
-        t match {
-          case _: Pair        => currInstructions.add(Bl(addRTE(FreePair)))
-          case _: ArrayType   => currInstructions.add(Bl(addRTE(FreeArray)))
-          case _: PointerType => freePointer(id)
-          case _              => throwBadFreeErr
-        }
-
-      case _         =>
-    }
+    t match {
+      case _: Pair        => currInstructions.add(Bl(addRTE(FreePair)))
+      case _: ArrayType   => currInstructions.add(Bl(addRTE(FreeArray)))
+      case _: PointerType => freePointer(ident)
+      case _              => ???
+    }      
   }
 }
