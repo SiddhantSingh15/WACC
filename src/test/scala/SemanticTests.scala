@@ -126,6 +126,12 @@ class SemanticTests extends AnyFunSuite {
     assert(helper2Func(new File("wacc_examples/invalid/semanticErr/while/whileIntCondition.wacc")))
   }
 
+  test("Invalid Heap Errors") {
+    assert(helper2Func(new File("wacc_examples/invalid/semanticErr/heap/badAddr.wacc")))
+    assert(helper2Func(new File("wacc_examples/invalid/semanticErr/heap/badCalloc.wacc")))
+    assert(helper2Func(new File("wacc_examples/invalid/semanticErr/heap/badDeref.wacc")))
+  }
+
   def helper2Func(file: File): Boolean = {
     val parser = frontend.Parser
     val semChecker = frontend.SemanticChecker
