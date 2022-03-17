@@ -20,15 +20,14 @@ class BackendTests extends AnyFunSuite {
 
   for ((opti, i) <- listOfOpti.zipWithIndex) {                  
     for (subDir <- listOfDir) {
+      val subDir = "array"
       if (!subDir.equals("advanced")) {
         for (f <- getFilesFrom(s"wacc_examples/valid/$subDir")) {
           val name = f.getName
           if (!(i == 4 && toAvoidForPeephole.contains(name))) {
-            val (file, out, command) = createOutputFiles(f, i)
-            test(s"$opti exit code test for $name") {
+            test(s"$opti test for $name") {
+              val (file, out, command) = createOutputFiles(f, i)
               assert(checkExitCode(file, command))
-            }
-            test(s"$opti expected test for $name") {
               assert(checkStdOut(file, out))
             }
           }
