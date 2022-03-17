@@ -1,0 +1,11 @@
+begin
+    char~ str = calloc(6, sizeof(char));
+    ~(str) = 'm';
+    ~(str + 1) = 'a';
+    ~(str + 2) = 'l';
+    ~(str + 3) = 'l';
+    ~(str + 4) = 'o';
+    ~(str + 5) = 'c';
+    println str;
+    free str
+end

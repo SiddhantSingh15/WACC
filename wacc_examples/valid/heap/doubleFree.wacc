@@ -1,0 +1,7 @@
+begin
+    int ~num = malloc(4);
+    ~num = 10;
+    println ~num;
+    free num;
+    free num
+end
