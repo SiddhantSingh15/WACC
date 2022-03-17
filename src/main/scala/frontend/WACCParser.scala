@@ -147,6 +147,7 @@ object Parser {
     `<pair-liter>` <|>
     `<bool-liter>` <|>
     `<int-liter>` <|>
+    `<sizeof>` <|>
     fully(`<char-liter>` <|>
     `<str-liter>`)
   
