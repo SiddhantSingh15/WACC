@@ -80,7 +80,7 @@ object CodeGenTestSuite {
     outputFile.delete()
     // Replace register addresses
     val addr = "0x[0-9a-z]+".r
-    outLines = addr replaceAllIn (outLines, "#addr#")
+    outLines = addr replaceAllIn (outLines, "$addr$")
     outLines.equals(expLines)
   }
 }
