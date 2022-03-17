@@ -19,12 +19,12 @@ object lexer {
                     "begin", "end", "newpair", "call", "fst", "snd", 
                     "newpair", "pair", "null", "true", "false", "int",
                     "char", "string", "bool", "len", "ord", "chr",
-                    "malloc", "calloc", "realloc"
+                    "malloc", "calloc", "realloc", "sizeof"
                     )
                     
     val operators = Set("!", "-", "len", "ord", "chr", "*", "~",
                 "/", "%", "+", "-", ">", ">=", "<",
-                "<=", "==", "!=", "&&", "||", "fst", "snd")
+                "<=", "==", "!=", "&&", "||", "fst", "snd", "&")
 
     private val wacc = LanguageDef.plain.copy(
         commentLine = "#",

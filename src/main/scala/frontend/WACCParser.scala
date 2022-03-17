@@ -109,6 +109,9 @@ object Parser {
   private val `<deref>` : Parsley[DerefPointer] =
     "~" *> (DerefPointer <#> `<expr>`)
   
+  private val `<sizeof>` : Parsley[Sizeof] = 
+    "sizeof" *> lift1(Sizeof, parens(`<type>`))
+  
   private val `<param>` = 
     lift2(Param, `<type>`, `<ident>`)
   
@@ -152,6 +155,7 @@ object Parser {
       Atoms(parens(`<expr>`) <|> attempt(`<array-elem>`) <|> atom) :+
       Ops(Prefix)(
           "~".label("operator") #> DerefPointer,
+          "&".label("operator") #> MemAddr,
           "!".label("operator") #> Not,
           notFollowedBy(`<int-liter>`) *> "-".label("operator") #> Negation,
           "len".label("operator") #> Len,

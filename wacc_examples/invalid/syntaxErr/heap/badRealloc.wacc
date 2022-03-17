@@ -1,0 +1,4 @@
+begin
+    int a = 1;
+    int ~b = realloc(a + 1, a)
+end

@@ -75,6 +75,12 @@ object ExpressionGen {
         transExp(ptr, rd)
         currInstructions.add(Ldr(rd, RegAdd(rd)))
 
+      case MemAddr(addr) =>
+        transMemLoc(addr, rd)
+      
+      case Sizeof(tpe) =>
+        currInstructions.add(Ldr(rd, Imm_Int(getTypeSize(tpe))))
+
       case _ =>
     }
   }
