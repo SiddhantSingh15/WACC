@@ -34,10 +34,10 @@ object FreeGen {
           case _: Pair        => currInstructions.add(Bl(addRTE(FreePair)))
           case _: ArrayType   => currInstructions.add(Bl(addRTE(FreeArray)))
           case _: PointerType => freePointer(id)
-          case _              => throwBadFreeErr
+          case _              => ???
         }
 
-      case _         =>
+      case _         => ???
     }
   }
 }
