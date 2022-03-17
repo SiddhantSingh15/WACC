@@ -28,7 +28,7 @@ object ScopeGen {
    * The function will append that list based on which branch to traverse.
    */
 	def transIf(expr: Expr, statThen: List[Stat], statElse: List[Stat]): Unit = {
-    if (constantFA) {
+    if (controlFA) {
       val bool = reduceRHS(expr)
       bool match {
         case True =>
@@ -76,7 +76,7 @@ object ScopeGen {
    * The function will append that list based on which branch to traverse.
    */
 	def transWhile(expr: Expr, stats: List[Stat]): Unit = {
-    if (constantFA) {
+    if (controlFA) {
       val bool = reduceRHS(expr)
       bool match {
         case False =>

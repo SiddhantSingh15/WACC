@@ -214,10 +214,7 @@ object CodeGenHelper {
                 val redExpr = reduceRHS(op.expr)
                 (op, redExpr) match {
                     case (Len(_), ArrayLiter(exprs)) => 
-                        if (constantPropagation) {
-                            return IntLiter(exprs.size)
-                        }
-                        rhs
+                        IntLiter(exprs.size)
                     case (Negation(_), IntLiter(num)) => 
                         num match {
                             case _ if num <= -2147483648 => op
@@ -235,29 +232,25 @@ object CodeGenHelper {
                 }
                 rhs
             case ArrayElem(id, exprList) =>
-                if (constantPropagation) {
-                    var ident = id
-                    var i = 0
-                    while (true) {
-                        var value = reduceRHS(ident)
-                        if (!value.isInstanceOf[ArrayLiter]) return rhs
-                        var ArrayLiter(exprs) = value
-                        var IntLiter(index) = reduceRHS(exprList(i))
-                        if (index < 0 || index >= exprs.size) return rhs
-                        var exprValue = exprs(index)
+                var ident = id
+                var i = 0
+                while (true) {
+                    var value = reduceRHS(ident)
+                    if (!value.isInstanceOf[ArrayLiter]) return rhs
+                    var ArrayLiter(exprs) = value
+                    var IntLiter(index) = reduceRHS(exprList(i))
+                    if (index < 0 || index >= exprs.size) return rhs
+                    var exprValue = exprs(index)
 
-                        exprValue match {
-                            case id: Ident =>
-                                ident = id
-                                i += 1
-                            case _ =>
-                                return exprValue
-                        }
+                    exprValue match {
+                        case id: Ident =>
+                            ident = id
+                            i += 1
+                        case _ =>
+                            return exprValue
                     }
-                    rhs
-                } else {
-                    rhs
                 }
+                rhs
             case Fst(fst) => 
                 val value = reduceRHS(fst)
                 if (!value.isInstanceOf[NewPair]) return rhs

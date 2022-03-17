@@ -28,16 +28,20 @@ object CodeGenTestSuite {
     armFile.delete()
   }
 
-  def createOutputFiles(file: File): (File, File, ProcessBuilder) = {
+  def createOutputFiles(file: File, flag: Int): (File, File, ProcessBuilder) = {
     createExecutable(file)
     val name = file.getName().replaceAll(".wacc", "")
     val output = new File(s"$name.out")
     val inputString = readFile(getFilePath(file, "wacc_inputs"))
+    var optiFlag = ""
+    if (flag > 0) {
+      optiFlag = s" $flag"
+    }
     val command =
       if (inputString.isEmpty()) {
-        s"qemu-arm -L /usr/arm-linux-gnueabi/ $name" #> output
+        s"qemu-arm -L /usr/arm-linux-gnueabi/ $name$optiFlag" #> output
       } else {
-        (s"printf '$inputString'" #| s"qemu-arm -L /usr/arm-linux-gnueabi/ $name" #> output)
+        (s"printf '$inputString'" #| s"qemu-arm -L /usr/arm-linux-gnueabi/ $name$optiFlag" #> output)
       }
     (file, output, command)
   }
