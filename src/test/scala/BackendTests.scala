@@ -9,7 +9,7 @@ class BackendTests extends AnyFunSuite {
   val listOfDir = dir.listFiles.map(_.getName).toList
 
   for (subDir <- listOfDir) {
-    if (!subDir.equals("advanced") && !subDir.equals("runtimeErr")) {
+    if (!subDir.equals("advanced")) {
       for (f <- getFilesFrom(s"wacc_examples/valid/$subDir")) {
         val name = f.getName
         val (file, out, command) = createOutputFiles(f)

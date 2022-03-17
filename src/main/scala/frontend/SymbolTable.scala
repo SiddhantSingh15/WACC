@@ -100,6 +100,7 @@ case class SymbolTable(
       if (!value.isInstanceOf[ArrayLiter]) return
       var ArrayLiter(exprs) = value
       var IntLiter(index) = reduceRHS(exprList(i))
+      if (index < 0 || index >= exprs.size) return
       var maybeValue = exprs(index)
 
       maybeValue match {
