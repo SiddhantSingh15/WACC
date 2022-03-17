@@ -6,14 +6,41 @@ import SyntaxErrors.{TestError}
 import parsley.Success
 import parsley.Failure
 import backend._
+import backend.CodeGen._
 
 object Main {
+
+  // The first argument is the filename.
+  // The second argument is the number catering to the optimisation technique
+  //    1 - Constant Evaluation
+  //    2 - Constant Propagation
+  //    3 - Control Flow Analysis
+  //    4 - Peephole Optimisation
 
   def main(args: Array[String]): Unit =  {
     val file = new File(args(0))
 
     assert(file.exists())
-    println("Parsing: " + args(0))
+
+    if (args.size == 2) {
+      val optiTech = args(1).toInt
+      optiTech match {
+        case 1 => 
+          constantEvaluation = true
+        case 2 =>
+          constantEvaluation = true
+          constantPropagation = true
+        case 3 =>
+          constantEvaluation = true
+          constantPropagation = true
+          controlFA = true
+        case 4 =>
+          constantEvaluation = true
+          constantPropagation = true
+          controlFA = true
+          peephole = true
+      }
+    }
 
     val EXITCODE_SUCC = 0
     val EXITCODE_SYNTAX_ERROR = 100
@@ -33,7 +60,6 @@ object Main {
           }
         }
 
-        // println(Console.GREEN + s"${args(0)} is synctactically valid.")
         if (!semRes.isEmpty) {
             for (error <- semRes.toList) {
             println("[" + Console.RED + "error" + Console.RESET + "]: " + error)
@@ -41,20 +67,19 @@ object Main {
           }
         }
 
-        // println(Console.GREEN + s"${args(0)} is semantically valid.")
-          // System.exit(EXITCODE_SUCC)
-          val programTree = parsed.get
-          val codeGen = backend.CodeGen
-          val (data, instructions) = codeGen.transProgram(programTree, symbTable)
+        val programTree = parsed.get
+        var (data, instructions) = transProgram(programTree, symbTable)
 
-          val prettyPrinter = backend.PrettyPrinter
-          prettyPrinter.prettyPrint(file.getName(), data, InstrEval.optimiseBlocks(instructions))
+        val prettyPrinter = backend.PrettyPrinter
+        
+        if (peephole) {
+          instructions = InstrEval.optimiseBlocks(instructions)
+        }
+        prettyPrinter.prettyPrint(file.getName(), data, instructions)
 
       case Failure(err) =>
         print(err.getError())
         System.exit(EXITCODE_SYNTAX_ERROR)
-      }
-
     }
-
+  }
 }

@@ -26,8 +26,21 @@ object ExpressionGen {
     }
   }
 
+  def transExp(expr: Expr, rd: Register): Unit = {
+    var reducedExpr = expr
+    if (constantEvaluation) {
+      val reducedRHS = reduceRHS(expr)
+      reducedRHS match {
+        case _: Expr =>
+          reducedExpr = reduceRHS(expr).asInstanceOf[Expr]
+        case _ =>
+      }
+    }
+    transExpInner(reducedExpr, rd)
+  }
+
   /* Translating an Expr to the ARM language */
-  def transExp(expr: Expr, rd: Register): Unit = {   
+  def transExpInner(expr: Expr, rd: Register): Unit = {   
     expr match {
       case IntLiter(number) =>
         val reg = collectRegister(rd)
@@ -66,10 +79,10 @@ object ExpressionGen {
   def transUnOp(op: UnOp, rd: Register): Unit = {
     op match {
       case Not(expr) =>
-        transExp(expr, rd)
+        transExpInner(expr, rd)
         currInstructions.add(Eor(rd, rd, Imm_Int(TRUE_INT)))
       case Negation(expr) =>
-        transExp(expr, rd) 
+        transExpInner(expr, rd) 
         currInstructions.addAll(ListBuffer[Instr](
           RsbS(rd, rd, Imm_Int(0)),
           BranchLinkCond(OF, addRTE(Overflow))
@@ -82,9 +95,9 @@ object ExpressionGen {
         ))
   
       case Ord(expr) =>
-        transExp(expr, rd)
+        transExpInner(expr, rd)
       case Chr(expr) =>
-        transExp(expr, rd)
+        transExpInner(expr, rd)
       case _  =>
     }
   }
@@ -104,9 +117,9 @@ object ExpressionGen {
 
   def transBinOp(op: BinOp, rn: Register): Unit = {
 
-    transExp(op.exp1, rn)
+    transExpInner(op.exp1, rn)
     val rm = saveReg()
-    transExp(op.exp2, rm)
+    transExpInner(op.exp2, rm)
 
     // Check over allocation of register
     var rd = rn

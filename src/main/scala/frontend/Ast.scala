@@ -295,7 +295,7 @@ sealed case class ArrayElem(ident: Ident, exprList : List[Expr]) extends AssignL
 
 	sealed trait BinOp extends Expr {
 	  // val semanticErrs = mutable.ListBuffer.empty[SemanticError]
-    val symbol: String
+    	val symbol: String
 		val exp1: Expr
 		val exp2: Expr
 		val expected: (List[Type], Type)
@@ -310,25 +310,25 @@ sealed case class ArrayElem(ident: Ident, exprList : List[Expr]) extends AssignL
 			}
 			
 			if (currentExp1 != currentExp2) {
-        if (expected._1.contains(currentExp1)) {
-          semanticErrors += 
-            MismatchTypesErr(exp2, currentExp2, List(currentExp1))
-          return expected._2
-        }
-        if (expected._1.contains(currentExp2)) {
-          semanticErrors += 
-            MismatchTypesErr(exp1, currentExp1, List(currentExp2))
-          return expected._2
-        }
-      } else {
-        if (expected._1.contains(currentExp1) && 
-            expected._1.contains(currentExp2)) {
-              return expected._2
-            }
-        if (expected._1.isEmpty) {
-          return expected._2
-        }
-      }
+			if (expected._1.contains(currentExp1)) {
+			semanticErrors += 
+				MismatchTypesErr(exp2, currentExp2, List(currentExp1))
+			return expected._2
+			}
+			if (expected._1.contains(currentExp2)) {
+			semanticErrors += 
+				MismatchTypesErr(exp1, currentExp1, List(currentExp2))
+			return expected._2
+			}
+		} else {
+			if (expected._1.contains(currentExp1) && 
+				expected._1.contains(currentExp2)) {
+				return expected._2
+				}
+			if (expected._1.isEmpty) {
+			return expected._2
+			}
+		}
       semanticErrors += MismatchTypesErr(exp1, currentExp1, expected._1)
       semanticErrors += MismatchTypesErr(exp2, currentExp2, expected._1)
 			expected._2
@@ -397,25 +397,49 @@ sealed case class ArrayElem(ident: Ident, exprList : List[Expr]) extends AssignL
     override def toString: String = number.toString
 		override def getType(symbTable: SymbolTable): Type = Int
 	}
-	sealed trait BoolLiter extends Expr
+	sealed trait BoolLiter extends Expr 
 	case object True extends BoolLiter {
 		override def getType(symbTable: SymbolTable): Type = Bool
 	}
 	case object False extends BoolLiter {
 		override def getType(symbTable: SymbolTable): Type = Bool
 	}
-	sealed trait Character
+	sealed trait Character {
+		override def equals(that: Any): Boolean = 
+			(this, that) match {
+				case (NormalCharacter(thisChar), NormalCharacter(thatChar)) =>
+					thisChar == thatChar
+				case (EscapeCharacter(thisChar), EscapeCharacter(thatChar)) =>
+					thisChar == thatChar
+				case _ =>
+					false
+			}
+		
+	}
 	case class NormalCharacter(char: Char) extends Character {
 		override def toString: String = char.toString
+		override def equals(that: Any): Boolean = 
+			that match {
+				case NormalCharacter(thatChar) => 
+					char == thatChar
+				case _ => false
+			}
 	}
 	case class EscapeCharacter(char: Char) extends Character {
 		override def toString: String = s"\\$char"
+		override def equals(that: Any): Boolean = 
+			that match {
+				case EscapeCharacter(thatChar) => 
+					char == thatChar
+				case _ => false
+			}
 	}
 	case class CharLiter(character: Character) extends Expr{
-    override def toString: String = character match {
-		case NormalCharacter(_) => "\'" + character.toString() + "\'"
-		case EscapeCharacter(_) => "\'" + character.toString()(1) + "\'"
-	}
+		override def toString: String = character match {
+			case NormalCharacter(_) => "\'" + character.toString() + "\'"
+			case EscapeCharacter(_) => "\'" + character.toString()(1) + "\'"
+		}
+		def getChar: Char = this.toString.charAt(1)
 		override def getType(symbTable: SymbolTable): Type = CharType
 	}
 	case class StrLiter(string: List[Character]) extends Expr{

@@ -1,9 +1,10 @@
 package frontend
 
 import scala.collection.mutable.HashMap
-import scala.collection.mutable
+import scala.collection.mutable.ListBuffer
 import backend.CodeGeneration.CodeGenHelper._
 import AST._
+import backend.CodeGen._
 
 case class Info(t: Type, pList: Option[List[Type]])
 
@@ -13,9 +14,9 @@ case class SymbolTable(
     funcMap: HashMap[Ident, Info]) 
   {
 
-  val children = mutable.ListBuffer.empty[SymbolTable]
+  val children = ListBuffer.empty[SymbolTable]
 
-  val varMap = new HashMap[Ident, (Int, Type)]
+  val varMap = new HashMap[Ident, (Int, Type, Option[AssignRHS])]
 
   def nextScope(nextFunc: Ident): SymbolTable = {
     val next = SymbolTable(this, nextFunc, funcMap)
@@ -51,22 +52,104 @@ case class SymbolTable(
     t.get.t
   }
 
-  def add(ident: Ident, n: Int, t: Type): Unit = {
-    varMap.addOne(ident, (n, t))
+  def add(ident: Ident, n: Int, t: Type, value: Option[AssignRHS]): Unit = {
+    value match {
+      case Some(Call(_, _)) =>
+        varMap.addOne(ident, (n, t, None))
+      case _ =>
+        varMap.addOne(ident, (n, t, value))  
+    }
   }
 
   def add(ident: Ident, t: Type): Unit = {
-    varMap.addOne(ident, (0, t))
+    varMap.addOne(ident, (0, t, None))
   }
 
-  def lookupCG(ident: Ident): (Int, Type) = {
+  def updatePair(id: Ident, pos: Int, rhs: AssignRHS): Unit = {
+    if (!rhs.isInstanceOf[Expr]) return
+    val value = this.getValue(id).get
+    val (_, tpe) = this(id)
+    if (!value.isInstanceOf[NewPair]) return
+    val NewPair(expr1, expr2) = value
+    var maybeValue = rhs
+    rhs match {
+      case ident: Ident =>
+        if (this.getValue(ident).isEmpty) {
+          maybeValue = null
+        }
+      case _ => 
+    }
+    pos match {
+      case 1 => 
+        updateValue(id, tpe, Some(NewPair(maybeValue.asInstanceOf[Expr], expr2)))
+      case 2 => 
+        updateValue(id, tpe, Some(NewPair(expr1, maybeValue.asInstanceOf[Expr])))
+      case _ =>
+    }
+  }
+
+  def updateArray(id: Ident, exprList: List[Expr], rhs: AssignRHS): Unit = {
+    var ident = id
+
+    val (_, tpe) = symbTable(id)
+
+    var i = 0
+    var found = false
+    while (!found) {
+      var value = reduceRHS(ident)
+      if (!value.isInstanceOf[ArrayLiter]) return
+      var ArrayLiter(exprs) = value
+      var IntLiter(index) = reduceRHS(exprList(i))
+      if (index < 0 || index >= exprs.size) return
+      var maybeValue = exprs(index)
+
+      maybeValue match {
+        case Ident(_) =>
+          ident = maybeValue.asInstanceOf[Ident]
+          i += 1
+        case _ =>
+          found = true
+          val (_, tpe) = symbTable(ident)
+          updateValue(ident, tpe, Some(ArrayLiter(exprs.updated(index, rhs.asInstanceOf[Expr])).asInstanceOf[AssignRHS]))
+      }
+    }
+  
+  }
+
+  def updateValue(ident: Ident, t: Type, value: Option[AssignRHS]): Unit = {
+    var maybeValue = value
+    (inBeginEndScope, value) match {
+      case (false, _) =>
+        maybeValue = None
+      case (_, Some(Call(_, _))) =>
+        maybeValue = None
+      case _ => 
+    }
+
+    var currentST = this
+    
+    while (currentST != null) {
+      val vMap = currentST.varMap
+      if (vMap.contains(ident)) {
+        val (i, tpe, v) = vMap(ident)
+        if (tpe == t) {
+            vMap(ident) = (i, t, maybeValue)
+          }
+      }
+      currentST = currentST.prev
+    }
+    
+  }
+
+
+  def lookupCG(ident: Ident): (Int, Type, Option[AssignRHS]) = {
     var currentST = this
     while (currentST != null) {
       val vMap = currentST.varMap
       if (vMap.contains(ident)) {
-        val (i, t) = vMap.apply(ident)
+        val (i, t, v) = vMap.apply(ident)
         if (i != 0) {
-          return (i, t)
+          return (i, t, v)
         }
       }
       currentST = currentST.prev
@@ -83,8 +166,8 @@ case class SymbolTable(
   }
 
   def addVariables(vars: List[(Ident, Type)]): 
-                   mutable.ListBuffer[SemanticError] = {
-    var semanticErrors = mutable.ListBuffer.empty[SemanticError]
+                   ListBuffer[SemanticError] = {
+    var semanticErrors = ListBuffer.empty[SemanticError]
     for (v <- vars) {
       if (varMap.contains(v._1)) {
         semanticErrors += DeclaredVarErr(v._1)
@@ -96,8 +179,8 @@ case class SymbolTable(
   }
 
   def addFunctions(funcs: List[(Ident, Info)]): 
-                   mutable.ListBuffer[SemanticError] = {
-    var semanticErrors = mutable.ListBuffer.empty[SemanticError]
+                   ListBuffer[SemanticError] = {
+    var semanticErrors = ListBuffer.empty[SemanticError]
     for (f <- funcs) {
       if (funcMap.contains(f._1)) {
         semanticErrors += DeclaredFuncErr(f._1)
@@ -124,23 +207,33 @@ case class SymbolTable(
     info.isDefined
   }
 
-  def apply(expr: Ident): (Int, Type) = {
-    lookupCG(expr)
+  def apply(id: Ident): (Int, Type) = {
+    val (i, t, v) = lookupCG(id)
+    (i, t)
   }
+
+  def getValue(id: Ident): Option[AssignRHS] = {
+    if (varMap.contains(id)) {
+      varMap(id)._3
+    } else {
+      None
+    }
+  }
+
   
   def parameterMatch(ident: Ident, args: Option[ArgList]): 
-                    mutable.ListBuffer[SemanticError] = {
+                    ListBuffer[SemanticError] = {
     val info = funcMap.get(ident)
     if (info.isEmpty) {
-      return mutable.ListBuffer[SemanticError](NotDeclaredFuncErr(ident: Ident))
+      return ListBuffer[SemanticError](NotDeclaredFuncErr(ident: Ident))
     }
 
     val Some(Info(_, value)) = info
     if (args.isEmpty) {
       if (value.exists(_.isEmpty)) {
-        return mutable.ListBuffer[SemanticError]()
+        return ListBuffer[SemanticError]()
       }
-      return mutable.ListBuffer(InvalidParamsErr(ident, 0, value.get.length))
+      return ListBuffer(InvalidParamsErr(ident, 0, value.get.length))
     }
 
     val argList = args.get.exprs
@@ -149,10 +242,10 @@ case class SymbolTable(
     val argLen = argList.length
 
     if (argLen != paramLen) {
-      return mutable.ListBuffer(InvalidParamsErr(ident, argLen, paramLen))
+      return ListBuffer(InvalidParamsErr(ident, argLen, paramLen))
     }
 
-    var result = mutable.ListBuffer.empty[SemanticError]
+    var result = ListBuffer.empty[SemanticError]
     for (i <- 0 until argLen) {
       val argType = argList(i).getType(this)
       val paramType = pList(i)
