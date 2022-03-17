@@ -1,0 +1,3 @@
+begin
+    char ~c = calloc(true, sizeof(char))
+end

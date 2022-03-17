@@ -480,7 +480,24 @@ sealed case class ArrayElem(ident: Ident, exprList : List[Expr]) extends AssignL
     }
   }
 
+  case class Sizeof(tpe: Type) extends Expr {
+    override def getType(symbTable: SymbolTable): Type = Int
+  }
+
   sealed trait Heap extends AssignRHS
+
+  case class MemAddr(ptr: Expr) extends Expr {
+    override def getType(symbTable: SymbolTable): Type = {
+      val tpe = ptr.getType(symbTable)
+      semanticErrors = ptr.semanticErrors
+      ptr match {
+        case _: Ident | _: DerefPointer =>
+        case _					                => 
+          semanticErrors += IllegalReference(ptr)
+      }
+      PointerType(tpe)
+    }
+  }
 
   case class Calloc(num: Expr, size: Expr) extends Heap {
     override def getType(symbTable: SymbolTable): Type = {

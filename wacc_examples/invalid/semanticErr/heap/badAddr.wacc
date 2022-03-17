@@ -1,0 +1,4 @@
+begin
+    bool b = false;
+    int ~a = &b
+end
