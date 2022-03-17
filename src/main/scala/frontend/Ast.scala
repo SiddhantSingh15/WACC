@@ -314,7 +314,7 @@ sealed case class ArrayElem(ident: Ident, exprList : List[Expr]) extends AssignL
 			}
 
       if (isMemAlloc(currentExp1, currentExp2)) {
-        currentExp1
+        return currentExp1
       }
 			
 			if (currentExp1 != currentExp2) {
