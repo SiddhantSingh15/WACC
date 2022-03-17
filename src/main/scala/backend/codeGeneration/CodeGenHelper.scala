@@ -109,11 +109,34 @@ object CodeGenHelper {
                 op match {
                     case mathOp: MathFuncs =>
                         (expr1, expr2, mathOp) match {
-                            case (IntLiter(num1), IntLiter(num2), Div(_, _)) => IntLiter(num1 / num2)
-                            case (IntLiter(num1), IntLiter(num2), Mod(_, _)) => IntLiter(num1 % num2)
-                            case (IntLiter(num1), IntLiter(num2), Plus(_, _)) => IntLiter(num1 + num2)
-                            case (IntLiter(num1), IntLiter(num2), AST.Sub(_, _)) => IntLiter(num1 - num2)
-                            case (IntLiter(num1), IntLiter(num2), Mul(_, _)) => IntLiter(num1 * num2)
+                            case (IntLiter(num1), IntLiter(num2), Div(_, _)) => 
+                                num2 match {
+                                    case 0 => Div(IntLiter(num1), IntLiter(num2))
+                                    case _ => IntLiter(num1 / num2)
+                                }
+                            case (IntLiter(num1), IntLiter(num2), Mod(_, _)) => 
+                                num2 match {
+                                    case 0 => Mod(IntLiter(num1), IntLiter(num2))
+                                    case _ => IntLiter(num1 % num2)
+                                }
+                            case (IntLiter(num1), IntLiter(num2), Plus(_, _)) => 
+                                val sum : Long = num1.toLong + num2.toLong
+                                sum match {
+                                    case _ if sum != (num1 + num2).toLong => Plus(IntLiter(num1), IntLiter(num2))
+                                    case _ => IntLiter(num1 + num2)
+                                }
+                            case (IntLiter(num1), IntLiter(num2), AST.Sub(_, _)) => 
+                                val diff : Long = num1.toLong - num2.toLong
+                                diff match {
+                                    case _ if diff != (num1 - num2) => AST.Sub(IntLiter(num1), IntLiter(num2))
+                                    case _ => IntLiter(num1 - num2)
+                                }
+                            case (IntLiter(num1), IntLiter(num2), Mul(_, _)) => 
+                                val mult : Long = num1.toLong * num2.toLong
+                                mult match {
+                                    case _ if mult != (num1 * num2) => Mul(IntLiter(num1), IntLiter(num2))
+                                    case _ => IntLiter(num1 * num2)
+                                }
                             case _ => rhs
                         }
                     case lgOp: LogicFuncs =>
@@ -195,7 +218,11 @@ object CodeGenHelper {
                             return IntLiter(exprs.size)
                         }
                         rhs
-                    case (Negation(_), IntLiter(num)) => IntLiter(-1*num)
+                    case (Negation(_), IntLiter(num)) => 
+                        num match {
+                            case _ if num <= -2147483648 => op
+                            case _ => IntLiter(-1*num)
+                        }
                     case (Not(_), True) => False
                     case (Not(_), False) => True
                     case (Chr(_), IntLiter(num)) => CharLiter(NormalCharacter(num.toChar))
@@ -216,6 +243,7 @@ object CodeGenHelper {
                         if (!value.isInstanceOf[ArrayLiter]) return rhs
                         var ArrayLiter(exprs) = value
                         var IntLiter(index) = reduceRHS(exprList(i))
+                        if (index < 0 || index >= exprs.size) return rhs
                         var exprValue = exprs(index)
 
                         exprValue match {
