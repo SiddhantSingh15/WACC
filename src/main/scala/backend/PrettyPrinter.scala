@@ -15,31 +15,28 @@ object PrettyPrinter {
     
     val fileWriter = new FileWriter(file)
 
-    val sb = new StringBuilder
-
     if (!data.isEmpty) {
-      sb ++= ".data\n\n"
-      data.foreach(d => printDataTable(d, sb))
-      sb ++= "\n"
+      fileWriter.write("\t.data\n\n")
+      data.foreach(d => printDataTable(d, fileWriter))
+      fileWriter.write("\n")
     }
 
-    sb ++= "\t.text\n\n\t.global main\n"
+    fileWriter.write("\t.text\n\n\t.global main\n")
 
     instrs.foreach((x: (Label, BlockInstrs)) => {
         val labelStr = x._1
-        sb ++= s"\t$labelStr:\n"
-        sb ++= x._2.toString()
+        fileWriter.write(s"\t$labelStr:\n")
+        fileWriter.write(x._2.toString())
     })
-    fileWriter.write(sb.toString())
     fileWriter.close()
   }
 
-  private def printDataTable(d: Data, sb: StringBuilder): Unit = {
+  private def printDataTable(d: Data, fileWriter: FileWriter): Unit = {
     val Data(Label(l), s) = d
-    sb ++= s"\t$l:\n"
+    fileWriter.write(s"\t$l:\n")
     val len = size(s)
-    sb ++= s"\t\t.word $len\n"
-    sb ++= s"\t\t.ascii \"$s\"\n"
+    fileWriter.write(s"\t\t.word $len\n")
+    fileWriter.write(s"\t\t.ascii \"$s\"\n")
   }
 
   private def size(str: String): Int = {
