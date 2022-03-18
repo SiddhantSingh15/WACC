@@ -7,5 +7,9 @@
 
 projectName = "compiler"
 
-system("java -jar #{projectName}.jar #{ARGV[0]}")
+if ARGV.length == 1
+    system("java -jar #{projectName}.jar #{ARGV[0]}")
+else
+    system("java -jar #{projectName}.jar #{ARGV[0]} #{ARGV[1]}")
+end
 exit $?.exitstatus
