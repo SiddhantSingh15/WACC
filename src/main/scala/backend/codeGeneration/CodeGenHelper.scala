@@ -243,7 +243,13 @@ object CodeGenHelper {
                 }
             case id: Ident =>
                 if (constantPropagation) {
-                    return symbTable.getValue(id).getOrElse(rhs)
+                    val value = symbTable.getValue(id).getOrElse(rhs)
+
+                    value match {
+                        case _ if value == rhs => return rhs
+                        case ident: Ident => return reduceRHS(ident)
+                        case _ => return value
+                    }
                 }
                 rhs
             case ArrayElem(id, exprList) =>
@@ -258,6 +264,8 @@ object CodeGenHelper {
                     var exprValue = exprs(index)
 
                     exprValue match {
+                        case id: Ident if i == (exprList.size - 1) =>
+                            return exprValue
                         case id: Ident =>
                             ident = id
                             i += 1
@@ -268,6 +276,8 @@ object CodeGenHelper {
                 rhs
             case Fst(fst) => 
                 val value = reduceRHS(fst)
+                println(fst)
+                println(value)
                 if (!value.isInstanceOf[NewPair]) return rhs
                 var NewPair(expr, _) = value
                 if (expr == null) return rhs
@@ -283,3 +293,4 @@ object CodeGenHelper {
         }
     }
 }
+
