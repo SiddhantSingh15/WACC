@@ -5,6 +5,13 @@
 
 # puts "TODO: setup this script to call your WACC compiler"
 
+#   The first argument is the filename.
+#   The second argument is the number catering to the optimisation technique
+#      1 - Constant Evaluation
+#      2 - Constant Propagation
+#      3 - Control Flow Analysis
+#      4 - Peephole Optimisation
+
 projectName = "compiler"
 
 if ARGV.length == 1

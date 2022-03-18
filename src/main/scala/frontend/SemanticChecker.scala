@@ -9,30 +9,30 @@ object SemanticChecker {
 
   def checkProgram(prog: WaccProgram): 
     (SymbolTable, mutable.ListBuffer[SemanticError]) = {
-      val WaccProgram(s, stats) = prog
-      val globSymTable: SymbolTable = 
-        SymbolTable(null, null, new mutable.HashMap[Ident, Info])
-      val globFuncs = s.map(convertFuncType)
-      semanticErrors ++= globSymTable.addFunctions(globFuncs)
+    val WaccProgram(s, stats) = prog
+    val globSymTable: SymbolTable = 
+      SymbolTable(null, null, new mutable.HashMap[Ident, Info])
+    val globFuncs = s.map(convertFuncType)
+    semanticErrors ++= globSymTable.addFunctions(globFuncs)
 
-      for (func <- s) {
-        checkFunc(func, globSymTable.nextScope(func.ident))
-      }
+    for (func <- s) {
+      checkFunc(func, globSymTable.nextScope(func.ident))
+    }
 
-      for (func <- s) {
-        checkReturnExits(func)
-      }
+    for (func <- s) {
+      checkReturnExits(func)
+    }
 
-      checkStats(stats, globSymTable)
-      (globSymTable, semanticErrors)
+    checkStats(stats, globSymTable)
+    (globSymTable, semanticErrors)
 	}
 
   def checkFunc(func: Func, symbTable: SymbolTable): Unit = {
     val Func(tpe, ident, paramList, stat) = func 
     paramList match { 
       case ParamList(pList) =>
-      symbTable.addVariables(pList.map((param: Param) => 
-        (param.ident, param.tpe)))
+        symbTable.addVariables(pList.map((param: Param) => 
+          (param.ident, param.tpe)))
       case _ =>   
     }
     checkStats(stat, symbTable)
@@ -51,9 +51,10 @@ object SemanticChecker {
     val lastStat = stats.last
 
     lastStat match {
-      case Return(_) | Exit(_) => return true
+      case Return(_) | Exit(_) => true
       case While(_, stats) => checkReturnHelper(stats)
-      case If(_, statIf, statThen) => checkReturnHelper(statIf) && checkReturnHelper(statThen)
+      case If(_, statIf, statThen) => 
+        checkReturnHelper(statIf) && checkReturnHelper(statThen)
       case _                => false
     }
   }
@@ -64,32 +65,30 @@ object SemanticChecker {
       checkStat(stat, symbTable)
   }
 
-  def checkStat(stat: Stat, symbTable: SymbolTable): Unit = 
-
-    stat match {
-      case Read(assignLHS)                => 
-        checkRead(assignLHS, symbTable)
-      case Free(expr)                     => 
-        checkFree(expr, symbTable)
-      case Return(expr)                   => 
-        checkReturn(expr, symbTable)
-      case Exit(expr)                     => 
-        checkExit(expr, symbTable)
-      case Print(expr)                    => 
-        checkType(expr, symbTable)
-      case Println(expr)                  => 
-        checkType(expr, symbTable)
-      case If(expr, statThen, statElse)   => 
-        checkIf(expr, statThen, statElse, symbTable)
-      case While(expr, stats)              => 
-        checkWhile(expr, stats, symbTable)
-      case Begin(stats)                    => 
-        checkStats(stats, symbTable.nextScope)
-      case AssignLR(assignLHS, assignRHS) => 
-        checkAssign(assignLHS, assignRHS, symbTable)
-      case TypeAssign(t, ident, rhs)      => 
-        checkTypeAssign(t, ident, rhs, symbTable)
-      case _                              => 
+  def checkStat(stat: Stat, symbTable: SymbolTable): Unit = stat match {
+    case Read(assignLHS)                => 
+      checkRead(assignLHS, symbTable)
+    case Free(expr)                     => 
+      checkFree(expr, symbTable)
+    case Return(expr)                   => 
+      checkReturn(expr, symbTable)
+    case Exit(expr)                     => 
+      checkExit(expr, symbTable)
+    case Print(expr)                    => 
+      checkType(expr, symbTable)
+    case Println(expr)                  => 
+      checkType(expr, symbTable)
+    case If(expr, statThen, statElse)   => 
+      checkIf(expr, statThen, statElse, symbTable)
+    case While(expr, stats)              => 
+      checkWhile(expr, stats, symbTable)
+    case Begin(stats)                    => 
+      checkStats(stats, symbTable.nextScope)
+    case AssignLR(assignLHS, assignRHS) => 
+      checkAssign(assignLHS, assignRHS, symbTable)
+    case TypeAssign(t, ident, rhs)      => 
+      checkTypeAssign(t, ident, rhs, symbTable)
+    case _                              => 
   }
   
   private def convertFuncType(f: Func): (Ident, Info) = {
@@ -99,7 +98,7 @@ object SemanticChecker {
   }
 
   private def checkTypeAssign(tpe: Type, ident: Ident, rhs: AssignRHS, 
-                              symbTable: SymbolTable): Unit = {
+    symbTable: SymbolTable): Unit = {
     if (symbTable.containScope(ident)) {
       semanticErrors += DeclaredVarErr(ident)
       return
@@ -119,8 +118,8 @@ object SemanticChecker {
   }
 
 
-  private def checkOtherRead(lhs : AssignRHS, symbTable : SymbolTable) : 
-                             Unit = {
+  private def checkOtherRead(lhs : AssignRHS, symbTable : SymbolTable):
+    Unit = {
 		val otherType = checkType(lhs, symbTable)
 		otherType match {
 			case AST.CharType | AST.Int =>
@@ -130,21 +129,20 @@ object SemanticChecker {
 	}
 
   private def checkAssign(lhs: AssignLHS, rhs: AssignRHS, 
-                          symbTable: SymbolTable): Unit
-    = lhs match {
-      case ident: Ident      =>
-        checkEqAssignType(ident, rhs, symbTable)
-      case aElem: ArrayElem  =>
-        checkAssignType(checkType(aElem, symbTable), rhs, symbTable)
-      case pElem: PairElem   =>
-        checkAssignType(checkType(pElem, symbTable), rhs, symbTable)
-      case ptr: DerefPointer =>
-        checkAssignType(checkType(ptr, symbTable), rhs, symbTable)
+    symbTable: SymbolTable): Unit = lhs match {
+    case ident: Ident      =>
+      checkEqAssignType(ident, rhs, symbTable)
+    case aElem: ArrayElem  =>
+      checkAssignType(checkType(aElem, symbTable), rhs, symbTable)
+    case pElem: PairElem   =>
+      checkAssignType(checkType(pElem, symbTable), rhs, symbTable)
+    case ptr: DerefPointer =>
+      checkAssignType(checkType(ptr, symbTable), rhs, symbTable)
   }
 
   
   private def checkEqAssignType(ident: Ident, rhs: AssignRHS, 
-                                symbTable: SymbolTable): Unit = {
+    symbTable: SymbolTable): Unit = {
     if (!symbTable.contains(ident)) {
       semanticErrors += NotDeclaredVarErr(ident)
       return
@@ -159,7 +157,7 @@ object SemanticChecker {
   }
 
   private def checkAssignType(lType: Type, rhs: AssignRHS, 
-                              symbTable: SymbolTable) = {
+    symbTable: SymbolTable) = {
     val rType = checkType(rhs, symbTable)
     
     if ((lType != rType) && (lType != null) && (rType != null)) {
@@ -191,7 +189,7 @@ object SemanticChecker {
 	}
 
 	private def checkIf(cond : Expr, statThen: List[Stat], statElse: List[Stat],  
-                      symbTable : SymbolTable) = {
+    symbTable : SymbolTable) = {
 		val tpe = checkType(cond, symbTable)
 		if((tpe != null) && (tpe != Bool)){
 				semanticErrors += MismatchTypesErr(cond, tpe, List(Bool))
@@ -201,17 +199,17 @@ object SemanticChecker {
 		checkStats(statElse, symbTable.nextScope)
 	}
 
-	private def checkWhile(cond: Expr, stat: List[Stat], symbTable: SymbolTable) = {
+	private def checkWhile(cond: Expr, stat: List[Stat], 
+    symbTable: SymbolTable) = {
 		val tpe = checkType(cond, symbTable)
 		if((tpe != null) && (tpe != Bool)){
 				semanticErrors += MismatchTypesErr(cond, tpe, List(Bool))
 		}
-
 		checkStats(stat, symbTable.nextScope)
 	}
 
 	private def checkType(assignRHS : AssignRHS, symbTable : SymbolTable) : 
-                        Type = {
+    Type = {
 		val tpe = assignRHS.getType(symbTable)
 		
 		if(assignRHS.semanticErrors.nonEmpty){

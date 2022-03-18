@@ -52,10 +52,8 @@ object lexer {
        lexer.whiteSpace *> p <* lexer.whiteSpace
 
     val IDENTIFIER = amend {lexer.identifier}.label("identifier")
-    val NUMBER = 
-        lexer
-        .lexeme(digit.label("end of number")
-                    .foldLeft1[Long](0)((n, d) => n * 10 + d.asDigit))
+    val NUMBER = lexer.lexeme(digit.label("end of number")
+        .foldLeft1[Long](0)((n, d) => n * 10 + d.asDigit))
         .label("number")
 
     object implicits {

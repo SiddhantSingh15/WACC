@@ -23,8 +23,10 @@ object Parser {
     
   val eb = new TestErrorBuilder
 
-  def parse[Err: ErrorBuilder](input: String): Result[TestError, WaccProgram] = `<program>`.parse[TestError](input)(eb)
-  def parseFromFile[Err: ErrorBuilder](file: File): Try[Result[TestError, WaccProgram]] = `<program>`.parseFromFile[TestError](file)(eb, Codec.ISO8859)
+  def parse[Err: ErrorBuilder](input: String): Result[TestError, WaccProgram] = 
+    `<program>`.parse[TestError](input)(eb)
+  def parseFromFile[Err: ErrorBuilder](file: File): Try[Result[TestError, WaccProgram]] = 
+    `<program>`.parseFromFile[TestError](file)(eb, Codec.ISO8859)
   
   private lazy val `<base-type>`: Parsley[BaseType] = 
     ("int" #> Int) <|> 
@@ -33,20 +35,24 @@ object Parser {
     ("string" #> String)  
   
   private lazy val `<type>` : Parsley[Type] =
-    attempt(`<array-type>`) <|> attempt(`<pointer-type>`) <|> `<base-type>` <|> `<pair-type>`
+    attempt(`<array-type>`) <|> 
+    attempt(`<pointer-type>`) <|> 
+    `<base-type>` <|> 
+    `<pair-type>`
   
   private lazy val `<pointer-type>` : Parsley[PointerType] =
     chain.postfix1((`<base-type>` <|> `<pair-type>`), "~" #> PointerType)
 
   private lazy val `<array-type>` : Parsley[ArrayType] =
-    chain.postfix1((`<base-type>` <|> `<pair-type>`), "[]".label("to be part of an ArrayType") #> ArrayType)
+    chain.postfix1((`<base-type>` <|> `<pair-type>`), 
+      "[]".label("to be part of an ArrayType") #> ArrayType)
 
   private lazy val `<pair-elem-type>`: Parsley[PairElemType] =
     "pair" #> PairElemPair <|> (PairElemWithType <#> `<type>`)
 
   private lazy val `<pair-type>` : Parsley[PairType] =
     ("pair" *> parens(
-        lift2(Pair, `<pair-elem-type>`,"," *> `<pair-elem-type>`))
+      lift2(Pair, `<pair-elem-type>`,"," *> `<pair-elem-type>`))
     )
 
   private val intSign = ("+" #> identity[Long] _ <|> "-" #> ((x: Long) => -x))

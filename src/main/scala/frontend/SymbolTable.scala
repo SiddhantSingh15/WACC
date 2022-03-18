@@ -8,11 +8,8 @@ import backend.CodeGen._
 
 case class Info(t: Type, pList: Option[List[Type]])
 
-case class SymbolTable(
-    prev: SymbolTable,
-    funcId: Ident,
-    funcMap: HashMap[Ident, Info]) 
-  {
+case class SymbolTable(prev: SymbolTable, funcId: Ident,
+  funcMap: HashMap[Ident, Info]) {
 
   val children = ListBuffer.empty[SymbolTable]
 
@@ -83,9 +80,11 @@ case class SymbolTable(
     }
     pos match {
       case 1 => 
-        updateValue(id, tpe, Some(NewPair(maybeValue.asInstanceOf[Expr], expr2)))
+        updateValue(id, tpe, 
+          Some(NewPair(maybeValue.asInstanceOf[Expr], expr2)))
       case 2 => 
-        updateValue(id, tpe, Some(NewPair(expr1, maybeValue.asInstanceOf[Expr])))
+        updateValue(id, tpe, 
+          Some(NewPair(expr1, maybeValue.asInstanceOf[Expr])))
       case _ =>
     }
   }
@@ -112,10 +111,11 @@ case class SymbolTable(
         case _ =>
           found = true
           val (_, tpe) = symbTable(ident)
-          updateValue(ident, tpe, Some(ArrayLiter(exprs.updated(index, rhs.asInstanceOf[Expr])).asInstanceOf[AssignRHS]))
+          updateValue(ident, tpe, 
+            Some(ArrayLiter(exprs.updated(index, rhs.asInstanceOf[Expr]))
+            .asInstanceOf[AssignRHS]))
       }
     }
-  
   }
 
   def updateValue(ident: Ident, t: Type, value: Option[AssignRHS]): Unit = {
@@ -140,7 +140,6 @@ case class SymbolTable(
       }
       currentST = currentST.prev
     }
-    
   }
 
 

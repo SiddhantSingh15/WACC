@@ -20,8 +20,10 @@ object Main {
   def main(args: Array[String]): Unit =  {
     val file = new File(args(0))
 
+    // Checking that the file exists
     assert(file.exists())
 
+    // Setting the flags for the optimisation technique
     if (args.size == 2) {
       val optiTech = args(1).toInt
       optiTech match {
@@ -46,13 +48,18 @@ object Main {
     val EXITCODE_SYNTAX_ERROR = 100
     val EXITCODE_SEM_ERROR = 200
 
-    val parser = frontend.Parser
-    val parsed = parser.parseFromFile(file).get
+    // Generates the AST from the WACC Program
+    val parsed = frontend.Parser.parseFromFile(file).get
 
-    val parsedResult = parsed match {
+    parsed match {
+
+      // No syntax error detected during parsing
       case Success(x) =>
-        val semChecker = frontend.SemanticChecker
-        val (symbTable, semRes) = semChecker.checkProgram(parsed.get)
+        val programTree = parsed.get
+        // Checks the AST for semantic errors 
+        val (symbTable, semRes) = frontend.SemanticChecker
+            .checkProgram(programTree)
+
         for (err <- semRes) {
           if (err.isInstanceOf[FuncNoRetErr]) {
             println("[" + Console.RED + "error" + Console.RESET+ "]: " + err)
@@ -67,16 +74,20 @@ object Main {
           }
         }
 
-        val programTree = parsed.get
+        // Generates instructions based on ARM11 Internal Representation
+        // using the AST
         var (data, instructions) = transProgram(programTree, symbTable)
 
-        val prettyPrinter = backend.PrettyPrinter
-        
+        // Optimises the instructions using peephole optimisation
         if (peephole) {
           instructions = InstrEval.optimiseBlocks(instructions)
         }
-        prettyPrinter.prettyPrint(file.getName(), data, instructions)
 
+        // Creates the ARM11 Assembly file based on the generated
+        // block of instructions
+        backend.PrettyPrinter.prettyPrint(file.getName(), data, instructions)
+
+      // Syntax error detected during parsing
       case Failure(err) =>
         print(err.getError())
         System.exit(EXITCODE_SYNTAX_ERROR)
