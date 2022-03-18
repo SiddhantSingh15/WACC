@@ -19,10 +19,10 @@ import backend.CodeGeneration.Assignments._
 object CodeGen {
 
   // Flags for optimisation techniques
-  var constantEvaluation = false
-  var constantPropagation = false
-  var controlFA = false
-  var peephole = false
+  var constantEvaluation = true
+  var constantPropagation = true
+  var controlFA = true
+  var peephole = true
 
   // Values for code generation 
   var inBeginEndScope = true
