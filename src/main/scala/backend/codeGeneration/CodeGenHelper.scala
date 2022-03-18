@@ -123,17 +123,20 @@ object CodeGenHelper {
                         (expr1, expr2, mathOp) match {
                             case (IntLiter(num1), IntLiter(num2), Div(_, _)) => 
                                 num2 match {
+                                    // in case of division by zero
                                     case 0 => Div(IntLiter(num1), IntLiter(num2))
                                     case _ => IntLiter(num1 / num2)
                                 }
                             case (IntLiter(num1), IntLiter(num2), Mod(_, _)) => 
                                 num2 match {
+                                    // in case of division by zero
                                     case 0 => Mod(IntLiter(num1), IntLiter(num2))
                                     case _ => IntLiter(num1 % num2)
                                 }
                             case (IntLiter(num1), IntLiter(num2), Plus(_, _)) => 
                                 val sum : Long = num1.toLong + num2.toLong
                                 sum match {
+                                    // in case of integer overflow
                                     case _ if sum != (num1 + num2).toLong => 
                                         Plus(IntLiter(num1), IntLiter(num2))
                                     case _ => IntLiter(num1 + num2)
@@ -141,6 +144,7 @@ object CodeGenHelper {
                             case (IntLiter(num1), IntLiter(num2), AST.Sub(_, _)) => 
                                 val diff : Long = num1.toLong - num2.toLong
                                 diff match {
+                                    // in case of integer overflow
                                     case _ if diff != (num1 - num2) => 
                                         AST.Sub(IntLiter(num1), IntLiter(num2))
                                     case _ => IntLiter(num1 - num2)
@@ -148,6 +152,7 @@ object CodeGenHelper {
                             case (IntLiter(num1), IntLiter(num2), Mul(_, _)) => 
                                 val mult : Long = num1.toLong * num2.toLong
                                 mult match {
+                                    // in case of integer overflow
                                     case _ if mult != (num1 * num2) => 
                                         Mul(IntLiter(num1), IntLiter(num2))
                                     case _ => IntLiter(num1 * num2)
@@ -232,6 +237,7 @@ object CodeGenHelper {
                         IntLiter(exprs.size)
                     case (Negation(_), IntLiter(num)) => 
                         num match {
+                            // in case of integer overflow
                             case _ if num <= -2147483648 => op
                             case _ => IntLiter(-1*num)
                         }
@@ -247,6 +253,7 @@ object CodeGenHelper {
 
                     value match {
                         case _ if value == rhs => return rhs
+                        // in case the symbol table returns another ident
                         case ident: Ident => return reduceRHS(ident)
                         case _ => return value
                     }
