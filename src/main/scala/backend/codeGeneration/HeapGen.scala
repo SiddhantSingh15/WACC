@@ -118,7 +118,5 @@ object HeapGen {
       restoreReg(rm)
       currInstructions.add(BranchLinkCond(NE, addRTE(Overflow)))
     }
-
-    currInstructions.add(Mov(reg, resultRegister))
   }
 }
