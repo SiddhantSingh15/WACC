@@ -33,7 +33,10 @@ object Parser {
     ("string" #> String)  
   
   private lazy val `<type>` : Parsley[Type] =
-    attempt(`<array-type>`) <|> `<base-type>` <|> `<pair-type>`
+    attempt(`<array-type>`) <|> attempt(`<pointer-type>`) <|> `<base-type>` <|> `<pair-type>`
+  
+  private lazy val `<pointer-type>` : Parsley[PointerType] =
+    chain.postfix1((`<base-type>` <|> `<pair-type>`), "~" #> PointerType)
 
   private lazy val `<array-type>` : Parsley[ArrayType] =
     chain.postfix1((`<base-type>` <|> `<pair-type>`), "[]".label("to be part of an ArrayType") #> ArrayType)
@@ -79,11 +82,13 @@ object Parser {
     (Snd <#> ("snd" *> `<expr>`))
   
   private val `<assign-lhs>` : Parsley[AssignLHS] =
+    `<deref>` <|>
     `<pair-elem>` <|>
     attempt(`<array-elem>`) <|>
     `<ident>`
   
   val `<assign-rhs>` : Parsley[AssignRHS] = 
+    `<heap>` <|>
     `<pair-elem>` <|>
     `<expr>` <|>
     `<array-liter>` <|>
@@ -95,6 +100,17 @@ object Parser {
         `<ident>`,
         ArgList <#> parens(sepBy(`<expr>`, ","))
     ))
+
+  private val `<heap>` : Parsley[Heap] =
+    Malloc <#> ("malloc" *> parens(`<expr>`)) <|> 
+    "realloc" *> parens(lift2(Realloc, `<ident>`, "," *> `<expr>`)) <|> 
+    "calloc" *> parens(lift2(Calloc, `<expr>`, "," *> `<expr>`))
+  
+  private val `<deref>` : Parsley[DerefPointer] =
+    "~" *> (DerefPointer <#> `<expr>`)
+  
+  private val `<sizeof>` : Parsley[Sizeof] = 
+    "sizeof" *> lift1(Sizeof, parens(`<type>`))
   
   private val `<param>` = 
     lift2(Param, `<type>`, `<ident>`)
@@ -131,6 +147,7 @@ object Parser {
     `<pair-liter>` <|>
     `<bool-liter>` <|>
     `<int-liter>` <|>
+    `<sizeof>` <|>
     fully(`<char-liter>` <|>
     `<str-liter>`)
   
@@ -138,6 +155,8 @@ object Parser {
     precedence(
       Atoms(parens(`<expr>`) <|> attempt(`<array-elem>`) <|> atom) :+
       Ops(Prefix)(
+          "~".label("operator") #> DerefPointer,
+          "&".label("operator") #> MemAddr,
           "!".label("operator") #> Not,
           notFollowedBy(`<int-liter>`) *> "-".label("operator") #> Negation,
           "len".label("operator") #> Len,

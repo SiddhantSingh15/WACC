@@ -54,6 +54,8 @@ case class SymbolTable(
 
   def add(ident: Ident, n: Int, t: Type, value: Option[AssignRHS]): Unit = {
     value match {
+      case Some(_: Heap) =>
+        varMap.addOne(ident, (n, t, None))
       case Some(Call(_, _)) =>
         varMap.addOne(ident, (n, t, None))
       case _ =>

@@ -1,0 +1,6 @@
+begin
+    string~ ptr = malloc(12);
+    ~(ptr + 1) = 'a';
+    println ptr;
+    free ptr
+end

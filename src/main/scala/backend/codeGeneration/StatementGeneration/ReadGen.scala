@@ -10,6 +10,7 @@ import frontend.AST._
 import backend.ReadInstr.{charRead, intRead}
 import scala.collection.mutable.ListBuffer
 import backend.CodeGeneration.CodeGenHelper._
+import backend.CodeGeneration.ExpressionGen.transExp
 
 object ReadGen {
 
@@ -18,11 +19,22 @@ object ReadGen {
    */
   def transRead(lhs: AssignLHS): Unit = {
     lhs match {
-      case ident: Ident  => transReadIdent(ident)
-      case ae: ArrayElem => transReadArrayElem(ae)
-      case fst: Fst      => transReadPairElem(fst, 1)
-      case snd: Snd      => transReadPairElem(snd, 2)
+      case ident: Ident        => transReadIdent(ident)
+      case ae: ArrayElem       => transReadArrayElem(ae)
+      case fst: Fst            => transReadPairElem(fst, 1)
+      case snd: Snd            => transReadPairElem(snd, 2)
+      case deref: DerefPointer => transReadDeref(deref)
     }
+  }
+
+  private def transReadDeref(deref: DerefPointer) = {
+    val DerefPointer(ptr) = deref
+    val freeReg = saveReg()
+    transExp(ptr, freeReg)
+    currInstructions.add(Mov(resultRegister, freeReg))
+    restoreReg(freeReg)
+    val tpe = getExprType(deref)
+    readBranch(tpe)
   }
 
   /*

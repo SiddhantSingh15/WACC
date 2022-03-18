@@ -111,6 +111,10 @@ sealed case class ArrayElem(ident: Ident, exprList : List[Expr]) extends AssignL
 			case Pair(_,_) => true 
 			case _         => false 
 		}
+    def isPointer: Boolean = this match {
+      case PointerType(_) => true
+      case _              => false
+    }
 	}		
 
   case object Any extends Type {
@@ -308,6 +312,10 @@ sealed case class ArrayElem(ident: Ident, exprList : List[Expr]) extends AssignL
 			if (currentExp1 == Any || currentExp2 == Any) {
 				return expected._2
 			}
+
+      if (isMemAlloc(currentExp1, currentExp2)) {
+        return currentExp1
+      }
 			
 			if (currentExp1 != currentExp2) {
 			if (expected._1.contains(currentExp1)) {
@@ -335,6 +343,11 @@ sealed case class ArrayElem(ident: Ident, exprList : List[Expr]) extends AssignL
 		}
     override def toString: String = 
       exp1.toString + " " + symbol + " " + exp2.toString
+    
+    def isMemAlloc(lhs: Type, rhs: Type): Boolean = this match {
+      case Plus(_, _) | Sub(_, _) => lhs.isPointer && (rhs == Int)
+      case _                      => false
+    }
 	}
 
 	sealed trait MathFuncs extends BinOp {
@@ -444,10 +457,103 @@ sealed case class ArrayElem(ident: Ident, exprList : List[Expr]) extends AssignL
 	}
 	case class StrLiter(string: List[Character]) extends Expr{
     override def toString: String = string.mkString
-			override def getType(symbTable: SymbolTable): Type = String
+		override def getType(symbTable: SymbolTable): Type = String
 	}
 	case class PairLiter() extends Expr {
     override def toString: String = "pairLit"
 		override def getType(symbTable: SymbolTable): Type = Pair(null, null)
 	}
+
+  case class PointerType(tpe: Type) extends Type {
+    override def equals(o: Any): Boolean = o match {
+      case PointerType(null) => true
+      case PointerType(in)   =>
+        if (tpe == null) 
+          true
+        else
+          in == tpe
+      case _                 => false
+    }
+  }
+
+  case class DerefPointer(ptr: Expr) extends Expr with AssignLHS {
+    override def getType(symbTable: SymbolTable): Type = {
+      val tpe = ptr.getType(symbTable)
+      semanticErrors = ptr.semanticErrors
+      tpe match {
+        case PointerType(inType) => inType
+        case _                   =>
+          semanticErrors += MismatchTypesErr(ptr, tpe, List(PointerType(null)))
+          null
+      }
+    }
+  }
+
+  case class Sizeof(tpe: Type) extends Expr {
+    override def getType(symbTable: SymbolTable): Type = Int
+  }
+
+  sealed trait Heap extends AssignRHS
+
+  case class MemAddr(ptr: Expr) extends Expr {
+    override def getType(symbTable: SymbolTable): Type = {
+      val tpe = ptr.getType(symbTable)
+      semanticErrors = ptr.semanticErrors
+      ptr match {
+        case _: Ident | _: DerefPointer =>
+        case _					                => 
+          semanticErrors += IllegalReference(ptr)
+      }
+      PointerType(tpe)
+    }
+  }
+
+  case class Calloc(num: Expr, size: Expr) extends Heap {
+    override def getType(symbTable: SymbolTable): Type = {
+      val tpe = size.getType(symbTable)
+      semanticErrors = size.semanticErrors
+      if (tpe != Int) {
+        semanticErrors += MismatchTypesErr(size, tpe, List(Int))
+      }
+      
+      val numTpe = num.getType(symbTable)
+      semanticErrors = num.semanticErrors
+      if (numTpe != Int) {
+        semanticErrors += MismatchTypesErr(num, tpe, List(Int))
+      }
+
+      PointerType(null)
+    }
+  }
+
+  case class Malloc(size: Expr) extends Heap {
+    override def getType(symbTable: SymbolTable): Type = {
+      val tpe = size.getType(symbTable)
+      semanticErrors = size.semanticErrors
+      if (tpe != Int) {
+        semanticErrors += MismatchTypesErr(size, tpe, List(Int))
+      }
+
+      PointerType(null)
+    }
+  }
+
+  case class Realloc(ptr: Ident, size: Expr) extends Heap {
+    override def getType(symbTable: SymbolTable): Type = {
+      val tpe = size.getType(symbTable)
+      semanticErrors = size.semanticErrors
+      if (tpe != Int) {
+        semanticErrors += MismatchTypesErr(size, tpe, List(Int))
+      }
+
+      val ptrTpe = ptr.getType(symbTable)
+      semanticErrors ++= ptr.semanticErrors
+      if (ptrTpe != PointerType(null)) {
+        semanticErrors += MismatchTypesErr(ptr, ptrTpe, List(PointerType(null)))
+      }
+
+      ptrTpe
+    }
+  }
+
 }
