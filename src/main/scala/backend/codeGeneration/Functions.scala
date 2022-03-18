@@ -8,6 +8,7 @@ import frontend.SymbolTable
 import backend.CodeGeneration.ExpressionGen._
 import backend.CodeGeneration.PairsGen._
 import backend.CodeGeneration.CodeGenHelper._
+import backend.CodeGeneration.ScopeGen._
 import scala.collection.mutable.ListBuffer
 
 
@@ -36,26 +37,10 @@ object Functions {
   def transFunction (f : Func) : Unit = {
     val Func(tpe, id, paramList, stats) = f 
     currLabel = Label("f_" + id)
-    val prevScopeSP = scopeSP
-    symbTable = symbTable.getNextScope
-    val maxSpDepth = symbTable.spMaxDepth(id)
     translateFuncParams(paramList)
-
-    scopeSP = currSP
-    currSP += maxSpDepth
-    currInstructions.add(Push(ListBuffer(R14_LR)))
-    decrementSP(maxSpDepth)
-
-    for (stat <- stats) {
-      transStat(stat)
-    }
-
-    if (maxSpDepth > 0) {
-      currSP -= maxSpDepth
-    }
-
-    scopeSP = prevScopeSP
-    symbTable = symbTable.prev
+    
+    transScope(stats)
+    
     currInstructions.addAll(ListBuffer(
       Pop(ListBuffer(R15_PC)),
       Ltorg
@@ -92,6 +77,7 @@ object Functions {
   private def translateFuncParams(params : ParamList) : Unit = {
     val ParamList(pList) = params
     var curr = SIZE_ADDR
+    symbTable = symbTable.getNextScope
     var prev = 0
     for(param <- pList) {
       val Param(tpe, id) = param 
@@ -99,6 +85,7 @@ object Functions {
       prev = getTypeSize(tpe)
       symbTable.add(id, -curr, tpe, None)
     }
+    symbTable = symbTable.prev
   }
   
   /*
