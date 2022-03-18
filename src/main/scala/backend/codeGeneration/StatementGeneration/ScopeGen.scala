@@ -115,7 +115,7 @@ object ScopeGen {
   /*
    * Translates only the stats in the current scope.
    */
-  private def transScope(stats: List[Stat]): Unit = {
+  def transScope(stats: List[Stat]): Unit = {
     symbTable = symbTable.getNextScope
     val oldScopeSp = scopeSP
     val scopeMaxSpDepth = symbTable.spMaxDepth
