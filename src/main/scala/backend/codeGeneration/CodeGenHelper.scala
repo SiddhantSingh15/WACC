@@ -276,8 +276,6 @@ object CodeGenHelper {
                 rhs
             case Fst(fst) => 
                 val value = reduceRHS(fst)
-                println(fst)
-                println(value)
                 if (!value.isInstanceOf[NewPair]) return rhs
                 var NewPair(expr, _) = value
                 if (expr == null) return rhs
