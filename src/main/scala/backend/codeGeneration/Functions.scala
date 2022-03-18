@@ -97,7 +97,7 @@ object Functions {
       val Param(tpe, id) = param 
       curr += prev
       prev = getTypeSize(tpe)
-      symbTable.add(id, -curr, tpe)
+      symbTable.add(id, -curr, tpe, None)
     }
   }
   

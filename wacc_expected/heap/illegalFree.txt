@@ -1,0 +1,2 @@
+s
+MemErr: invalid, memory not allocated.

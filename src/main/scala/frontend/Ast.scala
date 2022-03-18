@@ -111,6 +111,10 @@ sealed case class ArrayElem(ident: Ident, exprList : List[Expr]) extends AssignL
 			case Pair(_,_) => true 
 			case _         => false 
 		}
+    def isPointer: Boolean = this match {
+      case PointerType(_) => true
+      case _              => false
+    }
 	}		
 
   case object Any extends Type {
@@ -295,7 +299,7 @@ sealed case class ArrayElem(ident: Ident, exprList : List[Expr]) extends AssignL
 
 	sealed trait BinOp extends Expr {
 	  // val semanticErrs = mutable.ListBuffer.empty[SemanticError]
-    val symbol: String
+    	val symbol: String
 		val exp1: Expr
 		val exp2: Expr
 		val expected: (List[Type], Type)
@@ -308,33 +312,42 @@ sealed case class ArrayElem(ident: Ident, exprList : List[Expr]) extends AssignL
 			if (currentExp1 == Any || currentExp2 == Any) {
 				return expected._2
 			}
+
+      if (isMemAlloc(currentExp1, currentExp2)) {
+        return currentExp1
+      }
 			
 			if (currentExp1 != currentExp2) {
-        if (expected._1.contains(currentExp1)) {
-          semanticErrors += 
-            MismatchTypesErr(exp2, currentExp2, List(currentExp1))
-          return expected._2
-        }
-        if (expected._1.contains(currentExp2)) {
-          semanticErrors += 
-            MismatchTypesErr(exp1, currentExp1, List(currentExp2))
-          return expected._2
-        }
-      } else {
-        if (expected._1.contains(currentExp1) && 
-            expected._1.contains(currentExp2)) {
-              return expected._2
-            }
-        if (expected._1.isEmpty) {
-          return expected._2
-        }
-      }
+			if (expected._1.contains(currentExp1)) {
+			semanticErrors += 
+				MismatchTypesErr(exp2, currentExp2, List(currentExp1))
+			return expected._2
+			}
+			if (expected._1.contains(currentExp2)) {
+			semanticErrors += 
+				MismatchTypesErr(exp1, currentExp1, List(currentExp2))
+			return expected._2
+			}
+		} else {
+			if (expected._1.contains(currentExp1) && 
+				expected._1.contains(currentExp2)) {
+				return expected._2
+				}
+			if (expected._1.isEmpty) {
+			return expected._2
+			}
+		}
       semanticErrors += MismatchTypesErr(exp1, currentExp1, expected._1)
       semanticErrors += MismatchTypesErr(exp2, currentExp2, expected._1)
 			expected._2
 		}
     override def toString: String = 
       exp1.toString + " " + symbol + " " + exp2.toString
+    
+    def isMemAlloc(lhs: Type, rhs: Type): Boolean = this match {
+      case Plus(_, _) | Sub(_, _) => lhs.isPointer && (rhs == Int)
+      case _                      => false
+    }
 	}
 
 	sealed trait MathFuncs extends BinOp {
@@ -397,33 +410,150 @@ sealed case class ArrayElem(ident: Ident, exprList : List[Expr]) extends AssignL
     override def toString: String = number.toString
 		override def getType(symbTable: SymbolTable): Type = Int
 	}
-	sealed trait BoolLiter extends Expr
+	sealed trait BoolLiter extends Expr 
 	case object True extends BoolLiter {
 		override def getType(symbTable: SymbolTable): Type = Bool
 	}
 	case object False extends BoolLiter {
 		override def getType(symbTable: SymbolTable): Type = Bool
 	}
-	sealed trait Character
+	sealed trait Character {
+		override def equals(that: Any): Boolean = 
+			(this, that) match {
+				case (NormalCharacter(thisChar), NormalCharacter(thatChar)) =>
+					thisChar == thatChar
+				case (EscapeCharacter(thisChar), EscapeCharacter(thatChar)) =>
+					thisChar == thatChar
+				case _ =>
+					false
+			}
+		
+	}
 	case class NormalCharacter(char: Char) extends Character {
 		override def toString: String = char.toString
+		override def equals(that: Any): Boolean = 
+			that match {
+				case NormalCharacter(thatChar) => 
+					char == thatChar
+				case _ => false
+			}
 	}
 	case class EscapeCharacter(char: Char) extends Character {
 		override def toString: String = s"\\$char"
+		override def equals(that: Any): Boolean = 
+			that match {
+				case EscapeCharacter(thatChar) => 
+					char == thatChar
+				case _ => false
+			}
 	}
 	case class CharLiter(character: Character) extends Expr{
-    override def toString: String = character match {
-		case NormalCharacter(_) => "\'" + character.toString() + "\'"
-		case EscapeCharacter(_) => "\'" + character.toString()(1) + "\'"
-	}
+		override def toString: String = character match {
+			case NormalCharacter(_) => "\'" + character.toString() + "\'"
+			case EscapeCharacter(_) => "\'" + character.toString()(1) + "\'"
+		}
+		def getChar: Char = this.toString.charAt(1)
 		override def getType(symbTable: SymbolTable): Type = CharType
 	}
 	case class StrLiter(string: List[Character]) extends Expr{
     override def toString: String = string.mkString
-			override def getType(symbTable: SymbolTable): Type = String
+		override def getType(symbTable: SymbolTable): Type = String
 	}
 	case class PairLiter() extends Expr {
     override def toString: String = "pairLit"
 		override def getType(symbTable: SymbolTable): Type = Pair(null, null)
 	}
+
+  case class PointerType(tpe: Type) extends Type {
+    override def equals(o: Any): Boolean = o match {
+      case PointerType(null) => true
+      case PointerType(in)   =>
+        if (tpe == null) 
+          true
+        else
+          in == tpe
+      case _                 => false
+    }
+  }
+
+  case class DerefPointer(ptr: Expr) extends Expr with AssignLHS {
+    override def getType(symbTable: SymbolTable): Type = {
+      val tpe = ptr.getType(symbTable)
+      semanticErrors = ptr.semanticErrors
+      tpe match {
+        case PointerType(inType) => inType
+        case _                   =>
+          semanticErrors += MismatchTypesErr(ptr, tpe, List(PointerType(null)))
+          null
+      }
+    }
+  }
+
+  case class Sizeof(tpe: Type) extends Expr {
+    override def getType(symbTable: SymbolTable): Type = Int
+  }
+
+  sealed trait Heap extends AssignRHS
+
+  case class MemAddr(ptr: Expr) extends Expr {
+    override def getType(symbTable: SymbolTable): Type = {
+      val tpe = ptr.getType(symbTable)
+      semanticErrors = ptr.semanticErrors
+      ptr match {
+        case _: Ident | _: DerefPointer =>
+        case _					                => 
+          semanticErrors += IllegalReference(ptr)
+      }
+      PointerType(tpe)
+    }
+  }
+
+  case class Calloc(num: Expr, size: Expr) extends Heap {
+    override def getType(symbTable: SymbolTable): Type = {
+      val tpe = size.getType(symbTable)
+      semanticErrors = size.semanticErrors
+      if (tpe != Int) {
+        semanticErrors += MismatchTypesErr(size, tpe, List(Int))
+      }
+      
+      val numTpe = num.getType(symbTable)
+      semanticErrors = num.semanticErrors
+      if (numTpe != Int) {
+        semanticErrors += MismatchTypesErr(num, tpe, List(Int))
+      }
+
+      PointerType(null)
+    }
+  }
+
+  case class Malloc(size: Expr) extends Heap {
+    override def getType(symbTable: SymbolTable): Type = {
+      val tpe = size.getType(symbTable)
+      semanticErrors = size.semanticErrors
+      if (tpe != Int) {
+        semanticErrors += MismatchTypesErr(size, tpe, List(Int))
+      }
+
+      PointerType(null)
+    }
+  }
+
+  case class Realloc(ptr: Ident, size: Expr) extends Heap {
+    override def getType(symbTable: SymbolTable): Type = {
+      val tpe = size.getType(symbTable)
+      semanticErrors = size.semanticErrors
+      if (tpe != Int) {
+        semanticErrors += MismatchTypesErr(size, tpe, List(Int))
+      }
+
+      val ptrTpe = ptr.getType(symbTable)
+      semanticErrors ++= ptr.semanticErrors
+      if (ptrTpe != PointerType(null)) {
+        semanticErrors += MismatchTypesErr(ptr, ptrTpe, List(PointerType(null)))
+      }
+
+      ptrTpe
+    }
+  }
+
 }

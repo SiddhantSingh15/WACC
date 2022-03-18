@@ -1,0 +1,5 @@
+begin
+    int ~a = malloc(8);
+    int ~b = a;
+    free b
+end

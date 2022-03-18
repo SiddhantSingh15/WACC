@@ -18,12 +18,13 @@ object lexer {
                     "then", "else", "fi", "while", "do", "done",
                     "begin", "end", "newpair", "call", "fst", "snd", 
                     "newpair", "pair", "null", "true", "false", "int",
-                    "char", "string", "bool", "len", "ord", "chr"
+                    "char", "string", "bool", "len", "ord", "chr",
+                    "malloc", "calloc", "realloc", "sizeof"
                     )
                     
-    val operators = Set("!", "-", "len", "ord", "chr", "*",
+    val operators = Set("!", "-", "len", "ord", "chr", "*", "~",
                 "/", "%", "+", "-", ">", ">=", "<",
-                "<=", "==", "!=", "&&", "||", "fst", "snd")
+                "<=", "==", "!=", "&&", "||", "fst", "snd", "&")
 
     private val wacc = LanguageDef.plain.copy(
         commentLine = "#",

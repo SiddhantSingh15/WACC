@@ -32,7 +32,7 @@ object PrintGen {
         printFunc = PrintBool
       case String | ArrayType(CharType) =>
         printFunc = PrintString
-      case ArrayType(_) | Pair(_, _)    =>
+      case ArrayType(_) | Pair(_, _) | PointerType(_)   =>
         printFunc = PrintReference
       case _                            => 
         ???

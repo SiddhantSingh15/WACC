@@ -1,8 +1,5 @@
 Global / onChangedBuildSource := ReloadOnSourceChanges
 
-
-
-
 val projectName = "compiler"
 
 lazy val sbtAssemblySettings = baseAssemblySettings ++ Seq(
@@ -24,6 +21,5 @@ lazy val root = (project in file("."))
     libraryDependencies += "org.scalatest" %% "scalatest" % "3.2.10" % Test,
     libraryDependencies += "com.github.j-mie6" %% "parsley" % "3.3.2"
   )
-
 
 

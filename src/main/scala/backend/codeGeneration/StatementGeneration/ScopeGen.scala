@@ -1,6 +1,6 @@
 package backend.CodeGeneration
 
-import frontend.AST.{Stat, Expr}
+import frontend.AST._
 import scala.collection.mutable.ListBuffer
 import backend.Opcodes._
 import backend.Condition.{EQ}
@@ -15,7 +15,10 @@ object ScopeGen {
    * Translates the BEGIN function and returns a list of instructions.
    */
 	def transBegin(stats: List[Stat]): Unit = {
+    val oldInBeginEndScope = inBeginEndScope
+    inBeginEndScope = true
 		transScope(stats)
+    inBeginEndScope = oldInBeginEndScope
 	}
 
   /*
@@ -25,6 +28,20 @@ object ScopeGen {
    * The function will append that list based on which branch to traverse.
    */
 	def transIf(expr: Expr, statThen: List[Stat], statElse: List[Stat]): Unit = {
+    if (controlFA) {
+      val bool = reduceRHS(expr)
+      bool match {
+        case True =>
+          transScope(statThen)
+          return
+        case False =>
+          transScope(statElse)
+          return
+        case _ =>
+      }
+    }
+
+
 		val freeRegister = saveReg()
 		transExp(expr, freeRegister)
 		currInstructions.add(Cmp(freeRegister, Imm_Int(0)))
@@ -33,6 +50,8 @@ object ScopeGen {
 		val elseLabel = funcTable.getNext()
 		currInstructions.add(BranchCond(EQ, elseLabel))
 
+    var oldInBeginEndScope = inBeginEndScope
+    inBeginEndScope = false
 		transScope(statThen)
 		val postLabel = funcTable.getNext()
 
@@ -41,9 +60,11 @@ object ScopeGen {
 
 		currLabel = elseLabel
     currInstructions = BlockInstrs(ListBuffer.empty[Instr])
+
 		transScope(statElse)
 		funcTable.add(currLabel, currInstructions)
 
+    inBeginEndScope = oldInBeginEndScope
 		currLabel = postLabel
 		currInstructions = BlockInstrs(ListBuffer.empty[Instr])
 	}
@@ -55,6 +76,14 @@ object ScopeGen {
    * The function will append that list based on which branch to traverse.
    */
 	def transWhile(expr: Expr, stats: List[Stat]): Unit = {
+    if (controlFA) {
+      val bool = reduceRHS(expr)
+      bool match {
+        case False =>
+          return
+        case _ =>
+      }
+    }
 		
 		val nextLabel = funcTable.getNext()
 
@@ -64,7 +93,12 @@ object ScopeGen {
 		val bodyLabel = funcTable.getNext()
 		currLabel = bodyLabel
     currInstructions = BlockInstrs(ListBuffer.empty[Instr])
+
+    var oldInBeginEndScope = inBeginEndScope
+    inBeginEndScope = false
 		transScope(stats)
+    inBeginEndScope = oldInBeginEndScope
+    
 		funcTable.add(currLabel, currInstructions)
 
 		currLabel = nextLabel

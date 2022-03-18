@@ -1,0 +1,6 @@
+begin
+    char c = 's';
+    println c;
+    char ~str = &c;
+    free str
+end

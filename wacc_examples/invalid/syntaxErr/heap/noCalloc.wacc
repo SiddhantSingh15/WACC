@@ -1,0 +1,3 @@
+begin
+    int ~num = calloc(5, )
+end

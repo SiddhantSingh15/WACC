@@ -9,6 +9,7 @@ import backend.CodeGeneration.ExpressionGen._
 import backend.DefinedFuncs.RuntimeErrors._
 import backend.DefinedFuncs.PreDefinedFuncs._
 import backend.CodeGeneration.CodeGenHelper._
+import backend.CodeGeneration.HeapGen._
 
 object ArraysGen {
 
@@ -43,22 +44,26 @@ object ArraysGen {
     val nextReg = saveReg()
 
     for (expr <- exprs) {
-      t = getInnerType(t)
-      transExp(expr, nextReg)
-      currInstructions.addAll(ListBuffer[Instr](
-        Ldr(rd, RegAdd(rd)),
-        Mov(resultRegister, nextReg),
-        Mov(R1, rd),
-        Bl(addRTE(ArrayBounds)),
-        /*accounting for array size*/
-        Add(rd, rd, Imm_Int(SIZE_INT))
-      ))
-      
-      if (isByte(t)) {
-        currInstructions.add(Add(rd, rd, nextReg))
+      if (t.isPointer) {
+        transPointer(t, expr, rd, nextReg)
       } else {
-        /*there is a 4 byte difference between elements*/
-        currInstructions.add(Add(rd, rd, LSL(nextReg, Imm_Int(2))))
+        t = getInnerType(t)
+        transExp(expr, nextReg)
+        currInstructions.addAll(ListBuffer[Instr](
+          Ldr(rd, RegAdd(rd)),
+          Mov(resultRegister, nextReg),
+          Mov(R1, rd),
+          Bl(addRTE(ArrayBounds)),
+          /*accounting for array size*/
+          Add(rd, rd, Imm_Int(SIZE_INT))
+        ))
+        
+        if (isByte(t)) {
+          currInstructions.add(Add(rd, rd, nextReg))
+        } else {
+          /*there is a 4 byte difference between elements*/
+          currInstructions.add(Add(rd, rd, LSL(nextReg, Imm_Int(2))))
+        }
       }
     }
     restoreReg(nextReg)
