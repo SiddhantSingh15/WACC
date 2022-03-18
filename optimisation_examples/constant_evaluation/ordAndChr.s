@@ -1,4 +1,22 @@
-.data
+/*
+WACC Program:
+	# evalutaing ord and chr
+
+	# Output:
+	# 97
+	# c
+
+	# Program:
+
+	begin
+	println ord 'a' ;
+	println chr 99
+	end
+
+Optimisation:
+	Program evaluates ord and chr operators at compile-time.
+*/
+	.data
 
 	msg_int:
 		.word 3
@@ -12,27 +30,14 @@
 	.global main
 	main:
 		PUSH {lr}
-		SUB sp, sp, #4
-		LDR r0, =20
-		BL malloc
-		MOV r4, r0
-		LDR r5, =43
-		STR r5, [r4, #4]
-		LDR r5, =2
-		STR r5, [r4, #8]
-		LDR r5, =18
-		STR r5, [r4, #12]
-		LDR r5, =1
-		STR r5, [r4, #16]
-		LDR r5, =4
-		STR r5, [r4]
-		STR r4, [sp]
-		LDR r4, [sp, #0]
-		LDR r4, [r4]
+		LDR r4, =97
 		MOV r0, r4
 		BL p_print_int
 		BL p_print_ln
-		ADD sp, sp, #4
+		MOV r4, #'c'
+		MOV r0, r4
+		BL putchar
+		BL p_print_ln
 		LDR r0, =0
 		POP {pc}
 		.ltorg
