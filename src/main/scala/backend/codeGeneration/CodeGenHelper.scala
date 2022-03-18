@@ -38,6 +38,7 @@ object CodeGenHelper {
         }
     }
 
+    // returns whether the type has the size of a byte
     def isByte(t : Type): Boolean = {
         t == Bool || t == CharType
     }
@@ -110,6 +111,8 @@ object CodeGenHelper {
         if (bool) True else False
     }
 
+    // Evaluates rhs at compile-time. Variables may be replaced with 
+    //constant values if the constant propagation flag is true
     def reduceRHS(rhs: AssignRHS): AssignRHS = {
         rhs match {
             case op: BinOp =>
@@ -131,19 +134,22 @@ object CodeGenHelper {
                             case (IntLiter(num1), IntLiter(num2), Plus(_, _)) => 
                                 val sum : Long = num1.toLong + num2.toLong
                                 sum match {
-                                    case _ if sum != (num1 + num2).toLong => Plus(IntLiter(num1), IntLiter(num2))
+                                    case _ if sum != (num1 + num2).toLong => 
+                                        Plus(IntLiter(num1), IntLiter(num2))
                                     case _ => IntLiter(num1 + num2)
                                 }
                             case (IntLiter(num1), IntLiter(num2), AST.Sub(_, _)) => 
                                 val diff : Long = num1.toLong - num2.toLong
                                 diff match {
-                                    case _ if diff != (num1 - num2) => AST.Sub(IntLiter(num1), IntLiter(num2))
+                                    case _ if diff != (num1 - num2) => 
+                                        AST.Sub(IntLiter(num1), IntLiter(num2))
                                     case _ => IntLiter(num1 - num2)
                                 }
                             case (IntLiter(num1), IntLiter(num2), Mul(_, _)) => 
                                 val mult : Long = num1.toLong * num2.toLong
                                 mult match {
-                                    case _ if mult != (num1 * num2) => Mul(IntLiter(num1), IntLiter(num2))
+                                    case _ if mult != (num1 * num2) => 
+                                        Mul(IntLiter(num1), IntLiter(num2))
                                     case _ => IntLiter(num1 * num2)
                                 }
                             case _ => rhs

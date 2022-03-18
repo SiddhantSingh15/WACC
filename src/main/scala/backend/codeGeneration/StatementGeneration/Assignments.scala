@@ -74,12 +74,10 @@ object Assignments {
   */
 
   def transAssignRHS(t: Type, rhs: AssignRHS, freeRegister: Register): (Boolean, AssignRHS) = {
-
     var reducedRHS = rhs
     if (constantPropagation) {
       reducedRHS = reduceRHS(rhs)
     }
-
     (transAssignRHSInner(t, reducedRHS, freeRegister), reducedRHS)
   }
 
