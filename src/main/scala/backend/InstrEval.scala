@@ -239,7 +239,7 @@ object InstrEval {
         // Call DIVIDE_BY_ZERO runtime error
         optimised += Ldr(
           resultRegister,
-          DataLabel(DivideByZero.functionLabel)
+          DataLabel(Label(DivideByZero.msgName(0)))
         )
         optimised += Bl(RuntimeError.functionLabel)
       case Load_Mem(n) =>
