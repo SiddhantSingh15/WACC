@@ -13,33 +13,30 @@ object PrettyPrinter {
     file.delete()
     file.createNewFile()
     
-    val fileWriter = new FileWriter(file)
-
-    val sb = new StringBuilder
+    val fw = new FileWriter(file)
 
     if (!data.isEmpty) {
-      sb ++= ".data\n\n"
-      data.foreach(d => printDataTable(d, sb))
-      sb ++= "\n"
+      fw.write("\t.data\n\n")
+      data.foreach(d => printDataTable(d, fw))
+      fw.write("\n")
     }
 
-    sb ++= "\t.text\n\n\t.global main\n"
+    fw.write("\t.text\n\n\t.global main\n")
 
     instrs.foreach((x: (Label, BlockInstrs)) => {
         val labelStr = x._1
-        sb ++= s"\t$labelStr:\n"
-        sb ++= x._2.toString()
+        fw.write(s"\t$labelStr:\n")
+        fw.write(x._2.toString())
     })
-    fileWriter.write(sb.toString())
-    fileWriter.close()
+    fw.close()
   }
 
-  private def printDataTable(d: Data, sb: StringBuilder): Unit = {
+  private def printDataTable(d: Data, fw: FileWriter): Unit = {
     val Data(Label(l), s) = d
-    sb ++= s"\t$l:\n"
+    fw.write(s"\t$l:\n")
     val len = size(s)
-    sb ++= s"\t\t.word $len\n"
-    sb ++= s"\t\t.ascii \"$s\"\n"
+    fw.write(s"\t\t.word $len\n")
+    fw.write(s"\t\t.ascii \"$s\"\n")
   }
 
   private def size(str: String): Int = {
